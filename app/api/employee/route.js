@@ -1,6 +1,8 @@
 import connection from "@/libs/db";
+import { NextResponse } from "next/server";
 
-export async function GET(req) {
+// Example endpoint to fetch all records from the employee table
+export async function GET() {
   try {
     // Establish the connection using the pool
     const pool = await connection();
@@ -8,25 +10,15 @@ export async function GET(req) {
     // Get a connection from the pool
     const conn = await pool.getConnection();
 
-    // Execute the query to fetch all records from the employee table
-    const [rows] = await conn.query("SELECT * FROM employee");
+    // Execute the query 
+    const [data] = await conn.query("SELECT * FROM Employee LIMIT 10");
 
     // Release the connection back to the pool
     conn.release();
 
     // Return the fetched data as a JSON response
-    return new Response(JSON.stringify(rows), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    console.error("Error connecting to database:", error);
-    return new Response(
-      JSON.stringify({ message: "Error connecting to database", error }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    return NextResponse.json(error, { status: 500 });
   }
 }
