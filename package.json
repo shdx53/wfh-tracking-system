@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@custom-react-hooks/use-media-query": "^1.5.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
     "class-variance-authority": "^0.7.0",
