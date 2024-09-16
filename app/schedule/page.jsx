@@ -96,7 +96,7 @@ export default function Schedule() {
               <TabsTrigger value="Work-From-Home" className="sm:hidden">
                 WFH
               </TabsTrigger>
-              <TabsTrigger value="Work-From-Home" className="sm:block">
+              <TabsTrigger value="Work-From-Home" className="hidden sm:block">
                 Work-From-Home
               </TabsTrigger>
               <TabsTrigger value="Leave">Leave</TabsTrigger>
