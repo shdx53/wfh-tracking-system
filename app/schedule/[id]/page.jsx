@@ -25,7 +25,7 @@ export default function OwnSchedule() {
   useEffect(() => {
     /* Add schedule to calendar */
     // Define tag base styles
-    const parentTagStyle = [
+    const parentTagStyles = [
       "absolute",
       "inset-x-4",
       "bottom-4",
@@ -36,7 +36,7 @@ export default function OwnSchedule() {
       "xl:text-sm",
       "text-black",
     ];
-    const tagStyle = ["xl:py-1", "px-2", "rounded-md", "border-l-8", "text-left"];
+    const tagStyles = ["xl:py-1", "px-2", "rounded-md", "border-l-8", "text-left"];
 
     const buttons = document.querySelectorAll("button");
 
@@ -44,14 +44,13 @@ export default function OwnSchedule() {
       if (button.textContent === "9") {
         // Parent Tag
         const parentTag = document.createElement("div");
-        parentTag.classList.add(...parentTagStyle);
+        parentTag.classList.add(...parentTagStyles);
 
         // AM Tag
         const amTag = document.createElement("div");
         amTag.innerHTML = "<b>AM:</b> WFH";
 
-        amTag.classList.add(...tagStyle, "border-blue-700");
-        amTag.style.backgroundColor = "#f2f7fe";
+        amTag.classList.add(...tagStyles, "bg-blue-100/40", "border-blue-700");
 
         parentTag.appendChild(amTag);
         button.appendChild(parentTag);
@@ -60,7 +59,7 @@ export default function OwnSchedule() {
         const pmTag = document.createElement("div");
         pmTag.innerHTML = "<b>PM:</b> Leave";
 
-        pmTag.classList.add(...tagStyle, "border-indigo-700");
+        pmTag.classList.add(...tagStyles, "bg-indigo-100/40", "border-indigo-700");
         pmTag.style.backgroundColor = "#fafaff";
 
         parentTag.appendChild(pmTag);
@@ -68,14 +67,13 @@ export default function OwnSchedule() {
       } else if (button.textContent === "20") {
         // Parent Tag
         const parentTag = document.createElement("div");
-        parentTag.classList.add(...parentTagStyle);
+        parentTag.classList.add(...parentTagStyles);
 
         // Full Day Tag
         const pmTag = document.createElement("div");
         pmTag.innerHTML = "<b>All Day:</b> WFH";
 
-        pmTag.classList.add(...tagStyle, "border-teal-700");
-        pmTag.style.backgroundColor = "#e7fbfb";
+        pmTag.classList.add(...tagStyles, "bg-teal-100/40", "border-teal-700");
 
         parentTag.appendChild(pmTag);
         button.appendChild(parentTag);
