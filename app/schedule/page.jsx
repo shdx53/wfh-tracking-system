@@ -5,8 +5,6 @@ import { useState } from "react";
 
 // Component
 import { Calendar } from "@/components/ui/calendar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import EmployeeCard from "../components/schedule/EmployeeCard";
 import {
   Select,
   SelectContent,
@@ -14,6 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import EmployeeCard from "../components/schedule/EmployeeCard";
 
 export default function Schedule() {
   // Initialize date to current date
@@ -50,7 +50,6 @@ export default function Schedule() {
       <header className="flex flex-col gap-3 py-8">
         <h1 className="text-2xl font-bold">Schedule</h1>
         <div className="flex gap-4">
-          {/* Team filter */}
           <Select>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Team" />
@@ -59,18 +58,6 @@ export default function Schedule() {
               <SelectItem value="Team1">Team1</SelectItem>
               <SelectItem value="Team2">Team2</SelectItem>
               <SelectItem value="Team3">Team3</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Department filter */}
-          <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Department" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Department1">Department1</SelectItem>
-              <SelectItem value="Department2">Department2</SelectItem>
-              <SelectItem value="Department3">Department3</SelectItem>
             </SelectContent>
           </Select>
         </div>
