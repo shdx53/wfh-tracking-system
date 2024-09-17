@@ -40,7 +40,7 @@ export default function OverallSchedule() {
         {/* Employee Cards */}
         <EmployeeCard type="AM" />
         <EmployeeCard type="PM" />
-        <EmployeeCard type="Full Day" />
+        <EmployeeCard type="All Day" />
       </>
     );
   }
