@@ -15,7 +15,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EmployeeCard from "../components/schedule/EmployeeCard";
 
-export default function Schedule() {
+export default function OverallSchedule() {
   // Initialize date to current date
   const [date, setDate] = useState(new Date().toString());
 

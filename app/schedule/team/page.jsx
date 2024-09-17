@@ -8,7 +8,7 @@ import EmployeeCard from "@/app/components/schedule/EmployeeCard";
 import { Calendar } from "@/components/ui/calendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export default function Schedule() {
+export default function TeamSchedule() {
   // Initialize date to current date
   const [date, setDate] = useState(new Date().toString());
 
