@@ -27,11 +27,10 @@ export default function OwnSchedule() {
     // Define tag base styles
     const parentTagStyles = [
       "hidden",
-      "lg:block",
       "absolute",
       "inset-x-4",
       "bottom-4",
-      "flex",
+      "lg:flex",
       "flex-col",
       "gap-2",
       "text-[10px]",
