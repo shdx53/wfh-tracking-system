@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 // Component
 import { BigCalendar } from "@/components/ui/BigCalendar";
 import { Calendar } from "@/components/ui/calendar";
+import ScheduleCard from "@/app/components/schedule/ScheduleCard";
 
 export default function OwnSchedule() {
   // Initialize date to current date
@@ -37,7 +38,13 @@ export default function OwnSchedule() {
       "xl:text-sm",
       "text-black",
     ];
-    const tagStyles = ["xl:py-1", "px-2", "rounded-md", "border-l-8", "text-left"];
+    const tagStyles = [
+      "xl:py-1",
+      "px-2",
+      "rounded-md",
+      "border-l-8",
+      "text-left",
+    ];
 
     const buttons = document.querySelectorAll("button");
 
@@ -61,7 +68,11 @@ export default function OwnSchedule() {
         const pmTag = document.createElement("div");
         pmTag.innerHTML = "<b>PM:</b> Leave";
 
-        pmTag.classList.add(...tagStyles, "bg-indigo-100/40", "border-indigo-700");
+        pmTag.classList.add(
+          ...tagStyles,
+          "bg-indigo-100/40",
+          "border-indigo-700",
+        );
         pmTag.style.backgroundColor = "#fafaff";
 
         parentTag.appendChild(pmTag);
@@ -75,7 +86,11 @@ export default function OwnSchedule() {
         const allDayTag = document.createElement("div");
         allDayTag.innerHTML = "<b>All Day:</b> WFH";
 
-        allDayTag.classList.add(...tagStyles, "bg-teal-100/40", "border-teal-700");
+        allDayTag.classList.add(
+          ...tagStyles,
+          "bg-teal-100/40",
+          "border-teal-700",
+        );
         allDayTag.style.backgroundColor = "#fafaff";
 
         parentTag.appendChild(allDayTag);
@@ -98,7 +113,7 @@ export default function OwnSchedule() {
           className="rounded-lg border p-6 sm:p-8 md:w-1/2 md:p-6 lg:hidden lg:p-8"
         />
 
-        {/* >= 1024 */}
+        {/* >= 1024px */}
         <BigCalendar
           mode="single"
           selected={date}
@@ -108,12 +123,17 @@ export default function OwnSchedule() {
           setIndex={setIndex}
         />
 
-        {/* <section className="my-8 rounded-lg border p-6 sm:p-8 md:my-0 md:w-1/2 md:p-6 lg:p-8">
+        <section className="my-8 flex flex-col gap-6 rounded-lg border p-6 sm:p-8 md:my-0 md:w-1/2 md:p-6 lg:hidden lg:p-8">
           <h2 className="text-xl font-semibold">
             <div>Schedule for </div>
             <div>{formattedDate}</div>
           </h2>
-        </section> */}
+
+          <div className="flex flex-col gap-4">
+            <ScheduleCard page="own" type="AM" arrangement="Work-From-Home" />
+            <ScheduleCard page="own" type="PM" arrangement="Leave" />
+          </div>
+        </section>
       </main>
     </div>
   );
