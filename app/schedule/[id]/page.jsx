@@ -26,6 +26,8 @@ export default function OwnSchedule() {
     /* Add schedule to calendar */
     // Define tag base styles
     const parentTagStyles = [
+      "hidden",
+      "lg:block",
       "absolute",
       "inset-x-4",
       "bottom-4",
