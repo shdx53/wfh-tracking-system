@@ -51,6 +51,7 @@ export default function OwnSchedule() {
         amTag.innerHTML = "<b>AM:</b> WFH";
 
         amTag.classList.add(...tagStyles, "bg-blue-100/40", "border-blue-700");
+        amTag.style.backgroundColor = "#fafaff";
 
         parentTag.appendChild(amTag);
         button.appendChild(parentTag);
@@ -69,13 +70,14 @@ export default function OwnSchedule() {
         const parentTag = document.createElement("div");
         parentTag.classList.add(...parentTagStyles);
 
-        // Full Day Tag
-        const pmTag = document.createElement("div");
-        pmTag.innerHTML = "<b>All Day:</b> WFH";
+        // All Day Tag
+        const allDayTag = document.createElement("div");
+        allDayTag.innerHTML = "<b>All Day:</b> WFH";
 
-        pmTag.classList.add(...tagStyles, "bg-teal-100/40", "border-teal-700");
+        allDayTag.classList.add(...tagStyles, "bg-teal-100/40", "border-teal-700");
+        allDayTag.style.backgroundColor = "#fafaff";
 
-        parentTag.appendChild(pmTag);
+        parentTag.appendChild(allDayTag);
         button.appendChild(parentTag);
       }
     });
