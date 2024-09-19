@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ScheduleCard from "../components/schedule/ScheduleCard";
+import ArrangementCard from "../components/schedule/ArrangementCard";
 
 export default function OverallSchedule() {
   // Initialize date to current date
@@ -37,10 +37,10 @@ export default function OverallSchedule() {
           <div className="text-3xl font-medium">10</div>
         </div>
 
-        {/* Employee Cards */}
-        <ScheduleCard page="overall" type="AM" />
-        <ScheduleCard page="overall" type="PM" />
-        <ScheduleCard page="overall" type="All Day" />
+        {/* Arrangements */}
+        <ArrangementCard page="overall" type="AM" />
+        <ArrangementCard page="overall" type="PM" />
+        <ArrangementCard page="overall" type="All Day" />
       </>
     );
   }

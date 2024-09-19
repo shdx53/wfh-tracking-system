@@ -1,4 +1,4 @@
-export default function ScheduleCard({ page, type, arrangement }) {
+export default function ArrangementCard({ page, type, arrangement }) {
   const classStyles = {
     AM: "bg-blue-100/40 border-blue-700",
     PM: "bg-indigo-100/40 border-indigo-700",

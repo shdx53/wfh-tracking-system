@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 // Component
 import { BigCalendar } from "@/components/ui/BigCalendar";
 import { Calendar } from "@/components/ui/calendar";
-import ScheduleCard from "@/app/components/schedule/ScheduleCard";
+import ArrangementCard from "@/app/components/schedule/ArrangementCard";
 
 export default function OwnSchedule() {
   // Initialize date to current date
@@ -130,8 +130,8 @@ export default function OwnSchedule() {
           </h2>
 
           <div className="flex flex-col gap-4">
-            <ScheduleCard page="own" type="AM" arrangement="Work-From-Home" />
-            <ScheduleCard page="own" type="PM" arrangement="Leave" />
+            <ArrangementCard page="own" type="AM" arrangement="Work-From-Home" />
+            <ArrangementCard page="own" type="PM" arrangement="Leave" />
           </div>
         </section>
       </main>
