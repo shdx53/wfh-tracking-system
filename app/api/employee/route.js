@@ -1,4 +1,4 @@
-import connection from "@/libs/db";
+import connection from "@/lib/db";
 import { NextResponse } from "next/server";
 
 // Example endpoint to fetch all records from the employee table
@@ -10,7 +10,7 @@ export async function GET() {
     // Get a connection from the pool
     const conn = await pool.getConnection();
 
-    // Execute the query 
+    // Execute the query
     const [data] = await conn.query("SELECT * FROM Employee LIMIT 10");
 
     // Release the connection back to the pool

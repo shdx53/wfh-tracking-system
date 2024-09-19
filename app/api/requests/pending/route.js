@@ -1,4 +1,4 @@
-import connection from "../../../../libs/db";
+import connection from "../../../../lib/db";
 import { NextResponse } from "next/server";
 
 // API Endpoint: api/requests/pending?staffID=Staff_ID
@@ -14,10 +14,13 @@ export async function GET(request) {
 
     // Get Staff_ID input from the request
     const searchParams = request.nextUrl.searchParams;
-    const staffID = searchParams.get('staffID');
+    const staffID = searchParams.get("staffID");
 
     // Execute the query
-    const [data] = await conn.query("SELECT * FROM Arrangement WHERE Staff_ID = ? AND Request_Status = 'pending'", [staffID]);
+    const [data] = await conn.query(
+      "SELECT * FROM Arrangement WHERE Staff_ID = ? AND Request_Status = 'pending'",
+      [staffID],
+    );
 
     // Release the connection back to the pool
     conn.release();
