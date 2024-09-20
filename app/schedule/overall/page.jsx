@@ -21,9 +21,13 @@ export default function OverallSchedule() {
 
   // Format date for display on the UI
   const dateObj = new Date(date);
-  const dateParts = dateObj.toDateString().split(" ");
-  const formattedDate = `${dateParts[0]}, ${dateParts[1]} ${dateParts[2]}, ${dateParts[3]}`;
-  
+  const formattedDate = dateObj.toLocaleDateString("en-US", {
+    weekday: "short", // e.g., Mon
+    month: "short", // e.g., Sep
+    day: "2-digit", // e.g., 16
+    year: "numeric", // e.g., 2024
+  });
+
   function renderTabContent() {
     return (
       <>
@@ -73,7 +77,7 @@ export default function OverallSchedule() {
             <div>{formattedDate}</div>
           </h2>
 
-          {/* <Tabs defaultValue="In-Office" className="pt-4">
+          <Tabs defaultValue="In-Office" className="pt-4">
             <TabsList className="">
               <TabsTrigger value="In-Office">In-Office</TabsTrigger>
               <TabsTrigger value="Work-From-Home" className="sm:hidden">
@@ -85,21 +89,21 @@ export default function OverallSchedule() {
               <TabsTrigger value="Leave">Leave</TabsTrigger>
             </TabsList>
 
-            In-Office Tab
+            {/* In-Office Tab */}
             <TabsContent value="In-Office" className="flex flex-col gap-4">
               {renderTabContent()}
             </TabsContent>
 
-            Work-From-Home Tab
+            {/* Work-From-Home Tab */}
             <TabsContent value="Work-From-Home" className="flex flex-col gap-4">
               {renderTabContent()}
             </TabsContent>
 
-            Leave Tab
+            {/* Leave Tab */}
             <TabsContent value="Leave" className="flex flex-col gap-4">
               {renderTabContent()}
             </TabsContent>
-          </Tabs> */}
+          </Tabs>
         </section>
       </main>
     </div>
