@@ -199,6 +199,10 @@ function PersonalScheduleContent() {
     <div className="mx-auto max-w-lg sm:max-w-xl md:max-w-none">
       <header className="flex flex-col gap-3 py-8">
         <h1 className="text-2xl font-bold">My Schedule</h1>
+        <div className="text-sm text-black/50">
+          <span className="italic">Note:</span>
+          <span> If you have pending Work-From-Home requests, they will appear greyed out.</span>
+        </div>
       </header>
 
       <main className="items-start md:flex md:gap-4 lg:gap-8">
