@@ -71,13 +71,13 @@ export default function OverallSchedule() {
           className="rounded-lg border p-6 sm:p-8 md:w-1/2 md:p-6 lg:p-8"
         />
 
-        {/* <section className="my-8 rounded-lg border p-6 sm:p-8 md:my-0 md:w-1/2 md:p-6 lg:p-8">
+        <section className="my-8 rounded-lg border p-6 sm:p-8 md:my-0 md:w-1/2 md:p-6 lg:p-8">
           <h2 className="text-xl font-semibold">
             <div>Schedule for </div>
             <div>{formattedDate}</div>
           </h2>
 
-          <Tabs defaultValue="In-Office" className="pt-4">
+          {/* <Tabs defaultValue="In-Office" className="pt-4">
             <TabsList className="">
               <TabsTrigger value="In-Office">In-Office</TabsTrigger>
               <TabsTrigger value="Work-From-Home" className="sm:hidden">
@@ -103,8 +103,8 @@ export default function OverallSchedule() {
             <TabsContent value="Leave" className="flex flex-col gap-4">
               {renderTabContent()}
             </TabsContent>
-          </Tabs>
-        </section> */}
+          </Tabs> */}
+        </section>
       </main>
     </div>
   );
