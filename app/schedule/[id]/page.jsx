@@ -4,9 +4,9 @@
 import { useEffect, useState } from "react";
 
 // Component
-import { BigCalendar } from "@/components/ui/BigCalendar";
+import { BigCalendar } from "@/components/ui/big-calendar";
 import { Calendar } from "@/components/ui/calendar";
-import ArrangementCard from "@/app/components/schedule/ArrangementCard";
+import ArrangementCard from "@/app/components/schedule/arrangement-card";
 
 export default function OwnSchedule() {
   // Initialize date to current date
@@ -130,7 +130,11 @@ export default function OwnSchedule() {
           </h2>
 
           <div className="flex flex-col gap-4">
-            <ArrangementCard page="own" type="AM" arrangement="Work-From-Home" />
+            <ArrangementCard
+              page="own"
+              type="AM"
+              arrangement="Work-From-Home"
+            />
             <ArrangementCard page="own" type="PM" arrangement="Leave" />
           </div>
         </section>
