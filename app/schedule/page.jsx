@@ -38,9 +38,9 @@ export default function OverallSchedule() {
         </div>
 
         {/* Arrangements */}
-        <ArrangementCard page="overall" type="AM" />
-        <ArrangementCard page="overall" type="PM" />
-        <ArrangementCard page="overall" type="All Day" />
+        <ArrangementCard page="overall" type="AM" status="approved" />
+        <ArrangementCard page="overall" type="PM" status="approved" />
+        <ArrangementCard page="overall" type="All Day" status="approved" />
       </>
     );
   }

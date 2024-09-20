@@ -12,6 +12,8 @@ function BigCalendar({
   showOutsideDays = false,
   index,
   setIndex,
+  date,
+  setDate,
   ...props
 }) {
   return (
@@ -54,9 +56,37 @@ function BigCalendar({
       }}
       components={{
         IconLeft: ({ ...props }) => (
-          <ChevronLeft onClick={() => { setIndex((prevIndex) => prevIndex -1 ) }} className="h-4 w-4" />
+          <ChevronLeft
+            onClick={() => {
+              // Re-render arrangement tags
+              setIndex((prevIndex) => prevIndex - 1);
+
+              // Set the currently displayed month
+              setDate((prevDate) => {
+                const prevDateObj = new Date(prevDate);
+                prevDateObj.setMonth(prevDateObj.getMonth() - 1);
+                setDate(prevDateObj);
+              });
+            }}
+            className="h-full w-full p-2"
+          />
         ),
-        IconRight: ({ ...props }) => <ChevronRight onClick={() => { setIndex((prevIndex) => prevIndex + 1 ) }} className="h-4 w-4" />,
+        IconRight: ({ ...props }) => (
+          <ChevronRight
+            onClick={() => {
+              // Re-render arrangement tags
+              setIndex((prevIndex) => prevIndex + 1);
+
+              // Set the currently displayed month
+              setDate((prevDate) => {
+                const prevDateObj = new Date(prevDate);
+                prevDateObj.setMonth(prevDateObj.getMonth() + 1);
+                setDate(prevDateObj);
+              });
+            }}
+            className="h-full w-full p-2"
+          />
+        ),
       }}
       {...props}
     />
