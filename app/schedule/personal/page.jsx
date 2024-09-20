@@ -2,8 +2,8 @@
 
 // Library
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 // Component
 import ArrangementCard from "@/app/components/schedule/arrangement-card";
@@ -138,9 +138,17 @@ function renderArrangementTags(arrangements, formattedDate) {
 }
 
 export default function PersonalSchedule() {
+  return (
+    <Suspense fallback={<div>Loading schedule...</div>}>
+      <PersonalScheduleContent />
+    </Suspense>
+  );
+}
+
+function PersonalScheduleContent() {
   // Get staff ID from query params
-  const searchParams = useSearchParams()
-  const staffID = searchParams.get('staffID')
+  const searchParams = useSearchParams();
+  const staffID = searchParams.get("staffID");
 
   // Initialize date to current date
   const [date, setDate] = useState(new Date().toString());
