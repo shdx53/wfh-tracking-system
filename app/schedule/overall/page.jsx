@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ArrangementCard from "../components/schedule/arrangement-card";
+import ArrangementCard from "@/app/components/schedule/arrangement-card";
 
 export default function OverallSchedule() {
   // Initialize date to current date
@@ -71,7 +71,7 @@ export default function OverallSchedule() {
           className="rounded-lg border p-6 sm:p-8 md:w-1/2 md:p-6 lg:p-8"
         />
 
-        <section className="my-8 rounded-lg border p-6 sm:p-8 md:my-0 md:w-1/2 md:p-6 lg:p-8">
+        {/* <section className="my-8 rounded-lg border p-6 sm:p-8 md:my-0 md:w-1/2 md:p-6 lg:p-8">
           <h2 className="text-xl font-semibold">
             <div>Schedule for </div>
             <div>{formattedDate}</div>
@@ -89,22 +89,22 @@ export default function OverallSchedule() {
               <TabsTrigger value="Leave">Leave</TabsTrigger>
             </TabsList>
 
-            {/* In-Office Tab */}
+            In-Office Tab
             <TabsContent value="In-Office" className="flex flex-col gap-4">
               {renderTabContent()}
             </TabsContent>
 
-            {/* Work-From-Home Tab */}
+            Work-From-Home Tab
             <TabsContent value="Work-From-Home" className="flex flex-col gap-4">
               {renderTabContent()}
             </TabsContent>
 
-            {/* Leave Tab */}
+            Leave Tab
             <TabsContent value="Leave" className="flex flex-col gap-4">
               {renderTabContent()}
             </TabsContent>
           </Tabs>
-        </section>
+        </section> */}
       </main>
     </div>
   );
