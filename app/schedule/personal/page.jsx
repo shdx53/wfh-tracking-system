@@ -62,7 +62,6 @@ const parentTagStyles = [
 const tagStyles = ["xl:py-1", "px-2", "rounded-md", "border-l-8", "text-left"];
 
 function renderArrangementTags(arrangements, formattedDate) {
-  console.log(arrangements);
   return arrangements.map((arrangement) => {
     const startDate = arrangement.Start_Date;
     const startDateObj = new Date(startDate);
@@ -138,7 +137,7 @@ function renderArrangementTags(arrangements, formattedDate) {
 
 export default function PersonalSchedule() {
   return (
-    <Suspense fallback={<div>Loading schedule...</div>}>
+    <Suspense>
       <PersonalScheduleContent />
     </Suspense>
   );
@@ -179,8 +178,8 @@ function PersonalScheduleContent() {
     pendingArrangements &&
     pendingArrangements.map((arrangement) => {
       return {
-        ...arrangement, 
-        Request_Status: "pending", 
+        ...arrangement,
+        Request_Status: "pending",
       };
     });
 
