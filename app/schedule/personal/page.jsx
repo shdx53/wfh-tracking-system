@@ -173,7 +173,8 @@ function PersonalScheduleContent() {
   const isPendingArrangementsPending = pendingArrangementsQuery.isPending;
   const isPendingArrangementsError = pendingArrangementsQuery.isError;
 
-  // Add Request_Status field if pendingArrangements is not undefined
+  // Add Request_Status field to differentiate approved arrangements
+  // from pending arrangemeents if pendingArrangements is not undefined
   pendingArrangements =
     pendingArrangements &&
     pendingArrangements.map((arrangement) => {
@@ -187,6 +188,7 @@ function PersonalScheduleContent() {
   const arrangements = approvedArrangements &&
     pendingArrangements && [...approvedArrangements, ...pendingArrangements];
 
+  // Render arrangement cards if arrangements is not undefined
   const arrangementCards = arrangements
     ? renderArrangementCards(arrangements, formattedDate)
     : null;
