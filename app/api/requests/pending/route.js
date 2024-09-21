@@ -18,7 +18,7 @@ export async function GET(request) {
 
     // Execute the query
     const [data] = await conn.query(
-      "SELECT * FROM Arrangement WHERE Staff_ID = ? AND Request_Status = 'pending'",
+      "SELECT Start_Date, Shift_Type FROM Arrangement WHERE Staff_ID = ? AND Request_Status = 'pending'",
       [staffID],
     );
 
