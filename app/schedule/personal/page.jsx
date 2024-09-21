@@ -32,17 +32,15 @@ function filterArrangements(arrangements, selectedDate) {
 
 function renderArrangementCards(arrangements, selectedDate) {
   const filteredArrangements = filterArrangements(arrangements, selectedDate);
-  return filteredArrangements.map((arrangement) => {
+  return filteredArrangements.map((arrangement, index) => {
     const arrangementID = arrangement.Arrangement_ID;
     const shiftType = arrangement.Shift_Type;
-    const requestStatus = arrangement.Request_Status;
     return (
       <ArrangementCard
-        key={arrangementID}
+        key={index}
         page="personal"
         type={shiftType === "Full Day" ? "All Day" : shiftType}
         arrangement="Work-From-Home"
-        status={requestStatus}
       />
     );
   });
@@ -64,6 +62,7 @@ const parentTagStyles = [
 const tagStyles = ["xl:py-1", "px-2", "rounded-md", "border-l-8", "text-left"];
 
 function renderArrangementTags(arrangements, formattedDate) {
+  console.log(arrangements);
   return arrangements.map((arrangement) => {
     const startDate = arrangement.Start_Date;
     const startDateObj = new Date(startDate);
@@ -170,9 +169,19 @@ function PersonalScheduleContent() {
     queryKey: ["pending arrangements", { staffID: staffID }],
     queryFn: ({ queryKey }) => fetchArrangements(queryKey[1], "pending"),
   });
-  const pendingArrangements = pendingArrangementsQuery.data;
+  let pendingArrangements = pendingArrangementsQuery.data;
   const isPendingArrangementsPending = pendingArrangementsQuery.isPending;
   const isPendingArrangementsError = pendingArrangementsQuery.isError;
+
+  // Add Request_Status field if pendingArrangements is not undefined
+  pendingArrangements =
+    pendingArrangements &&
+    pendingArrangements.map((arrangement) => {
+      return {
+        ...arrangement, 
+        Request_Status: "pending", 
+      };
+    });
 
   // Combine approvedArrangements and pendingArrangements if neither is undefined
   const arrangements = approvedArrangements &&
@@ -201,7 +210,11 @@ function PersonalScheduleContent() {
         <h1 className="text-2xl font-bold">My Schedule</h1>
         <div className="text-sm text-black/50">
           <span className="italic">Note:</span>
-          <span> If you have pending Work-From-Home requests, they will appear greyed out.</span>
+          <span>
+            {" "}
+            If you have pending Work-From-Home requests, they will appear greyed
+            out.
+          </span>
         </div>
       </header>
 
