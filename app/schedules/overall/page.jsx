@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ArrangementCard from "@/app/components/schedule/arrangement-card";
+import ArrangementCard from "@/components/schedule/arrangement-card";
 
 export default function OverallSchedule() {
   // Initialize date to current date

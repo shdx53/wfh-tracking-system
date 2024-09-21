@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 
 // Component
-import ArrangementCard from "@/app/components/schedule/arrangement-card";
+import ArrangementCard from "@/components/schedule/arrangement-card";
 import { BigCalendar } from "@/components/ui/big-calendar";
 import { Calendar } from "@/components/ui/calendar";
 import fetchArrangements from "./fetch-arrangements";
