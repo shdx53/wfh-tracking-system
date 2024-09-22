@@ -1,6 +1,7 @@
 import connection from "@/lib/db";
 import { NextResponse } from "next/server";
-import { addDays, addWeeks, addMonths } from "date-fns"; // date-fns to manipulate dates
+import { addDays, addWeeks, addMonths, differenceInHours } from "date-fns"; 
+// date-fns for time calculations
 
 // API Endpoint: api/arrangement
 // Sample JSON Data:
@@ -18,7 +19,6 @@ import { addDays, addWeeks, addMonths } from "date-fns"; // date-fns to manipula
   "Update_Reason": null,
   "Shift_Type": "AM"
 } */
-
 
 // Handle POST request to add a work-from-home arrangement
 export async function POST(request) {
@@ -41,7 +41,21 @@ export async function POST(request) {
       Shift_Type,
     } = await request.json();
 
-    // Helper function to calculate next occurrence date
+    // Step 1: Validate that the WFH request is at least 24 hours before the WFH date
+    const currentDateTime = new Date();
+    const requestedWFHDate = new Date(Start_Date);
+
+    if (differenceInHours(requestedWFHDate, currentDateTime) < 24) {
+      // Reject the request if it's less than 24 hours in the future
+      return NextResponse.json(
+        {
+          error: "WFH requests must be submitted at least 24 hours in advance.",
+        },
+        { status: 400 },
+      );
+    }
+
+    // Step 2: Helper function to calculate next occurrence date
     const calculateNextDate = (startDate, frequency, count) => {
       switch (frequency) {
         case "daily":
@@ -55,14 +69,14 @@ export async function POST(request) {
       }
     };
 
-    // Prepare base query for inserting arrangements
+    // Step 3: Prepare base query for inserting arrangements
     const query = `
       INSERT INTO Arrangement 
       (Arrangement_ID, Staff_ID, Request_Status, Applied_Datetime, Start_Date, Recurring, Recurring_Freq, Occurrences_Count, End_Date, Apply_Reason, Update_Reason, Shift_Type)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    // Non-recurring case: just insert one arrangement
+    // Step 4: Non-recurring case: just insert one arrangement
     if (!Recurring) {
       await conn.execute(query, [
         Arrangement_ID || null, // Auto-increment
@@ -79,7 +93,7 @@ export async function POST(request) {
         Shift_Type,
       ]);
     } else {
-      // Recurring case: insert multiple records based on frequency and count/end date
+      // Step 5: Recurring case: insert multiple records based on frequency and count/end date
       const startDate = new Date(Start_Date);
       let count = 0;
       let occurrenceDate = startDate;
@@ -140,7 +154,7 @@ export async function POST(request) {
       }
     }
 
-    // Release connection back to pool
+    // Step 6: Release connection back to pool
     conn.release();
 
     return NextResponse.json(
