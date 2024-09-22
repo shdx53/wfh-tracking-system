@@ -28,7 +28,6 @@ import DateField from "./date-field";
 export default function ArrangementForm() {
   const [selectedArrangementType, setSelectedArrangementType] = useState(undefined);
 
-
   const form = useForm({
     // Dynamically get the schema based on the arrangement type
     resolver: zodResolver(
