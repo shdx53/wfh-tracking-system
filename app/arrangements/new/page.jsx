@@ -10,7 +10,7 @@ export default function NewArrangement() {
       </div>
       <img
         src="/images/nubelson-fernandes-Y9V-pKSy0fw-unsplash.jpg"
-        alt=""
+        alt="A white desk featuring a laptop and a chair, creating a clean and modern workspace environment."
         className="hidden w-1/2 md:block object-cover"
       />
     </div>
