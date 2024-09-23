@@ -2,21 +2,24 @@ import { z } from "zod";
 
 // Base schema
 const baseSchema = z.object({
-  "arrangement-type": z.enum(["Ad-hoc", "Recurring"], {
-    required_error: "Required.",
-  }),
-  dates: z
-    .array(
-      z.object({
-        date: z.date({
-          required_error: "Required.",
-        }),
-        shiftType: z.enum(["AM", "PM", "Full Day"], {
-          required_error: "Required.",
-        }),
-      }),
-    )
-    .min(1, { message: "At least one date is required." }),
+  "arrangement-type": z
+    .enum(["Ad-hoc", "Recurring"])
+    .nullable()
+    .refine((value) => value !== null, {
+      message: "Required.",
+    }),
+  "start-date": z
+    .date({})
+    .nullable()
+    .refine((value) => value !== null, {
+      message: "Required.",
+    }),
+  "shift-type": z
+    .enum(["AM", "PM", "Full Day"])
+    .nullable()
+    .refine((value) => value !== null, {
+      message: "Required.",
+    }),
   "apply-reason": z
     .string()
     .max(50, {
@@ -29,9 +32,17 @@ const baseSchema = z.object({
 export const getSchema = (isRecurring) => {
   if (isRecurring) {
     return baseSchema.extend({
-      "recurring-frequency": z.enum(["Weekly", "Monthly"], {
-        required_error: "Required.",
+      "end-date": z
+      .date({})
+      .nullable()
+      .refine((value) => value !== null, {
+        message: "Required.",
       }),
+      "recurring-frequency": z
+        .enum(["Weekly", "Monthly"], {
+          required_error: "Required.",
+        })
+        .nullable(),
     });
   }
   return baseSchema;
