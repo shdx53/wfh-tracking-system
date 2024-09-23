@@ -10,12 +10,11 @@ import { addDays, addWeeks, addMonths, differenceInHours } from "date-fns";
   "Staff_ID": 150085,
   "Request_Status": "pending",
   "Applied_Datetime": "2024-03-15 10:00:00",
-  "Start_Date": "2024-09-21",
+  "Start_Date": "2024-09-25",
   "Recurring": true,
-  "Recurring_Freq": "weekly",
-  "Occurrences_Count": 4,
-  "End_Date": null,
-  "Apply_Reason": "TESTING AGAINN",
+  "Recurring_Interval": "weekly",
+  "End_Date": "2024-10-25",
+  "Apply_Reason": "TESTING New Code",
   "Update_Reason": null,
   "Shift_Type": "AM"
 } */
@@ -33,8 +32,7 @@ export async function POST(request) {
       Applied_Datetime,
       Start_Date,
       Recurring,
-      Recurring_Freq,
-      Occurrences_Count,
+      Recurring_Interval,
       End_Date,
       Apply_Reason,
       Update_Reason,
@@ -58,8 +56,6 @@ export async function POST(request) {
     // Step 2: Helper function to calculate next occurrence date
     const calculateNextDate = (startDate, frequency, count) => {
       switch (frequency) {
-        case "daily":
-          return addDays(startDate, count);
         case "weekly":
           return addWeeks(startDate, count);
         case "monthly":
@@ -72,8 +68,8 @@ export async function POST(request) {
     // Step 3: Prepare base query for inserting arrangements
     const query = `
       INSERT INTO Arrangement 
-      (Arrangement_ID, Staff_ID, Request_Status, Applied_Datetime, Start_Date, Recurring, Recurring_Freq, Occurrences_Count, End_Date, Apply_Reason, Update_Reason, Shift_Type)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (Arrangement_ID, Staff_ID, Request_Status, Applied_Datetime, Start_Date, Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     // Step 4: Non-recurring case: just insert one arrangement
@@ -85,73 +81,45 @@ export async function POST(request) {
         Applied_Datetime,
         Start_Date,
         Recurring,
-        Recurring_Freq || null,
-        Occurrences_Count || null,
+        Recurring_Interval || null,
         End_Date || null, // Handle null End_Date
         Apply_Reason,
         Update_Reason || null, // Handle null Update_Reason
         Shift_Type,
       ]);
     } else {
-      // Step 5: Recurring case: insert multiple records based on frequency and count/end date
+      // Step 5: Recurring case: insert multiple records based on End_Date
       const startDate = new Date(Start_Date);
       let count = 0;
       let occurrenceDate = startDate;
 
-      // Scenario 1: Use Occurrences_Count to limit the number of entries
-      if (Occurrences_Count) {
-        while (count < Occurrences_Count) {
-          await conn.execute(query, [
-            Arrangement_ID || null,
-            Staff_ID,
-            Request_Status,
-            Applied_Datetime,
-            occurrenceDate.toISOString().split("T")[0], // Format the date as YYYY-MM-DD
-            Recurring,
-            Recurring_Freq,
-            Occurrences_Count,
-            End_Date || null,
-            Apply_Reason,
-            Update_Reason || null,
-            Shift_Type,
-          ]);
-
-          // Calculate next occurrence date
-          occurrenceDate = calculateNextDate(
-            startDate,
-            Recurring_Freq,
-            ++count,
-          );
-        }
-      }
-
       // Scenario 2: Use End_Date to determine how long to keep creating records
-      else if (End_Date) {
-        const endDate = new Date(End_Date);
-        while (occurrenceDate <= endDate) {
-          await conn.execute(query, [
-            Arrangement_ID || null,
-            Staff_ID,
-            Request_Status,
-            Applied_Datetime,
-            occurrenceDate.toISOString().split("T")[0],
-            Recurring,
-            Recurring_Freq,
-            null, // No occurrences count in this case
-            End_Date,
-            Apply_Reason,
-            Update_Reason || null,
-            Shift_Type,
-          ]);
+      const endDate = new Date(End_Date);
 
-          // Calculate next occurrence date
-          occurrenceDate = calculateNextDate(
-            startDate,
-            Recurring_Freq,
-            ++count,
-          );
-        }
+      while (occurrenceDate <= endDate) {
+        await conn.execute(query, [
+          Arrangement_ID || null,
+          Staff_ID,
+          Request_Status,
+          Applied_Datetime,
+          occurrenceDate.toISOString().split("T")[0],
+          Recurring,
+          Recurring_Interval,
+          End_Date,
+          Apply_Reason,
+          Update_Reason || null,
+          Shift_Type,
+        ]);
+
+        // Calculate next occurrence date
+        occurrenceDate = calculateNextDate(
+          startDate,
+          Recurring_Interval,
+          ++count,
+        );
+      
       }
+
     }
 
     // Step 6: Release connection back to pool
