@@ -1,6 +1,6 @@
 import connection from "@/lib/db";
 import { NextResponse } from "next/server";
-import { addDays, addWeeks, addMonths, differenceInHours } from "date-fns"; 
+import { addWeeks, addMonths, differenceInHours } from "date-fns"; 
 // date-fns for time calculations
 
 // API Endpoint: api/arrangement
