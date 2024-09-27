@@ -8,12 +8,12 @@ import { Suspense, useEffect, useRef, useState } from "react";
 // Component
 import { BigCalendar } from "@/components/ui/big-calendar";
 import { Calendar } from "@/components/ui/calendar";
-import fetchArrangements from "../../../lib/schedules/fetch-arrangements";
+import fetchArrangements from "../../../lib/schedules/personal/fetch-arrangements";
 
 // Function
 import { formatDate } from "@/lib/utils";
-import { renderArrangementCards } from "./render-arrangement-cards";
-import { renderArrangementTags } from "./render-arrangement-tags";
+import { renderArrangementCards } from "../../../lib/schedules/personal/render-arrangement-cards";
+import { renderArrangementTags } from "../../../lib/schedules/personal/render-arrangement-tags";
 
 export default function PersonalSchedule() {
   return (
