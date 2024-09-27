@@ -1,4 +1,4 @@
-import connection from "../../../../lib/db";
+import connection from "../../../lib/db";
 import { NextResponse } from "next/server";
 
 // API Endpoint: api/requests/pending?staffID=Staff_ID

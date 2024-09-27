@@ -19,7 +19,7 @@ import AdHocForm from "./ad-hoc-form";
 import RecurringForm from "./recurring-form";
 
 // Schema
-import { getSchema } from "@/schemas/arrangement/base-schema";
+import { getSchema } from "@/app/schemas/arrangement/base-schema";
 
 export default function ArrangementForm() {
   const [selectedArrangementType, setSelectedArrangementType] = useState(null);

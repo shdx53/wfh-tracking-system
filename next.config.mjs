@@ -1,5 +1,5 @@
 // next.config.mjs
-import { startCronJobs } from './lib/cronJobs.mjs';  // Import cron job starter function
+import { startCronJobs } from './app/lib/cronJobs.mjs';  // Import cron job starter function
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

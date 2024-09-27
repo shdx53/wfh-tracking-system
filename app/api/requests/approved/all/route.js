@@ -1,4 +1,4 @@
-import connection from "../../../../../lib/db";
+import connection from "../../../../lib/db";
 import { NextResponse } from "next/server";
 
 // API Endpoint: api/requests/approved/all
@@ -17,7 +17,7 @@ export async function GET(request) {
       `SELECT e.Staff_ID, COALESCE(a.Start_Date, NULL) AS Start_Date, COALESCE(a.Shift_Type, NULL) AS Shift_Type, Request_Status
       FROM Arrangement a
       RIGHT JOIN Employee e
-      ON Request_Status = 'approved' AND a.Staff_ID = e.Staff_ID;`
+      ON Request_Status = 'approved' AND a.Staff_ID = e.Staff_ID;`,
     );
 
     // Release the connection back to the pool

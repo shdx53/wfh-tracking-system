@@ -2,7 +2,7 @@
 import ArrangementCard from "@/components/schedule/arrangement-card";
 
 // Function
-import { formatDate } from "@/lib/utils";
+import { formatDate } from "@/app/lib/utils";
 
 // Filter arrangements that matches selected date
 function filterArrangements(arrangements, selectedDate) {

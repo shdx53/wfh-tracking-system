@@ -1,4 +1,4 @@
-import connection from "@/lib/db";
+import connection from "@/app/lib/db";
 import { NextResponse } from "next/server";
 
 // Example endpoint to fetch all records from the employee table
@@ -12,11 +12,12 @@ export async function GET(request) {
 
     // Get Staff_ID and Team input from the request
     const searchParams = request.nextUrl.searchParams;
-    const team = searchParams.get('team');
-      
+    const team = searchParams.get("team");
+
     // Execute the query for team filter
     // API end point http://localhost:3000/api/requests/team-overall/team-filter?team=HR%20Team
-    const [data] = await conn.query(`
+    const [data] = await conn.query(
+      `
         SELECT Employee.Staff_ID, Employee.Staff_FName, Employee.Staff_LName, Employee.Dept, Employee.Position, Employee.Email, Employee.Reporting_Manager,
         GROUP_CONCAT(Arrangement.Request_Status) AS Request_Status,
         GROUP_CONCAT(Arrangement.Applied_Datetime) AS Applied_Datetime,
@@ -26,7 +27,9 @@ export async function GET(request) {
         RIGHT JOIN Employee ON Employee.Staff_ID = Arrangement.Staff_ID
         WHERE Employee.Position = ?
         GROUP BY Employee.Staff_ID;
-    `,[team]);
+    `,
+      [team],
+    );
 
     // Release the connection back to the pool
     conn.release();
@@ -37,5 +40,3 @@ export async function GET(request) {
     return NextResponse.json(error, { status: 500 });
   }
 }
-
-

@@ -1,4 +1,4 @@
-import Providers from "@/lib/query-provider";
+import Providers from "@/app/lib/query-provider";
 import "./globals.css";
 
 export const metadata = {

@@ -1,4 +1,4 @@
-import connection from "../../../../../lib/db";
+import connection from "../../../../lib/db";
 import { NextResponse } from "next/server";
 
 // API Endpoint: api/requests/team/my?staffID=Staff_ID
@@ -14,11 +14,11 @@ export async function GET(request) {
 
     // Get Staff_ID input from the request
     const searchParams = request.nextUrl.searchParams;
-    const staffID = searchParams.get('staffID');
+    const staffID = searchParams.get("staffID");
 
     // Execute the query
     const [data] = await conn.query(
-    `SELECT e.Staff_ID, COALESCE(a.Start_Date, NULL) AS Start_Date, COALESCE(a.Shift_Type, NULL) AS Shift_Type, e.Position
+      `SELECT e.Staff_ID, COALESCE(a.Start_Date, NULL) AS Start_Date, COALESCE(a.Shift_Type, NULL) AS Shift_Type, e.Position
     FROM Employee e
     LEFT JOIN Arrangement a 
     ON e.Staff_ID = a.Staff_ID 
@@ -34,8 +34,10 @@ export async function GET(request) {
     (SELECT e2.Staff_ID
     FROM Employee e1
     INNER JOIN Employee e2
-    ON e1.Position = e2.Position AND e1.Reporting_Manager = e2.Reporting_Manager AND e1.Position != "Director" AND e1.Position != "MD" AND e1.Staff_ID = ?);`, [staffID, staffID]);
- 
+    ON e1.Position = e2.Position AND e1.Reporting_Manager = e2.Reporting_Manager AND e1.Position != "Director" AND e1.Position != "MD" AND e1.Staff_ID = ?);`,
+      [staffID, staffID],
+    );
+
     // Release the connection back to the pool
     conn.release();
 

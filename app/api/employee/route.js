@@ -1,4 +1,4 @@
-import connection from "@/lib/db";
+import connection from "@/app/lib/db";
 import { NextResponse } from "next/server";
 
 // Example endpoint to fetch all records from the employee table

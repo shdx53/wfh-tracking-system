@@ -1,9 +1,8 @@
-import connection from "@/lib/db";
+import connection from "@/app/lib/db";
 import { NextResponse } from "next/server";
-import { addWeeks, addMonths, differenceInHours } from "date-fns"; 
+import { addWeeks, addMonths, differenceInHours } from "date-fns";
 // date-fns for time calculations
-import { sendNotification } from "@/lib/notificationService.js";
-
+import { sendNotification } from "@/app/lib/notificationService.js";
 
 // API Endpoint: api/arrangement
 // Sample JSON Data:
@@ -119,9 +118,7 @@ export async function POST(request) {
           Recurring_Interval,
           ++count,
         );
-      
       }
-
     }
 
     // Release connection back to pool
@@ -131,8 +128,7 @@ export async function POST(request) {
     const managerEmail = "manager@example.com"; // Replace with actual email
 
     const subject = "New WFH Request Submitted";
-    const body = 
-    `Dear Manager/Director,\n\n
+    const body = `Dear Manager/Director,\n\n
     A new work-from-home arrangement has been submitted:\n\n
     Staff ID: ${Staff_ID}\n
     Start Date: ${Start_Date}\n
@@ -154,5 +150,3 @@ export async function POST(request) {
     );
   }
 }
-
-
