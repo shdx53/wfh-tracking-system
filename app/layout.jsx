@@ -1,4 +1,10 @@
+// Library
 import Providers from "@/app/lib/query-provider";
+
+// Component
+import { Toaster } from "@/components/ui/toaster";
+
+// Style
 import "./globals.css";
 
 export const metadata = {
@@ -14,6 +20,7 @@ export default function RootLayout({ children }) {
           <Providers>
             <nav className="py-8">Nav placeholder</nav>
             {children}
+            <Toaster />
           </Providers>
         </div>
       </body>

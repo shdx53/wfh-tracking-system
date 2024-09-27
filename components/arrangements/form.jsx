@@ -2,6 +2,7 @@
 
 // Library
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -15,11 +16,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useToast } from "@/hooks/use-toast";
 import AdHocForm from "./ad-hoc-form";
 import RecurringForm from "./recurring-form";
 
 // Schema
 import { getSchema } from "@/app/schemas/arrangement/base-schema";
+
+// Action
+import { newArrangement } from "@/app/actions/newArrangement";
 
 export default function ArrangementForm() {
   const [selectedArrangementType, setSelectedArrangementType] = useState(null);
@@ -28,17 +33,37 @@ export default function ArrangementForm() {
     // Dynamically get the schema based on the arrangement type
     resolver: zodResolver(getSchema(selectedArrangementType === "Recurring")),
     defaultValues: {
-      "arrangement-type": null,
-      "start-date": null,
-      "end-date": null,
-      "shift-type": null,
-      "apply-reason": "",
-      "recurring-frequency": null,
+      arrangementType: null,
+      startDate: null,
+      endDate: null,
+      shiftType: null,
+      applyReason: "",
+      recurringFrequency: null,
     },
   });
 
-  function onSubmit(data) {
-    console.log(data);
+  const router = useRouter();
+  const { toast } = useToast();
+  const [isPending, setIsPending] = useState(false);
+
+  async function onSubmit(data) {
+    const staffID = 9999; // Hardcoded. To be changed.
+    const updatedDate = {
+      ...data,
+      staffID,
+    };
+
+    setIsPending(true);
+    const result = await newArrangement(updatedDate);
+    setIsPending(false);
+
+    toast({
+      description: result.message,
+    });
+
+    if (result.message === "Arrangement(s) added successfully") {
+      router.push("/");
+    } 
   }
 
   return (
@@ -47,7 +72,7 @@ export default function ArrangementForm() {
         {/* Arrangement type field */}
         <FormField
           control={form.control}
-          name="arrangement-type"
+          name="arrangementType"
           render={({ field }) => (
             <FormItem className="space-y-2">
               <FormLabel>Please select an arrangement type</FormLabel>
@@ -63,8 +88,8 @@ export default function ArrangementForm() {
                     // Reset dates to keep only the first one
                     form.reset({
                       ...currentValues, // Retain other field values
-                      "end-date": null,
-                      "recurring-frequency": null,
+                      endDate: null,
+                      recurringFrequency: null,
                     });
                   }}
                   defaultValue={field.value}
@@ -89,11 +114,14 @@ export default function ArrangementForm() {
           )}
         />
 
-        {selectedArrangementType === "Ad-hoc" && <AdHocForm form={form} />}
+        {selectedArrangementType === "Ad-hoc" && (
+          <AdHocForm form={form} isPending={isPending} />
+        )}
         {selectedArrangementType === "Recurring" && (
           <RecurringForm
             form={form}
             selectedArrangementType={selectedArrangementType}
+            isPending={isPending}
           />
         )}
       </form>

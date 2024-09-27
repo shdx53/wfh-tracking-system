@@ -27,13 +27,13 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { CalendarIcon } from "lucide-react";
 
-export default function AdHocForm({ form }) {
+export default function AdHocForm({ form, isPending }) {
   return (
     <>
       {/* Start date field */}
       <FormField
         control={form.control}
-        name="start-date"
+        name="startDate"
         render={({ field }) => (
           <FormItem className="flex flex-col">
             <FormLabel>Start date</FormLabel>
@@ -79,7 +79,7 @@ export default function AdHocForm({ form }) {
       {/* Shift type field */}
       <FormField
         control={form.control}
-        name="shift-type"
+        name="shiftType"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Shift</FormLabel>
@@ -107,7 +107,7 @@ export default function AdHocForm({ form }) {
       {/* Text area field */}
       <FormField
         control={form.control}
-        name="apply-reason"
+        name="applyReason"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Apply reason</FormLabel>
@@ -124,7 +124,7 @@ export default function AdHocForm({ form }) {
       />
 
       {/* Submit */}
-      <Button type="submit" className="w-full">
+      <Button type="submit" className="w-full" disabled={isPending}>
         Submit
       </Button>
     </>

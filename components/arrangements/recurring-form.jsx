@@ -29,7 +29,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { CalendarIcon } from "lucide-react";
 
-export default function RecurringForm({ form, selectedArrangementType }) {
+export default function RecurringForm({
+  form,
+  selectedArrangementType,
+  isPending,
+}) {
   const [selectedRecurringFrequency, setSelectedRecurringFrequency] =
     useState(null);
 
@@ -38,7 +42,7 @@ export default function RecurringForm({ form, selectedArrangementType }) {
       {/* Recurring frequency field */}
       <FormField
         control={form.control}
-        name="recurring-frequency"
+        name="recurringFrequency"
         render={({ field }) => (
           <FormItem className="flex flex-col gap-2">
             <FormLabel>Please select a recurring interval</FormLabel>
@@ -72,7 +76,7 @@ export default function RecurringForm({ form, selectedArrangementType }) {
       {/* Start date field */}
       <FormField
         control={form.control}
-        name="start-date"
+        name="startDate"
         render={({ field }) => (
           <FormItem className="flex flex-col">
             <FormLabel>Start date</FormLabel>
@@ -99,7 +103,18 @@ export default function RecurringForm({ form, selectedArrangementType }) {
                 <Calendar
                   mode="single"
                   selected={field.value}
-                  onSelect={field.onChange}
+                  onSelect={(value) => {
+                    field.onChange(value);
+
+                    // Get the current values from the form
+                    const currentValues = form.getValues();
+
+                    // Reset end date
+                    form.reset({
+                      ...currentValues, // Retain other field values
+                      endDate: null,
+                    });
+                  }}
                   // Disable dates before the day after tomorrow
                   disabled={(date) => {
                     const nextDay = new Date();
@@ -115,13 +130,13 @@ export default function RecurringForm({ form, selectedArrangementType }) {
         )}
       />
 
-      {selectedRecurringFrequency && form.getValues("start-date") && (
+      {selectedRecurringFrequency && form.getValues("startDate") && (
         <>
           {/* End date field */}
           {selectedArrangementType === "Recurring" && (
             <FormField
               control={form.control}
-              name="end-date"
+              name="endDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>End date</FormLabel>
@@ -150,10 +165,9 @@ export default function RecurringForm({ form, selectedArrangementType }) {
                         selected={field.value}
                         onSelect={field.onChange}
                         disabled={(date) => {
-                          const startDate = form.getValues("start-date");
-                          const recurringFrequency = form.getValues(
-                            "recurring-frequency",
-                          );
+                          const startDate = form.getValues("startDate");
+                          const recurringFrequency =
+                            form.getValues("recurringFrequency");
 
                           const oneDay = 24 * 60 * 60 * 1000; // milliseconds in a day
                           let minEndDate = new Date(startDate);
@@ -180,7 +194,7 @@ export default function RecurringForm({ form, selectedArrangementType }) {
           {/* Shift type field */}
           <FormField
             control={form.control}
-            name="shift-type"
+            name="shiftType"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Shift</FormLabel>
@@ -207,7 +221,7 @@ export default function RecurringForm({ form, selectedArrangementType }) {
           {/* Text area field */}
           <FormField
             control={form.control}
-            name="apply-reason"
+            name="applyReason"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Apply reason</FormLabel>
@@ -224,7 +238,7 @@ export default function RecurringForm({ form, selectedArrangementType }) {
           />
 
           {/* Submit button */}
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={isPending}>
             Submit
           </Button>
         </>
