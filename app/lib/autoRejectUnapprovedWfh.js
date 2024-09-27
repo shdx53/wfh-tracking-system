@@ -18,32 +18,37 @@ async function rejectUnapprovedWfh() {
 
     const now = new Date();
     const query = `
-    SELECT Arrangement_ID, Staff_ID, Start_Date
+    SELECT Arrangement.Arrangement_ID AS id,
+           Arrangement.Staff_ID AS staffId,
+           Arrangement.Start_Date AS startDate,
+           Employee.Email AS email
     FROM Arrangement
-    WHERE Request_Status = 'pending'
-      AND DATE(Start_Date) >= DATE(NOW())
-      AND TIMESTAMPDIFF(HOUR, NOW(), Start_Date) <= 24
-    ORDER BY Start_Date ASC
+    JOIN Employee ON Arrangement.Staff_ID = Employee.Staff_ID
+    WHERE Arrangement.Request_Status = 'pending'
+    AND DATE(Arrangement.Start_Date) >= DATE(NOW())
+    AND TIMESTAMPDIFF(HOUR, NOW(), Arrangement.Start_Date) <= 24
+    ORDER BY Arrangement.Start_Date ASC
     `;
+
     /* console.log("[CRON JOB] SQL query:", query); */
 
     const [rows] = await conn.query(query);
     /* console.log("[CRON JOB] Number of rows fetched:", rows.length); */
     for (const row of rows) {
       const arrangement = {
-        id: row.Arrangement_ID,
-        staffId: row.Staff_ID,
-        startDate: row.Start_Date,
-        email: row.Email,
+        id: row.id,
+        staffId: row.staffId,
+        startDate: row.startDate,
+        email: row.email,
       };
 
       const timeDiffHours = Math.floor(
         (arrangement.startDate.getTime() - now.getTime()) / 3600000,
       );
 
-      /* console.log(
+      console.log(
         `[CRON JOB] Checking WFH arrangement ${arrangement.id} for ${arrangement.staffId}`,
-      ); */
+      );
 
       if (timeDiffHours <= 24) {
         try {
@@ -54,13 +59,12 @@ async function rejectUnapprovedWfh() {
           console.log(
             `[CRON JOB] Successfully rejected WFH arrangement for ${arrangement.staffId}`,
           );
-          
+
           // Send notification to employee
           const subject = "WFH Request Automatically Rejected";
           const body = `Dear Employee,\n\nYour WFH request for ${arrangement.startDate.toDateString()} has been automatically rejected due to lack of approval within 24 hours of the scheduled start date.\n\nPlease resubmit your request if needed.\n\nBest regards,\nWFH Tracking System`;
 
           await sendNotification(arrangement.email, subject, body);
-
         } catch (err) {
           console.error(
             `[CRON JOB] Error rejecting WFH arrangement ${arrangement.id}:`,

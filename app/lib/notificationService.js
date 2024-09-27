@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -11,8 +12,6 @@ var transporter = nodemailer.createTransport({
     pass: process.env.MAILTRAP_PASS
   }
 });
-
-import dotenv from "dotenv";
 
 export async function sendNotification(to, subject, body) {
   try {

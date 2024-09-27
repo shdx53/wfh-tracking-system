@@ -1,11 +1,22 @@
 // lib/cronJobs.mjs
-import cron from 'node-cron';
-import rejectUnapprovedWfh from './autoRejectUnapprovedWfh.js';  // Import your main cron task
+import cron from "node-cron";
+import rejectUnapprovedWfh from "./autoRejectUnapprovedWfh.js"; // Import your main cron task
 
 export function startCronJobs() {
-  // Schedule the cron job to run every minute
-  cron.schedule('* * * * *', () => {
-    console.log("[CRON JOB] Running WFH auto-reject job every minute...");
-    rejectUnapprovedWfh();  // Call your task function
+  // Check for Overlapping Executions
+  let isRunning = false;
+
+  cron.schedule("* * * * *", () => {
+    if (!isRunning) {
+      isRunning = true;
+      try {
+        console.log(
+          `[CRON JOB ${Date.now()} in ${process.env.NODE_ENV}] Running WFH auto-reject job every minute...`,
+        );
+        rejectUnapprovedWfh(); // Call your task function
+      } finally {
+        isRunning = false;
+      }
+    }
   });
 }
