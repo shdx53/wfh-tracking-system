@@ -2,6 +2,8 @@ import connection from "@/lib/db";
 import { NextResponse } from "next/server";
 import { addWeeks, addMonths, differenceInHours } from "date-fns"; 
 // date-fns for time calculations
+import { sendNotification } from "@/lib/notificationService.js";
+
 
 // API Endpoint: api/arrangement
 // Sample JSON Data:
@@ -122,8 +124,23 @@ export async function POST(request) {
 
     }
 
-    // Step 6: Release connection back to pool
+    // Release connection back to pool
     conn.release();
+
+    // Send out notifications
+    const managerEmail = "manager@example.com"; // Replace with actual email
+
+    const subject = "New WFH Request Submitted";
+    const body = 
+    `Dear Manager/Director,\n\n
+    A new work-from-home arrangement has been submitted:\n\n
+    Staff ID: ${Staff_ID}\n
+    Start Date: ${Start_Date}\n
+    Apply Reason: ${Apply_Reason}\n\n
+    Please review and approve/reject the request.\n\n
+    `;
+
+    await sendNotification(managerEmail, subject, body);
 
     return NextResponse.json(
       { message: "Work-from-home arrangement(s) added successfully" },
@@ -137,3 +154,5 @@ export async function POST(request) {
     );
   }
 }
+
+
