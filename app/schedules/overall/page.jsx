@@ -134,6 +134,7 @@ export default function OverallSchedule() {
             return startDateObjUTC.getTime() === dateObjUTC.getTime();
           }
         });
+        console.log(filtered);
         setFilteredArrangements(filtered);
       } else {
         const filtered = [];
