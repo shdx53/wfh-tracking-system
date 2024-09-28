@@ -125,6 +125,7 @@ export default function OverallSchedule() {
         setFilteredArrangements(filtered);
       } else if (selectedTab === "Work-From-Home") {
         console.log("Arrangements: ", arrangements);
+        console.log("dateObjUTC: ", dateObjUTC);
         const filtered = arrangements.filter((arrangement) => {
           const startDate = arrangement.Start_Date;
 
@@ -139,6 +140,7 @@ export default function OverallSchedule() {
             }
           }
         });
+        console.log("Filtered: ", filtered);
         setFilteredArrangements(filtered);
       } else {
         const filtered = [];
