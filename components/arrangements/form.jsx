@@ -48,8 +48,31 @@ export default function ArrangementForm() {
 
   async function onSubmit(data) {
     const staffID = 9999; // Hardcoded. To be changed.
+
+    // Convert startDate and endDate to UTC using Date.UTC
+    const startDateUTC = data.startDate
+      ? new Date(
+          Date.UTC(
+            data.startDate.getFullYear(),
+            data.startDate.getMonth(),
+            data.startDate.getDate(),
+          ),
+        )
+      : null;
+    const endDateUTC = data.endDate
+      ? new Date(
+          Date.UTC(
+            data.endDate.getFullYear(),
+            data.endDate.getMonth(),
+            data.endDate.getDate(),
+          ),
+        )
+      : null;
+
     const updatedDate = {
       ...data,
+      startDate: startDateUTC,
+      endDate: endDateUTC,
       staffID,
     };
 
@@ -63,7 +86,7 @@ export default function ArrangementForm() {
 
     if (result.message === "Arrangement(s) added successfully") {
       router.push("/");
-    } 
+    }
   }
 
   return (
