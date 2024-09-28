@@ -29,7 +29,7 @@ function PersonalScheduleContent() {
   const staffID = searchParams.get("staffID");
 
   // Initialize date to current date
-  const [date, setDate] = useState(new Date().toString());
+  const [date, setDate] = useState(new Date());
 
   // Format date for display on the UI
   const formattedDate = formatDate(date);

@@ -14,6 +14,7 @@ const parentTagStyles = [
 const tagStyles = ["xl:py-1", "px-2", "rounded-md", "border-l-8", "text-left"];
 
 export function renderArrangementTags(arrangements, formattedDate) {
+  console.log(arrangements);
   return arrangements.map((arrangement) => {
     const startDate = arrangement.Start_Date;
     const startDateObj = new Date(startDate);
@@ -31,7 +32,11 @@ export function renderArrangementTags(arrangements, formattedDate) {
       const buttons = document.querySelectorAll(".rdp-button.relative");
       for (let i = 0; i < buttons.length; i++) {
         const button = buttons[i];
-        if (button.textContent.substring(0, 2) === day) {
+
+        if (
+          button.textContent.substring(0, 2) === day ||
+          button.textContent.substring(0, 1) === day
+        ) {
           // Check if parentTag exists, else create a parentTag
           let parentTag = document.getElementById(
             `${day}-${numericMonth}-${year}`,
