@@ -50,6 +50,18 @@ export default function OverallSchedule() {
   /* Format date for querying */
   const dateObj = new Date(date);
 
+  const formattedTime = dateObj.toLocaleTimeString(
+    "en-US",
+    {
+      hour: "2-digit", // e.g., 09
+      minute: "2-digit", // e.g., 30
+      second: "2-digit", // e.g., 45
+      hour12: false, // Set to true for 12-hour format
+    },
+  );
+
+  console.log(formattedTime);
+
   // Get day and pad with leading zero if needed
   const day = String(dateObj.getDate()).padStart(2, "0");
 
