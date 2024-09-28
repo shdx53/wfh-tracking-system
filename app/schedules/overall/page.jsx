@@ -32,7 +32,7 @@ import { formatDate } from "@/app/lib/utils";
 
 export default function OverallSchedule() {
   // Initialize date to current date
-  const [date, setDate] = useState(new Date().toString());
+  const [date, setDate] = useState(new Date());
 
   // Format date for display on the UI
   const formattedDate = formatDate(date);
@@ -49,18 +49,6 @@ export default function OverallSchedule() {
   /* Query arrangements logic */
   /* Format date for querying */
   const dateObj = new Date(date);
-
-  const formattedTime = dateObj.toLocaleTimeString(
-    "en-US",
-    {
-      hour: "2-digit", // e.g., 09
-      minute: "2-digit", // e.g., 30
-      second: "2-digit", // e.g., 45
-      hour12: false, // Set to true for 12-hour format
-    },
-  );
-
-  console.log(formattedTime);
 
   // Get day and pad with leading zero if needed
   const day = String(dateObj.getDate()).padStart(2, "0");
