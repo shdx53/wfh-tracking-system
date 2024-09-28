@@ -34,15 +34,15 @@ export default function RecurringForm({
   selectedArrangementType,
   isPending,
 }) {
-  const [selectedRecurringFrequency, setSelectedRecurringFrequency] =
+  const [selectedRecurringInterval, setSelectedRecurringInterval] =
     useState(null);
 
   return (
     <>
-      {/* Recurring frequency field */}
+      {/* Recurring Interval field */}
       <FormField
         control={form.control}
-        name="recurringFrequency"
+        name="recurringInterval"
         render={({ field }) => (
           <FormItem className="flex flex-col gap-2">
             <FormLabel>Please select a recurring interval</FormLabel>
@@ -50,20 +50,20 @@ export default function RecurringForm({
               <RadioGroup
                 onValueChange={(value) => {
                   field.onChange(value);
-                  setSelectedRecurringFrequency(value);
+                  setSelectedRecurringInterval(value);
                 }}
                 defaultValue={field.value}
                 className="flex gap-6"
               >
-                {["Weekly", "Monthly"].map((frequency) => (
+                {["Weekly", "Monthly"].map((interval) => (
                   <FormItem
-                    key={frequency}
+                    key={interval}
                     className="flex items-center space-x-3 space-y-0"
                   >
                     <FormControl>
-                      <RadioGroupItem value={frequency} />
+                      <RadioGroupItem value={interval} />
                     </FormControl>
-                    <FormLabel className="font-normal">{frequency}</FormLabel>
+                    <FormLabel className="font-normal">{interval}</FormLabel>
                   </FormItem>
                 ))}
               </RadioGroup>
@@ -130,7 +130,7 @@ export default function RecurringForm({
         )}
       />
 
-      {selectedRecurringFrequency && form.getValues("startDate") && (
+      {selectedRecurringInterval && form.getValues("startDate") && (
         <>
           {/* End date field */}
           {selectedArrangementType === "Recurring" && (
@@ -166,16 +166,16 @@ export default function RecurringForm({
                         onSelect={field.onChange}
                         disabled={(date) => {
                           const startDate = form.getValues("startDate");
-                          const recurringFrequency =
-                            form.getValues("recurringFrequency");
+                          const recurringInterval =
+                            form.getValues("recurringInterval");
 
                           const oneDay = 24 * 60 * 60 * 1000; // milliseconds in a day
                           let minEndDate = new Date(startDate);
 
-                          // Set minimum end date based on recurring frequency
-                          if (recurringFrequency === "Weekly") {
+                          // Set minimum end date based on recurring interval
+                          if (recurringInterval === "Weekly") {
                             minEndDate.setDate(minEndDate.getDate() + 7); // At least 1 week after
-                          } else if (recurringFrequency === "Monthly") {
+                          } else if (recurringInterval === "Monthly") {
                             minEndDate.setMonth(minEndDate.getMonth() + 1); // At least 1 month after
                           }
 

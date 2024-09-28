@@ -38,7 +38,7 @@ export default function ArrangementForm() {
       endDate: null,
       shiftType: null,
       applyReason: "",
-      recurringFrequency: null,
+      recurringInterval: null,
     },
   });
 
@@ -112,7 +112,7 @@ export default function ArrangementForm() {
                     form.reset({
                       ...currentValues, // Retain other field values
                       endDate: null,
-                      recurringFrequency: null,
+                      recurringInterval: null,
                     });
                   }}
                   defaultValue={field.value}

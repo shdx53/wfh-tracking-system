@@ -38,7 +38,7 @@ export const getSchema = (isRecurring) => {
       .refine((value) => value !== null, {
         message: "Required.",
       }),
-      recurringFrequency: z
+      recurringInterval: z
         .enum(["Weekly", "Monthly"], {
           required_error: "Required.",
         })
