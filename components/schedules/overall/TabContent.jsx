@@ -1,12 +1,12 @@
 // Component
-import ArrangementCard from "@/components/schedule/arrangement-card";
+import ArrangementCard from "@/components/schedules/arrangement-card";
 
-export function renderTabContent(
+export default function TabContent({
   isArrangementsPending,
   isArrangementsError,
   filteredArrangements,
   currentPageArrangements,
-) {
+}) {
   const order = ["AM", "PM", "Full Day", null];
 
   // Sort filteredArrangements by Shift_Type
@@ -22,7 +22,7 @@ export function renderTabContent(
     uniqueEmployees.add(employeeIdentifier);
   });
 
-  const uniqueEmployeeCount = uniqueEmployees.size; 
+  const uniqueEmployeeCount = uniqueEmployees.size;
 
   return (
     <>
@@ -42,9 +42,7 @@ export function renderTabContent(
           {/* Employee Count */}
           <div className="flex flex-col gap-1 pb-4 pt-12">
             <div>Employee Count</div>
-            <div className="text-3xl font-medium">
-              {uniqueEmployeeCount}
-            </div>
+            <div className="text-3xl font-medium">{uniqueEmployeeCount}</div>
           </div>
 
           {/* Arrangements */}

@@ -21,14 +21,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import TabContent from "@/components/schedules/overall/TabContent";
 
 // Function
 import { fetchArrangements } from "@/app/lib/schedules/overall/fetch-arrangements";
 import { fetchTeamArrangements } from "@/app/lib/schedules/overall/fetch-team-arrangements";
 import { fetchTeams } from "@/app/lib/schedules/overall/fetch-teams";
 import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
-import { renderTabContent } from "@/app/lib/schedules/overall/render-tab-content";
 import { formatDate, normalizeDate } from "@/app/lib/utils";
+import { filterArrangements } from "@/app/lib/schedules/overall/filter-arrangements";
+import { filterTeamArrangements } from "@/app/lib/schedules/filter-team-arrangements";
 
 export default function OverallSchedule() {
   // Initialize date to current date
@@ -78,70 +80,12 @@ export default function OverallSchedule() {
 
   useEffect(() => {
     if (arrangements && Array.isArray(arrangements) && selectedTeam === null) {
-      if (selectedTab === "In-Office") {
-        const filtered = [];
-
-        arrangements.forEach((arrangement) => {
-          const startDate = arrangement.Start_Date;
-
-          if (startDate) {
-            const normalizedStartDate = normalizeDate(startDate);
-
-            if (normalizedStartDate.getTime() === normalizedDate.getTime()) {
-              const staffID = arrangement.Staff_ID;
-
-              // Find all records with the same Staff_ID and matching Start_Date
-              const matches = arrangements.filter((arr) => {
-                const arrStartDate = arr.Start_Date;
-                const normalizedArrStartDate = normalizeDate(arrStartDate);
-
-                return (
-                  arr.Staff_ID === staffID &&
-                  normalizedArrStartDate.getTime() ===
-                  normalizedStartDate.getTime()
-                );
-              });
-
-              if (matches.length === 1) {
-                const matchShiftType = matches[0].Shift_Type;
-
-                // If there is only one matching arrangement and the Shift_Type is not Full Day,
-                // there are only two options: AM and PM
-                // Add the opposite Shift_Type to the array
-                if (matchShiftType !== "Full Day") {
-                  filtered.push({
-                    ...arrangement,
-                    Shift_Type: matchShiftType === "AM" ? "PM" : "AM",
-                  });
-                }
-              }
-            } else {
-              filtered.push(arrangement);
-            }
-          } else {
-            filtered.push(arrangement);
-          }
-        });
-        setFilteredArrangements(filtered);
-      } else if (selectedTab === "Work-From-Home") {
-        const filtered = arrangements.filter((arrangement) => {
-          const startDate = arrangement.Start_Date;
-
-          if (startDate) {
-            const normalizedStartDate = normalizeDate(startDate);
-
-            // Return true if the arrangement date matches the selected date
-            return (
-              normalizedStartDate.getTime() ===
-              normalizedDate.getTime()
-            );
-          }
-        });
-        setFilteredArrangements(filtered);
-      } else {
-        const filtered = [];
-        setFilteredArrangements(filtered);
-      }
+      filterArrangements(
+        selectedTab,
+        arrangements,
+        normalizedDate,
+        setFilteredArrangements,
+      );
     }
   }, [selectedTab, arrangements]);
 
@@ -159,98 +103,12 @@ export default function OverallSchedule() {
 
   useEffect(() => {
     if (teamArrangements && Array.isArray(teamArrangements)) {
-      // console.log(teamArrangements);
-      if (selectedTab === "In-Office") {
-        const filtered = [];
-
-        teamArrangements.forEach((arrangement) => {
-          const startDates = arrangement.Start_Date;
-          const shiftTypes = arrangement.Shift_Type;
-
-          if (startDates) {
-            const startDateArr = startDates.split(",");
-            const shiftTypeArr = shiftTypes.split(",");
-
-            if (startDateArr.includes(formattedQueryDate)) {
-              const matchingStartDates = [];
-
-              for (let i = 0; i < startDateArr.length; i++) {
-                const startDate = startDateArr[i];
-                // Skip checking if the Start_Date has already been checked
-                if (
-                  startDate === formattedQueryDate &&
-                  !matchingStartDates.includes(startDate)
-                ) {
-                  // Find all indexes with the same Start_Date
-                  const matchingIndexes = [];
-                  startDateArr.forEach((date, index) => {
-                    if (date === startDate) {
-                      matchingIndexes.push(index);
-                      matchingStartDates.push(date);
-                    }
-                  });
-
-                  if (matchingIndexes.length === 1) {
-                    const matchStartDate = startDateArr[matchingIndexes[0]];
-                    const matchShiftType = shiftTypeArr[matchingIndexes[0]];
-
-                    // If there is only one matching arrangement and the Shift_Type is not Full Day,
-                    // there are only two options: AM and PM
-                    // Add the opposite Shift_Type to the array
-                    if (matchShiftType !== "Full Day") {
-                      filtered.push({
-                        ...arrangement,
-                        Start_Date: matchStartDate,
-                        Shift_Type: matchShiftType === "AM" ? "PM" : "AM",
-                      });
-                    }
-                  }
-                }
-              }
-            } else {
-              // No Start_Date matches the selected date
-              filtered.push({
-                ...arrangement,
-                Start_Date: formattedQueryDate,
-                Shift_Type: null,
-              });
-            }
-          } else {
-            // Start_Date is null
-            filtered.push(arrangement);
-          }
-        });
-        setFilteredArrangements(filtered);
-      } else if (selectedTab === "Work-From-Home") {
-        const filtered = [];
-
-        teamArrangements.forEach((arrangement) => {
-          const startDates = arrangement.Start_Date;
-          const shiftTypes = arrangement.Shift_Type;
-
-          if (startDates) {
-            const startDateArr = startDates.split(",");
-            const shiftTypeArr = shiftTypes.split(",");
-
-            for (let i = 0; i < startDateArr.length; i++) {
-              const startDate = startDateArr[i];
-              const shiftType = shiftTypeArr[i];
-
-              if (startDate === formattedQueryDate) {
-                filtered.push({
-                  ...arrangement,
-                  Start_Date: startDate,
-                  Shift_Type: shiftType,
-                });
-              }
-            }
-          }
-        });
-        setFilteredArrangements(filtered);
-      } else {
-        const filtered = [];
-        setFilteredArrangements(filtered);
-      }
+      filterTeamArrangements(
+        selectedTab,
+        teamArrangements,
+        formattedQueryDate,
+        setFilteredArrangements,
+      );
     }
   }, [date, selectedTab, teamArrangements]);
 
@@ -352,36 +210,36 @@ export default function OverallSchedule() {
 
             {/* In-Office Tab */}
             <TabsContent value="In-Office" className="flex flex-col gap-4">
-              {renderTabContent(
-                isArrangementsPending,
-                isArrangementsError,
-                filteredArrangements,
-                currentPageArrangements,
-              )}
+              <TabContent
+                isArrangementsPending={isArrangementsPending}
+                isArrangementsError={isArrangementsError}
+                filteredArrangements={filteredArrangements}
+                currentPageArrangements={currentPageArrangements}
+              />
             </TabsContent>
 
             {/* Work-From-Home Tab */}
             <TabsContent value="Work-From-Home" className="flex flex-col gap-4">
-              {renderTabContent(
-                isArrangementsPending,
-                isArrangementsError,
-                filteredArrangements,
-                currentPageArrangements,
-              )}
+              <TabContent
+                isArrangementsPending={isArrangementsPending}
+                isArrangementsError={isArrangementsError}
+                filteredArrangements={filteredArrangements}
+                currentPageArrangements={currentPageArrangements}
+              />
             </TabsContent>
 
             {/* Leave Tab */}
             <TabsContent value="Leave" className="flex flex-col gap-4">
-              {renderTabContent(
-                isArrangementsPending,
-                isArrangementsError,
-                filteredArrangements,
-                currentPageArrangements,
-              )}
+              <TabContent
+                isArrangementsPending={isArrangementsPending}
+                isArrangementsError={isArrangementsError}
+                filteredArrangements={filteredArrangements}
+                currentPageArrangements={currentPageArrangements}
+              />
             </TabsContent>
           </Tabs>
 
-          {totalPages > 0 && (
+          {filteredArrangements && totalPages > 0 && (
             <Pagination className="pt-12">
               <PaginationContent>
                 <PaginationItem>

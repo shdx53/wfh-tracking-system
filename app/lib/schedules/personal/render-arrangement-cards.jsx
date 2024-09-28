@@ -1,5 +1,5 @@
 // Component
-import ArrangementCard from "@/components/schedule/arrangement-card";
+import ArrangementCard from "@/components/schedules/arrangement-card";
 
 // Function
 import { formatDate } from "@/app/lib/utils";
