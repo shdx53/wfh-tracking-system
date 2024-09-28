@@ -6,18 +6,22 @@ import { sendNotification } from "@/app/lib/notificationService.js";
 import { addMonths, addWeeks } from "date-fns";
 
 // Helper function to calculate next occurrence date
-const calculateNextDate = (startDate, frequency, count) => {
-  switch (frequency) {
-    case "weekly":
+const calculateNextDate = (startDate, recurringInterval, count) => {
+  console.log("calculateNextDate:", { startDate, recurringInterval, count });
+
+  switch (recurringInterval) {
+    // console log the input here to test
+    case "Weekly":
       return addWeeks(startDate, count);
-    case "monthly":
+    case "Monthly":
       return addMonths(startDate, count);
     default:
-      return startDate; // fallback for custom frequency
+      return startDate; // fallback for custom interval
   }
 };
 
 export async function newArrangement(formData) {
+  let conn;
   try {
     const pool = await connection();
     const conn = await pool.getConnection();
@@ -28,9 +32,18 @@ export async function newArrangement(formData) {
       startDate,
       shiftType,
       applyReason,
-      recurringFrequency,
+      recurringInterval,
       endDate,
     } = formData;
+
+    /* console.log("FormData:");
+    console.log(`${staffID},
+      ${arrangementType},
+      ${startDate},
+      ${shiftType},
+      ${applyReason},
+      ${recurringInterval},
+      ${endDate}`); */
 
     const isRecurring = arrangementType === "Ad-hoc" ? 0 : 1;
 
@@ -49,40 +62,33 @@ export async function newArrangement(formData) {
         shiftType,
       ]);
     } else if (arrangementType === "Recurring") {
+      // Prepare SQL Query
       const query = `
           INSERT INTO Arrangement 
           (Staff_ID, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Shift_Type)
           VALUES (?, ?, ?, ?, ?, ?, ?)
       `;
 
-      // Recurring case: insert multiple records based on End_Date
       const startDateObj = new Date(startDate);
       let count = 0;
       let occurrenceDateObj = startDateObj;
-
-      // Scenario 2: Use End_Date to determine how long to keep creating records
       const endDateObj = new Date(endDate);
 
       while (occurrenceDateObj <= endDateObj) {
-        console.log(occurrenceDateObj.toISOString().split("T")[0]);
-
-        // * THE CODE BELOW IS PURPOSELY COMMENTED OUT *
-        // * PROCEED TO UNCOMMENT WHEN THE ISSUE IS FIXED *
-        
-        //   await conn.execute(query, [
-        //     staffID,
-        //     occurrenceDateObj.toISOString().split("T")[0],
-        //     isRecurring,
-        //     recurringFrequency,
-        //     endDate,
-        //     applyReason === "" ? null : applyReason,
-        //     shiftType,
-        //   ]);
+        await conn.execute(query, [
+          staffID,
+          occurrenceDateObj.toISOString().split("T")[0],
+          isRecurring,
+          recurringInterval,
+          endDate,
+          applyReason === "" ? null : applyReason,
+          shiftType,
+        ]);
 
         // Calculate next occurrence date
         occurrenceDateObj = calculateNextDate(
           startDateObj,
-          recurringFrequency,
+          recurringInterval,
           ++count,
         );
       }
@@ -91,7 +97,7 @@ export async function newArrangement(formData) {
     // Release connection back to pool
     conn.release();
 
-    // Send out notifications
+    /* // Send out notifications
     const managerEmail = "manager@example.com"; // Replace with actual email
 
     const subject = "New WFH Request Submitted";
@@ -103,7 +109,7 @@ export async function newArrangement(formData) {
         Please review and approve/reject the request.\n\n
         `;
 
-    await sendNotification(managerEmail, subject, body);
+    await sendNotification(managerEmail, subject, body); */
 
     return {
       message: "Arrangement(s) added successfully",
@@ -112,5 +118,7 @@ export async function newArrangement(formData) {
     return {
       message: "Failed to add arrangement",
     };
+  } finally {
+    if (conn) conn.release();
   }
 }
