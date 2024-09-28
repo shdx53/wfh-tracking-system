@@ -24,7 +24,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Function
 import { fetchTeams } from "@/app/lib/schedules/overall/fetch-teams";
-import fetchArrangements from "@/app/lib/schedules/overall/fetch-arrangements";
+import { fetchTeamArrangements } from "@/app/lib/schedules/overall/fetch-team-arrangements";
+import { fetchArrangements } from "@/app/lib/schedules/overall/fetch-arrangements";
 import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
 import { renderTabContent } from "@/app/lib/schedules/overall/render-tab-content";
 import { formatDate } from "@/app/lib/utils";
@@ -75,7 +76,7 @@ export default function OverallSchedule() {
   const isArrangementsError = arrangementsQuery.isError;
 
   useEffect(() => {
-    if (arrangements && Array.isArray(arrangements)) {
+    if (arrangements && Array.isArray(arrangements) && selectedTeam === null) {
       if (selectedTab === "In-Office") {
         const filtered = [];
 
@@ -137,6 +138,112 @@ export default function OverallSchedule() {
     }
   }, [selectedTab, arrangements]);
 
+  /* Query team arrangements logic */
+  const [selectedTeam, setSelectedTeam] = useState(null);
+
+  // Use useQuery outside of the condition
+  const teamArrangementsQuery = useQuery({
+    queryKey: ["team arrangements", { selectedTeam }],
+    queryFn: () => (selectedTeam ? fetchTeamArrangements(selectedTeam) : null),
+    // Only run the query if selectedTeam is not null
+    enabled: !!selectedTeam,
+  });
+  const teamArrangements = teamArrangementsQuery.data;
+
+  useEffect(() => {
+    if (teamArrangements && Array.isArray(teamArrangements)) {
+      // console.log(teamArrangements);
+      if (selectedTab === "In-Office") {
+        const filtered = [];
+
+        teamArrangements.forEach((arrangement) => {
+          const startDates = arrangement.Start_Date;
+          const shiftTypes = arrangement.Shift_Type;
+
+          if (startDates) {
+            const startDateArr = startDates.split(",");
+            const shiftTypeArr = shiftTypes.split(",");
+
+            if (startDateArr.includes(formattedQueryDate)) {
+              const matchingStartDates = [];
+
+              for (let i = 0; i < startDateArr.length; i++) {
+                const startDate = startDateArr[i];
+                // Skip checking if the Start_Date has already been checked
+                if (
+                  startDate === formattedQueryDate &&
+                  !matchingStartDates.includes(startDate)
+                ) {
+                  // Find all indexes with the same Start_Date
+                  const matchingIndexes = [];
+                  startDateArr.forEach((date, index) => {
+                    if (date === startDate) {
+                      matchingIndexes.push(index);
+                      matchingStartDates.push(date);
+                    }
+                  });
+
+                  if (matchingIndexes.length === 1) {
+                    const matchStartDate = startDateArr[matchingIndexes[0]];
+                    const matchShiftType = shiftTypeArr[matchingIndexes[0]];
+
+                    if (matchShiftType !== "Full Day") {
+                      filtered.push({
+                        ...arrangement,
+                        Start_Date: matchStartDate,
+                        Shift_Type: matchShiftType === "AM" ? "PM" : "AM",
+                      });
+                    }
+                  }
+                }
+              }
+            } else {
+              // No Start_Date matches the selected date
+              filtered.push({
+                ...arrangement,
+                Start_Date: formattedQueryDate,
+                Shift_Type: null,
+              });
+            }
+          } else {
+            // Start_Date is null
+            filtered.push(arrangement);
+          }
+        });
+        setFilteredArrangements(filtered);
+      } else if (selectedTab === "Work-From-Home") {
+        const filtered = [];
+
+        teamArrangements.forEach((arrangement) => {
+          const startDates = arrangement.Start_Date;
+          const shiftTypes = arrangement.Shift_Type;
+
+          if (startDates) {
+            const startDateArr = startDates.split(",");
+            const shiftTypeArr = shiftTypes.split(",");
+
+            for (let i = 0; i < startDateArr.length; i++) {
+              const startDate = startDateArr[i];
+              const shiftType = shiftTypeArr[i];
+
+              if (startDate === formattedQueryDate) {
+                filtered.push({
+                  ...arrangement,
+                  Start_Date: startDate,
+                  Shift_Type: shiftType,
+                });
+              }
+            }
+          }
+        });
+        setFilteredArrangements(filtered);
+      } else {
+        const filtered = [];
+        setFilteredArrangements(filtered);
+      }
+    }
+  }, [date, selectedTab, teamArrangements]);
+
   /* Pagination logic */
   const arrangementsPerPage = 10;
   const totalArrangements = filteredArrangements.length;
@@ -157,7 +264,7 @@ export default function OverallSchedule() {
       <header className="flex flex-col gap-3 py-8">
         <h1 className="text-2xl font-bold">Schedule</h1>
         <div className="flex gap-4">
-          <Select>
+          <Select onValueChange={(value) => setSelectedTeam(value)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Team" />
             </SelectTrigger>

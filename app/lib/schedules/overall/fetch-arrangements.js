@@ -1,4 +1,4 @@
-export default async function fetchArrangements(selectedDate) {
+export async function fetchArrangements(selectedDate) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/requests?startDate=${selectedDate}`,
   );

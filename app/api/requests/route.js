@@ -12,19 +12,41 @@ export async function GET(request) {
     // Get a connection from the pool
     const conn = await pool.getConnection();
 
-    // Get Start_Date input from the request
+    // Get search params from the request
     const searchParams = request.nextUrl.searchParams;
     const startDate = searchParams.get("startDate");
+    const team = searchParams.get("team");
+
+    let data;
 
     // Execute the query
-    const [data] = await conn.query(
-      `
-        SELECT e.Staff_ID, e.Staff_FName, e.Staff_LName, e.Dept, a.Start_Date, a.Shift_Type, a.Request_Status
-        FROM Employee e
-        LEFT JOIN Arrangement a
-        ON e.Staff_ID = a.Staff_ID and a.Request_Status = "approved" AND a.Start_Date = "${startDate}";
-      `,
-    );
+    if (startDate) {
+      const [rows] = await conn.query(
+        `
+          SELECT e.Staff_ID, e.Staff_FName, e.Staff_LName, e.Dept, a.Start_Date, a.Shift_Type, a.Request_Status
+          FROM Employee e
+          LEFT JOIN Arrangement a
+          ON e.Staff_ID = a.Staff_ID and a.Request_Status = "approved" AND a.Start_Date = "${startDate}";
+        `,
+      );
+      data = rows;
+    }
+
+    if (team) {
+      const [rows] = await conn.query(
+        `
+          SELECT Employee.Staff_ID, Employee.Staff_FName, Employee.Staff_LName, Employee.Dept, 
+          GROUP_CONCAT(Arrangement.Start_Date) AS Start_Date,
+          GROUP_CONCAT(Arrangement.Shift_Type) AS Shift_Type
+          FROM Arrangement
+          RIGHT JOIN Employee ON Employee.Staff_ID = Arrangement.Staff_ID AND Arrangement.Request_Status = "Approved"
+          WHERE Employee.Position = ?
+          GROUP BY Employee.Staff_ID;
+        `,
+        [team],
+      );
+      data = rows;
+    }
 
     // Release the connection back to the pool
     conn.release();

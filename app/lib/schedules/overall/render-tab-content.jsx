@@ -14,9 +14,21 @@ export function renderTabContent(
     return order.indexOf(a.Shift_Type) - order.indexOf(b.Shift_Type);
   });
 
+  // Create a Set to store unique employee names from filteredArrangements
+  const uniqueEmployees = new Set();
+
+  filteredArrangements.forEach((arrangement) => {
+    const employeeIdentifier = `${arrangement.Staff_ID}`;
+    uniqueEmployees.add(employeeIdentifier);
+  });
+
+  const uniqueEmployeeCount = uniqueEmployees.size; 
+
   return (
     <>
-      {isArrangementsPending && <div className="pt-12">Loading arrangements...</div>}
+      {isArrangementsPending && (
+        <div className="pt-12">Loading arrangements...</div>
+      )}
 
       {isArrangementsError && (
         <div className="pt-12">
@@ -31,7 +43,7 @@ export function renderTabContent(
           <div className="flex flex-col gap-1 pb-4 pt-12">
             <div>Employee Count</div>
             <div className="text-3xl font-medium">
-              {filteredArrangements.length}
+              {uniqueEmployeeCount}
             </div>
           </div>
 
