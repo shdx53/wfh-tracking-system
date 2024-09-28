@@ -131,6 +131,8 @@ export default function OverallSchedule() {
           if (startDate) {
             const startDateObjUTC = toUTCDate(startDate);
 
+            console.log(startDateObjUTC);
+
             // Return true if the arrangement date matches the selected date
             if (startDateObjUTC.getTime() === dateObjUTC.getTime()) {
               return true;
