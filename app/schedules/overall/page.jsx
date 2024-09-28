@@ -91,11 +91,16 @@ export default function OverallSchedule() {
               const staffID = arrangement.Staff_ID;
 
               // Find all records with the same Staff_ID and matching Start_Date
-              const matches = arrangements.filter(
-                (arr) =>
+              const matches = arrangements.filter((arr) => {
+                const arrStartDate = arr.Start_Date;
+                const arrStartDateObj = new Date(arrStartDate);
+
+                return (
                   arr.Staff_ID === staffID &&
-                  new Date(arr.Start_Date).getTime() === startDateObj.getTime(),
-              );
+                  normalizeDate(arrStartDateObj).getTime() ===
+                    normalizeDate(startDateObj).getTime()
+                );
+              });
 
               if (matches.length === 1) {
                 const matchShiftType = matches[0].Shift_Type;
@@ -121,20 +126,19 @@ export default function OverallSchedule() {
         });
         setFilteredArrangements(filtered);
       } else if (selectedTab === "Work-From-Home") {
-        console.log("dateObj :", dateObj);
         const filtered = arrangements.filter((arrangement) => {
           const startDate = arrangement.Start_Date;
 
           if (startDate) {
-            const startDateObj = new Date(arrangement.Start_Date);
-
-            console.log("startDateObj :", startDateObj);
+            const startDateObj = new Date(startDate);
 
             // Return true if the arrangement date matches the selected date
-            return normalizeDate(startDateObj).getTime() === normalizeDate(dateObj).getTime();
+            return (
+              normalizeDate(startDateObj).getTime() ===
+              normalizeDate(dateObj).getTime()
+            );
           }
         });
-        console.log("Filtered: ", filtered);
         setFilteredArrangements(filtered);
       } else {
         const filtered = [];
