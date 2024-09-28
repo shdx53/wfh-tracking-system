@@ -1,4 +1,12 @@
-export default function ArrangementCard({ page, type, arrangement, status }) {
+export default function ArrangementCard({
+  page,
+  firstName,
+  lastName,
+  dept,
+  shiftType,
+  arrangement,
+  status,
+}) {
   const classStyles = {
     AM: "bg-blue-100/40 border-blue-700",
     PM: "bg-indigo-100/40 border-indigo-700",
@@ -7,13 +15,17 @@ export default function ArrangementCard({ page, type, arrangement, status }) {
 
   return (
     <div
-      className={`flex justify-between rounded-lg border-l-[10px] p-6 ${classStyles[type]} ${status === "pending" && "opacity-50"}`}
+      className={`flex justify-between rounded-lg border-l-[10px] p-6 ${classStyles[shiftType]} ${status === "pending" && "opacity-50"}`}
     >
       <div className="flex flex-col gap-1">
-        <div className="font-semibold">{ page === "overall" ? "Phris Coskit" : arrangement }</div>
-        <div className="opacity-70">{ page === "overall" ? "Sales" : type }</div>
+        <div className="font-semibold">
+          {page === "overall" ? `${firstName} ${lastName}` : arrangement}
+        </div>
+        <div className="opacity-70">
+          {page === "overall" ? dept : shiftType}
+        </div>
       </div>
-      {page === "overall" && <div className="font-medium">{type}</div>}
+      {page === "overall" && <div className="font-medium">{shiftType}</div>}
       {status === "pending" && <div className="italic">Pending</div>}
     </div>
   );
