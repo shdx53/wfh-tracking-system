@@ -120,11 +120,14 @@ export default function OverallSchedule() {
         });
         setFilteredArrangements(filtered);
       } else if (selectedTab === "Work-From-Home") {
+        console.log("dateObj :", dateObj);
         const filtered = arrangements.filter((arrangement) => {
           const startDate = arrangement.Start_Date;
 
           if (startDate) {
             const startDateObj = new Date(arrangement.Start_Date);
+
+            console.log("startDateObj :", startDateObj);
 
             // Return true if the arrangement date matches the selected date
             return startDateObj.getTime() === dateObj.getTime();
