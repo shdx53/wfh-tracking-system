@@ -29,6 +29,7 @@ import { fetchArrangements } from "@/app/lib/schedules/overall/fetch-arrangement
 import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
 import { renderTabContent } from "@/app/lib/schedules/overall/render-tab-content";
 import { formatDate } from "@/app/lib/utils";
+import { toUTCDate } from "@/app/lib/utils";
 
 export default function OverallSchedule() {
   // Initialize date to current date
@@ -49,6 +50,7 @@ export default function OverallSchedule() {
   /* Query arrangements logic */
   /* Format date for querying */
   const dateObj = new Date(date);
+  const dateObjUTC = toUTCDate(dateObj);
 
   // Get day and pad with leading zero if needed
   const day = String(dateObj.getDate()).padStart(2, "0");
@@ -84,17 +86,19 @@ export default function OverallSchedule() {
           const startDate = arrangement.Start_Date;
 
           if (startDate) {
-            const startDateObj = new Date(startDate);
+            const startDateObjUTC = toUTCDate(startDate);
 
-            if (startDateObj.getTime() === dateObj.getTime()) {
+            if (startDateObjUTC.getTime() === dateObjUTC.getTime()) {
               const staffID = arrangement.Staff_ID;
 
               // Find all records with the same Staff_ID and matching Start_Date
-              const matches = arrangements.filter(
-                (arr) =>
+              const matches = arrangements.filter((arr) => {
+                const matchDateObjUTC = toUTCDate(arr.Start_Date);
+                return (
                   arr.Staff_ID === staffID &&
-                  new Date(arr.Start_Date).getTime() === startDateObj.getTime(),
-              );
+                  matchDateObjUTC.getTime() === startDateObjUTC.getTime()
+                );
+              });
 
               if (matches.length === 1) {
                 const matchShiftType = matches[0].Shift_Type;
