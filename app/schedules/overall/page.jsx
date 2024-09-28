@@ -128,10 +128,11 @@ export default function OverallSchedule() {
           const startDate = arrangement.Start_Date;
 
           if (startDate) {
-            const startDateObj = new Date(arrangement.Start_Date);
+            const startDate = arrangement.Start_Date;
+            const startDateObjUTC = toUTCDate(startDate);
 
             // Return true if the arrangement date matches the selected date
-            return startDateObj.getTime() === dateObj.getTime();
+            return startDateObjUTC.getTime() === dateObjUTC.getTime();
           }
         });
         setFilteredArrangements(filtered);
@@ -191,6 +192,9 @@ export default function OverallSchedule() {
                     const matchStartDate = startDateArr[matchingIndexes[0]];
                     const matchShiftType = shiftTypeArr[matchingIndexes[0]];
 
+                    // If there is only one matching arrangement and the Shift_Type is not Full Day,
+                    // there are only two options: AM and PM
+                    // Add the opposite Shift_Type to the array
                     if (matchShiftType !== "Full Day") {
                       filtered.push({
                         ...arrangement,
