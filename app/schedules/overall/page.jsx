@@ -128,7 +128,6 @@ export default function OverallSchedule() {
           const startDate = arrangement.Start_Date;
 
           if (startDate) {
-            const startDate = arrangement.Start_Date;
             const startDateObjUTC = toUTCDate(startDate);
 
             // Return true if the arrangement date matches the selected date
