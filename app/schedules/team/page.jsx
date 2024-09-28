@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 // Component
+import TabContent from "@/components/schedules/overall/tab-content";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Pagination,
@@ -13,44 +14,23 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TabContent from "@/components/schedules/overall/tab-content";
 
 // Function
-import { fetchArrangements } from "@/app/lib/schedules/overall/fetch-arrangements";
+import { filterTeamArrangements } from "@/app/lib/schedules/filter-team-arrangements";
 import { fetchTeamArrangements } from "@/app/lib/schedules/overall/fetch-team-arrangements";
 import { fetchTeams } from "@/app/lib/schedules/overall/fetch-teams";
 import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
 import { formatDate, normalizeDate } from "@/app/lib/utils";
-import { filterArrangements } from "@/app/lib/schedules/overall/filter-arrangements";
-import { filterTeamArrangements } from "@/app/lib/schedules/filter-team-arrangements";
 
-export default function OverallSchedule() {
+export default function TeamSchedule() {
   // Initialize date to current date
   const [date, setDate] = useState(new Date());
-  const normalizedDate = normalizeDate(date);
 
   // Format date for display on the UI
   const formattedDate = formatDate(date);
 
-  /* Query teams logic */
-  const teamsQuery = useQuery({
-    queryKey: ["teams"],
-    queryFn: () => fetchTeams(),
-  });
-  const teams = teamsQuery.data;
-  const isTeamsPending = teamsQuery.isPending;
-  const isTeamsError = teamsQuery.isError;
-
-  /* Query arrangements logic */
-  /* Format date for querying */
+  /* Query team arrangements logic */
   const dateObj = new Date(date);
 
   // Get day and pad with leading zero if needed
@@ -63,41 +43,15 @@ export default function OverallSchedule() {
   const year = String(dateObj.getFullYear());
 
   // Formatted date
-  const formattedQueryDate = `${year}-${month}-${day}`;
+  const formattedSelectedDate = `${year}-${month}-${day}`;
 
   const [selectedTab, setSelectedTab] = useState("In-Office");
   const [filteredArrangements, setFilteredArrangements] = useState([]);
 
-  // Fetch all arrangements for the selected date
-  const arrangementsQuery = useQuery({
-    queryKey: ["arrangements", { formattedQueryDate: formattedQueryDate }],
-    queryFn: ({ queryKey }) =>
-      fetchArrangements(queryKey[1].formattedQueryDate),
-  });
-  const arrangements = arrangementsQuery.data;
-  const isArrangementsPending = arrangementsQuery.isPending;
-  const isArrangementsError = arrangementsQuery.isError;
-
-  useEffect(() => {
-    if (arrangements && Array.isArray(arrangements) && selectedTeam === null) {
-      filterArrangements(
-        selectedTab,
-        arrangements,
-        normalizedDate,
-        setFilteredArrangements,
-      );
-    }
-  }, [selectedTab, arrangements]);
-
-  /* Query team arrangements logic */
-  const [selectedTeam, setSelectedTeam] = useState(null);
-
-  // Fetch all arrangements for the selected team
+  // Fetch all team arrangements for the selected date
   const teamArrangementsQuery = useQuery({
-    queryKey: ["team arrangements", { selectedTeam }],
-    queryFn: () => (selectedTeam ? fetchTeamArrangements(selectedTeam) : null),
-    // Only run the query if selectedTeam is not null
-    enabled: !!selectedTeam,
+    queryKey: ["team arrangements"],
+    queryFn: () => fetchTeamArrangements("HR Team"), // Hardcoded. To be changed.
   });
   const teamArrangements = teamArrangementsQuery.data;
 
@@ -106,7 +60,7 @@ export default function OverallSchedule() {
       filterTeamArrangements(
         selectedTab,
         teamArrangements,
-        formattedQueryDate,
+        formattedSelectedDate,
         setFilteredArrangements,
       );
     }
@@ -131,37 +85,6 @@ export default function OverallSchedule() {
     <div className="mx-auto max-w-lg sm:max-w-xl md:max-w-none">
       <header className="flex flex-col gap-3 py-8">
         <h1 className="text-2xl font-bold">Schedule</h1>
-        <div className="flex gap-4">
-          <Select onValueChange={(value) => setSelectedTeam(value)}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Team" />
-            </SelectTrigger>
-            <SelectContent>
-              {isTeamsPending && (
-                <SelectItem value="Loading teams...">
-                  Loading teams...
-                </SelectItem>
-              )}
-
-              {isTeamsError && (
-                <SelectItem value="Error fetching teams">
-                  Error fetching teams
-                </SelectItem>
-              )}
-
-              {!isTeamsPending &&
-                !isTeamsError &&
-                teams.map((team, index) => {
-                  const name = team.Position;
-                  return (
-                    <SelectItem key={index} value={`${name}`}>
-                      {name}
-                    </SelectItem>
-                  );
-                })}
-            </SelectContent>
-          </Select>
-        </div>
       </header>
 
       <main className="items-start md:flex md:gap-4 lg:gap-8">
@@ -211,8 +134,6 @@ export default function OverallSchedule() {
             {/* In-Office Tab */}
             <TabsContent value="In-Office" className="flex flex-col gap-4">
               <TabContent
-                isArrangementsPending={isArrangementsPending}
-                isArrangementsError={isArrangementsError}
                 filteredArrangements={filteredArrangements}
                 currentPageArrangements={currentPageArrangements}
               />
@@ -221,8 +142,6 @@ export default function OverallSchedule() {
             {/* Work-From-Home Tab */}
             <TabsContent value="Work-From-Home" className="flex flex-col gap-4">
               <TabContent
-                isArrangementsPending={isArrangementsPending}
-                isArrangementsError={isArrangementsError}
                 filteredArrangements={filteredArrangements}
                 currentPageArrangements={currentPageArrangements}
               />
@@ -231,8 +150,6 @@ export default function OverallSchedule() {
             {/* Leave Tab */}
             <TabsContent value="Leave" className="flex flex-col gap-4">
               <TabContent
-                isArrangementsPending={isArrangementsPending}
-                isArrangementsError={isArrangementsError}
                 filteredArrangements={filteredArrangements}
                 currentPageArrangements={currentPageArrangements}
               />

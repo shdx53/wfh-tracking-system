@@ -1,7 +1,7 @@
 export function filterTeamArrangements(
   selectedTab,
   teamArrangements,
-  formattedQueryDate,
+  selectedDate,
   setFilteredArrangements,
 ) {
   if (selectedTab === "In-Office") {
@@ -15,14 +15,14 @@ export function filterTeamArrangements(
         const startDateArr = startDates.split(",");
         const shiftTypeArr = shiftTypes.split(",");
 
-        if (startDateArr.includes(formattedQueryDate)) {
+        if (startDateArr.includes(selectedDate)) {
           const matchingStartDates = [];
 
           for (let i = 0; i < startDateArr.length; i++) {
             const startDate = startDateArr[i];
             // Skip checking if the Start_Date has already been checked
             if (
-              startDate === formattedQueryDate &&
+              startDate === selectedDate &&
               !matchingStartDates.includes(startDate)
             ) {
               // Find all indexes with the same Start_Date
@@ -55,7 +55,7 @@ export function filterTeamArrangements(
           // No Start_Date matches the selected date
           filtered.push({
             ...arrangement,
-            Start_Date: formattedQueryDate,
+            Start_Date: selectedDate,
             Shift_Type: null,
           });
         }
@@ -80,7 +80,7 @@ export function filterTeamArrangements(
           const startDate = startDateArr[i];
           const shiftType = shiftTypeArr[i];
 
-          if (startDate === formattedQueryDate) {
+          if (startDate === selectedDate) {
             filtered.push({
               ...arrangement,
               Start_Date: startDate,
