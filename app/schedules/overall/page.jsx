@@ -23,17 +23,17 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Function
-import { fetchTeams } from "@/app/lib/schedules/overall/fetch-teams";
-import { fetchTeamArrangements } from "@/app/lib/schedules/overall/fetch-team-arrangements";
 import { fetchArrangements } from "@/app/lib/schedules/overall/fetch-arrangements";
+import { fetchTeamArrangements } from "@/app/lib/schedules/overall/fetch-team-arrangements";
+import { fetchTeams } from "@/app/lib/schedules/overall/fetch-teams";
 import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
 import { renderTabContent } from "@/app/lib/schedules/overall/render-tab-content";
-import { formatDate } from "@/app/lib/utils";
-import { normalizeDate } from "@/app/lib/utils";
+import { formatDate, normalizeDate } from "@/app/lib/utils";
 
 export default function OverallSchedule() {
   // Initialize date to current date
   const [date, setDate] = useState(new Date());
+  const normalizedDate = normalizeDate(date);
 
   // Format date for display on the UI
   const formattedDate = formatDate(date);
@@ -85,20 +85,20 @@ export default function OverallSchedule() {
           const startDate = arrangement.Start_Date;
 
           if (startDate) {
-            const startDateObj = new Date(startDate);
+            const normalizedStartDate = normalizeDate(startDate);
 
-            if (startDateObj.getTime() === dateObj.getTime()) {
+            if (normalizedStartDate.getTime() === normalizedDate.getTime()) {
               const staffID = arrangement.Staff_ID;
 
               // Find all records with the same Staff_ID and matching Start_Date
               const matches = arrangements.filter((arr) => {
                 const arrStartDate = arr.Start_Date;
-                const arrStartDateObj = new Date(arrStartDate);
+                const normalizedArrStartDate = normalizeDate(arrStartDate);
 
                 return (
                   arr.Staff_ID === staffID &&
-                  normalizeDate(arrStartDateObj).getTime() ===
-                    normalizeDate(startDateObj).getTime()
+                  normalizedArrStartDate.getTime() ===
+                  normalizedStartDate.getTime()
                 );
               });
 
@@ -116,11 +116,9 @@ export default function OverallSchedule() {
                 }
               }
             } else {
-              // Check if the time values of startDateObj and dateObj are not equal
               filtered.push(arrangement);
             }
           } else {
-            // Start_Date is null
             filtered.push(arrangement);
           }
         });
@@ -130,12 +128,12 @@ export default function OverallSchedule() {
           const startDate = arrangement.Start_Date;
 
           if (startDate) {
-            const startDateObj = new Date(startDate);
+            const normalizedStartDate = normalizeDate(startDate);
 
             // Return true if the arrangement date matches the selected date
             return (
-              normalizeDate(startDateObj).getTime() ===
-              normalizeDate(dateObj).getTime()
+              normalizedStartDate.getTime() ===
+              normalizedDate.getTime()
             );
           }
         });
