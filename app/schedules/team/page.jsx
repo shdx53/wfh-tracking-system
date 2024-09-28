@@ -19,9 +19,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // Function
 import { filterTeamArrangements } from "@/app/lib/schedules/filter-team-arrangements";
 import { fetchTeamArrangements } from "@/app/lib/schedules/overall/fetch-team-arrangements";
-import { fetchTeams } from "@/app/lib/schedules/overall/fetch-teams";
 import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
-import { formatDate, normalizeDate } from "@/app/lib/utils";
+import { formatDate } from "@/app/lib/utils";
 
 export default function TeamSchedule() {
   // Initialize date to current date
@@ -54,6 +53,8 @@ export default function TeamSchedule() {
     queryFn: () => fetchTeamArrangements("HR Team"), // Hardcoded. To be changed.
   });
   const teamArrangements = teamArrangementsQuery.data;
+  const isTeamArrangementsPending = teamArrangementsQuery.isPending;
+  const isTeamArrangementsError = teamArrangementsQuery.isError;
 
   useEffect(() => {
     if (teamArrangements && Array.isArray(teamArrangements)) {
@@ -134,6 +135,8 @@ export default function TeamSchedule() {
             {/* In-Office Tab */}
             <TabsContent value="In-Office" className="flex flex-col gap-4">
               <TabContent
+                isArrangementsPending={isTeamArrangementsPending}
+                isArrangementsError={isTeamArrangementsError}
                 filteredArrangements={filteredArrangements}
                 currentPageArrangements={currentPageArrangements}
               />
@@ -142,6 +145,8 @@ export default function TeamSchedule() {
             {/* Work-From-Home Tab */}
             <TabsContent value="Work-From-Home" className="flex flex-col gap-4">
               <TabContent
+                isArrangementsPending={isTeamArrangementsPending}
+                isArrangementsError={isTeamArrangementsError}
                 filteredArrangements={filteredArrangements}
                 currentPageArrangements={currentPageArrangements}
               />
@@ -150,6 +155,8 @@ export default function TeamSchedule() {
             {/* Leave Tab */}
             <TabsContent value="Leave" className="flex flex-col gap-4">
               <TabContent
+                isArrangementsPending={isTeamArrangementsPending}
+                isArrangementsError={isTeamArrangementsError}
                 filteredArrangements={filteredArrangements}
                 currentPageArrangements={currentPageArrangements}
               />
