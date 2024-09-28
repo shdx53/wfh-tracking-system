@@ -16,3 +16,8 @@ export function formatDate(date) {
   return formattedDate;
 }
 
+export function normalizeDate(date) {
+  const newDate = new Date(date);
+  newDate.setHours(0, 0, 0, 0); // Set to midnight to ignore time
+  return newDate;
+};

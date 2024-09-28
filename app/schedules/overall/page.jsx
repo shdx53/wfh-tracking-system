@@ -29,6 +29,7 @@ import { fetchArrangements } from "@/app/lib/schedules/overall/fetch-arrangement
 import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
 import { renderTabContent } from "@/app/lib/schedules/overall/render-tab-content";
 import { formatDate } from "@/app/lib/utils";
+import { normalizeDate } from "@/app/lib/utils";
 
 export default function OverallSchedule() {
   // Initialize date to current date
@@ -120,17 +121,17 @@ export default function OverallSchedule() {
         });
         setFilteredArrangements(filtered);
       } else if (selectedTab === "Work-From-Home") {
-        console.log("dateObj :", dateObj.getTime());
+        console.log("dateObj :", dateObj);
         const filtered = arrangements.filter((arrangement) => {
           const startDate = arrangement.Start_Date;
 
           if (startDate) {
             const startDateObj = new Date(arrangement.Start_Date);
 
-            console.log("startDateObj :", startDateObj.getTime());
+            console.log("startDateObj :", startDateObj);
 
             // Return true if the arrangement date matches the selected date
-            return startDateObj.getTime() === dateObj.getTime();
+            return normalizeDate(startDateObj).getTime() === normalizeDate(dateObj).getTime();
           }
         });
         console.log("Filtered: ", filtered);
