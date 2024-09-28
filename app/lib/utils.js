@@ -16,15 +16,3 @@ export function formatDate(date) {
   return formattedDate;
 }
 
-export function toUTCDate(date) {
-  if (!date) return null; // Return null for invalid dates
-
-  const dateObj = new Date(date);
-  if (isNaN(dateObj.getTime())) return null; // Return null for invalid date strings
-
-  return new Date(Date.UTC(
-    dateObj.getUTCFullYear(),
-    dateObj.getUTCMonth(),
-    dateObj.getUTCDate()
-  ));
-}
