@@ -124,6 +124,7 @@ export default function OverallSchedule() {
         });
         setFilteredArrangements(filtered);
       } else if (selectedTab === "Work-From-Home") {
+        console.log("Arrangements: ", arrangements);
         const filtered = arrangements.filter((arrangement) => {
           const startDate = arrangement.Start_Date;
 
@@ -131,10 +132,11 @@ export default function OverallSchedule() {
             const startDateObjUTC = toUTCDate(startDate);
 
             // Return true if the arrangement date matches the selected date
-            return startDateObjUTC.getTime() === dateObjUTC.getTime();
+            if (startDateObjUTC.getTime() === dateObjUTC.getTime()) {
+              return true;
+            }
           }
         });
-        console.log(filtered);
         setFilteredArrangements(filtered);
       } else {
         const filtered = [];
