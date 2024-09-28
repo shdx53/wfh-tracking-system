@@ -14,7 +14,6 @@ const parentTagStyles = [
 const tagStyles = ["xl:py-1", "px-2", "rounded-md", "border-l-8", "text-left"];
 
 export function renderArrangementTags(arrangements, formattedDate) {
-  console.log(arrangements);
   return arrangements.map((arrangement) => {
     const startDate = arrangement.Start_Date;
     const startDateObj = new Date(startDate);
