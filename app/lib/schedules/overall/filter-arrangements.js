@@ -1,5 +1,5 @@
 // Function
-import { normalizeDate } from "@/app/lib/utils";
+import { normalizeDate, sortArrangementsByShiftType } from "@/app/lib/utils";
 
 export function filterArrangements(
   selectedTab,
@@ -49,6 +49,7 @@ export function filterArrangements(
         filtered.push(arrangement);
       }
     });
+    sortArrangementsByShiftType(filtered);
     setFilteredArrangements(filtered);
   } else if (selectedTab === "Work-From-Home") {
     const filtered = arrangements.filter((arrangement) => {
@@ -61,9 +62,11 @@ export function filterArrangements(
         return normalizedStartDate.getTime() === normalizedDate.getTime();
       }
     });
+    sortArrangementsByShiftType(filtered);
     setFilteredArrangements(filtered);
   } else {
     const filtered = [];
+    sortArrangementsByShiftType(filtered);
     setFilteredArrangements(filtered);
   }
 }

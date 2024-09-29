@@ -29,14 +29,24 @@ export function formatDateToISO(dateString) {
   // Get the day (DD) and pad with zero if needed
   const day = String(date.getDate()).padStart(2, "0");
 
-  const formattedDate = `${year}-${month}-${day}`
+  const formattedDate = `${year}-${month}-${day}`;
 
   // Return the formatted date
-  return formattedDate ;
+  return formattedDate;
 }
 
 export function normalizeDate(date) {
   const newDate = new Date(date);
   newDate.setHours(0, 0, 0, 0); // Set to midnight to ignore time
   return newDate;
+}
+
+export function sortArrangementsByShiftType(arrangements) {
+  const order = ["AM", "PM", "Full Day", null];
+
+  const sortedArrangements = arrangements.sort((a, b) => {
+    return order.indexOf(a.Shift_Type) - order.indexOf(b.Shift_Type);
+  });
+
+  return sortedArrangements;
 }

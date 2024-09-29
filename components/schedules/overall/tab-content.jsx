@@ -7,13 +7,6 @@ export default function TabContent({
   filteredArrangements,
   currentPageArrangements,
 }) {
-  const order = ["AM", "PM", "Full Day", null];
-
-  // Sort filteredArrangements by Shift_Type
-  currentPageArrangements.sort((a, b) => {
-    return order.indexOf(a.Shift_Type) - order.indexOf(b.Shift_Type);
-  });
-
   // Create a Set to store unique employee names from filteredArrangements
   const uniqueEmployees = new Set();
 

@@ -1,5 +1,5 @@
 // Function
-import { formatDateToISO, normalizeDate } from "../utils";
+import { formatDateToISO, normalizeDate, sortArrangementsByShiftType } from "../utils";
 
 export function filterTeamArrangements(
   selectedTab,
@@ -70,7 +70,18 @@ export function filterTeamArrangements(
           const normalizedStartDate = normalizeDate(startDate);
           const formattedStartDate = formatDateToISO(normalizedStartDate);
 
-          if (formattedStartDate !== selectedDate) {
+          if (formattedStartDate == selectedDate) {
+            const shiftType = shiftTypes;
+
+            // If Shift_Type is not Full Day,
+            // Add the opposite Shift_Type to the array 
+            if (shiftType !== "Full Day") {
+                filtered.push({
+                  ...arrangement,
+                  Shift_Type: shiftType === "AM" ? "PM" : "AM",
+                })
+            }
+          } else {
             filtered.push(arrangement);
           }
         }
@@ -79,6 +90,7 @@ export function filterTeamArrangements(
         filtered.push(arrangement);
       }
     });
+    sortArrangementsByShiftType(filtered);
     setFilteredArrangements(filtered);
   } else if (selectedTab === "Work-From-Home") {
     const filtered = [];
@@ -117,9 +129,11 @@ export function filterTeamArrangements(
         }
       }
     });
+    sortArrangementsByShiftType(filtered);
     setFilteredArrangements(filtered);
   } else {
     const filtered = [];
+    sortArrangementsByShiftType(filtered);
     setFilteredArrangements(filtered);
   }
 }
