@@ -14,14 +14,14 @@ function filterArrangements(arrangements, selectedDate) {
 
 export function renderArrangementCards(arrangements, selectedDate) {
   const filteredArrangements = filterArrangements(arrangements, selectedDate);
-  return filteredArrangements.map((arrangement) => {
-    const arrangementID = arrangement.Arrangement_ID;
+
+  return filteredArrangements.map((arrangement, index) => {
     const shiftType = arrangement.Shift_Type;
     return (
       <ArrangementCard
-        key={arrangementID}
+        key={index}
         page="personal"
-        type={shiftType === "Full Day" ? "All Day" : shiftType}
+        shiftType={shiftType === "Full Day" ? "All Day" : shiftType}
         arrangement="Work-From-Home"
       />
     );
