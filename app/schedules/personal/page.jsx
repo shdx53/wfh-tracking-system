@@ -16,6 +16,14 @@ import { renderArrangementCards } from "../../lib/schedules/personal/render-arra
 import { renderArrangementTags } from "../../lib/schedules/personal/render-arrangement-tags";
 
 export default function PersonalSchedule() {
+  return (
+    <Suspense>
+      <PersonalScheduleContent />
+    </Suspense>
+  );
+}
+
+function PersonalScheduleContent() {
   // Get staff ID from query params
   const searchParams = useSearchParams();
   const staffID = searchParams.get("staffID");
@@ -82,67 +90,65 @@ export default function PersonalSchedule() {
   }, [index]);
 
   return (
-    <Suspense>
-      <div className="mx-auto max-w-lg sm:max-w-xl md:max-w-none">
-        <header className="flex flex-col gap-3 py-8">
-          <h1 className="text-2xl font-bold">My Schedule</h1>
-          <div className="text-sm text-black/50">
-            <span className="italic">Note:</span>
-            <span>
-              If you have pending Work-From-Home requests, they will appear
-              greyed out.
-            </span>
+    <div className="mx-auto max-w-lg sm:max-w-xl md:max-w-none">
+      <header className="flex flex-col gap-3 py-8">
+        <h1 className="text-2xl font-bold">My Schedule</h1>
+        <div className="text-sm text-black/50">
+          <span className="italic">Note:</span>
+          <span>
+            If you have pending Work-From-Home requests, they will appear greyed
+            out.
+          </span>
+        </div>
+      </header>
+
+      <main className="items-start md:flex md:gap-4 lg:gap-8">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="rounded-lg border p-6 sm:p-8 md:w-1/2 md:p-6 lg:hidden lg:p-8"
+        />
+        {/* >= 1024px */}
+        <BigCalendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="hidden w-full rounded-lg lg:block"
+          index={index}
+          setIndex={setIndex}
+          date={date}
+          setDate={setDate}
+        />
+
+        <section className="my-8 flex flex-col gap-6 rounded-lg border p-6 sm:p-8 md:my-0 md:w-1/2 md:p-6 lg:hidden lg:p-8">
+          <h2 className="text-xl font-semibold">
+            <div>Schedule for </div>
+            <div>{formattedDate}</div>
+          </h2>
+
+          <div className="flex flex-col gap-4">
+            {(isApprovedArrangementsPending ||
+              isPendingArrangementsPending) && (
+              <div>Loading arrangements...</div>
+            )}
+            {(isApprovedArrangementsError || isPendingArrangementsError) && (
+              <div>
+                Oops! Something went wrong while fetching your arrangements.
+                Please try again later.
+              </div>
+            )}
+            {arrangementCards && arrangementCards.length > 0
+              ? arrangementCards
+              : !isApprovedArrangementsPending &&
+                !isPendingArrangementsPending &&
+                !isApprovedArrangementsError &&
+                !isPendingArrangementsError && (
+                  <div>No arrangements found for the selected date.</div>
+                )}
           </div>
-        </header>
-
-        <main className="items-start md:flex md:gap-4 lg:gap-8">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            className="rounded-lg border p-6 sm:p-8 md:w-1/2 md:p-6 lg:hidden lg:p-8"
-          />
-          {/* >= 1024px */}
-          <BigCalendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            className="hidden w-full rounded-lg lg:block"
-            index={index}
-            setIndex={setIndex}
-            date={date}
-            setDate={setDate}
-          />
-
-          <section className="my-8 flex flex-col gap-6 rounded-lg border p-6 sm:p-8 md:my-0 md:w-1/2 md:p-6 lg:hidden lg:p-8">
-            <h2 className="text-xl font-semibold">
-              <div>Schedule for </div>
-              <div>{formattedDate}</div>
-            </h2>
-
-            <div className="flex flex-col gap-4">
-              {(isApprovedArrangementsPending ||
-                isPendingArrangementsPending) && (
-                <div>Loading arrangements...</div>
-              )}
-              {(isApprovedArrangementsError || isPendingArrangementsError) && (
-                <div>
-                  Oops! Something went wrong while fetching your arrangements.
-                  Please try again later.
-                </div>
-              )}
-              {arrangementCards && arrangementCards.length > 0
-                ? arrangementCards
-                : !isApprovedArrangementsPending &&
-                  !isPendingArrangementsPending &&
-                  !isApprovedArrangementsError &&
-                  !isPendingArrangementsError && (
-                    <div>No arrangements found for the selected date.</div>
-                  )}
-            </div>
-          </section>
-        </main>
-      </div>
-    </Suspense>
+        </section>
+      </main>
+    </div>
   );
 }

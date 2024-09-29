@@ -24,6 +24,14 @@ import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagina
 import { formatDateToISO, formatDateToShortString } from "@/app/lib/utils";
 
 export default function TeamSchedule() {
+  return (
+    <Suspense>
+      <TeamScheduleContent />
+    </Suspense>
+  );
+}
+
+function TeamScheduleContent() {
   // Get staff ID from query params
   const searchParams = useSearchParams();
   const staffID = searchParams.get("staffID");
@@ -82,128 +90,119 @@ export default function TeamSchedule() {
   );
 
   return (
-    <Suspense>
-      <div className="mx-auto max-w-lg sm:max-w-xl md:max-w-none">
-        <header className="flex flex-col gap-3 py-8">
-          <h1 className="text-2xl font-bold">Schedule</h1>
-        </header>
+    <div className="mx-auto max-w-lg sm:max-w-xl md:max-w-none">
+      <header className="flex flex-col gap-3 py-8">
+        <h1 className="text-2xl font-bold">Schedule</h1>
+      </header>
 
-        <main className="items-start md:flex md:gap-4 lg:gap-8">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            className="rounded-lg border p-6 sm:p-8 md:w-1/2 md:p-6 lg:p-8"
-          />
+      <main className="items-start md:flex md:gap-4 lg:gap-8">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="rounded-lg border p-6 sm:p-8 md:w-1/2 md:p-6 lg:p-8"
+        />
 
-          <section className="my-8 rounded-lg border p-6 sm:p-8 md:my-0 md:w-1/2 md:p-6 lg:p-8">
-            <h2 className="text-xl font-semibold">
-              <div>Schedule for </div>
-              <div>{formattedDate}</div>
-            </h2>
+        <section className="my-8 rounded-lg border p-6 sm:p-8 md:my-0 md:w-1/2 md:p-6 lg:p-8">
+          <h2 className="text-xl font-semibold">
+            <div>Schedule for </div>
+            <div>{formattedDate}</div>
+          </h2>
 
-            <Tabs defaultValue="In-Office" className="pt-4">
-              <TabsList className="">
-                <TabsTrigger
-                  value="In-Office"
-                  onClick={() => setSelectedTab("In-Office")}
-                >
-                  In-Office
-                </TabsTrigger>
-                <TabsTrigger
-                  value="Work-From-Home"
-                  className="sm:hidden"
-                  onClick={() => setSelectedTab("Work-From-Home")}
-                >
-                  WFH
-                </TabsTrigger>
-                <TabsTrigger
-                  value="Work-From-Home"
-                  className="hidden sm:block"
-                  onClick={() => setSelectedTab("Work-From-Home")}
-                >
-                  Work-From-Home
-                </TabsTrigger>
-                <TabsTrigger
-                  value="Leave"
-                  onClick={() => setSelectedTab("Leave")}
-                >
-                  Leave
-                </TabsTrigger>
-              </TabsList>
-
-              {/* In-Office Tab */}
-              <TabsContent value="In-Office" className="flex flex-col gap-4">
-                <TabContent
-                  isArrangementsPending={isTeamArrangementsPending}
-                  isArrangementsError={isTeamArrangementsError}
-                  filteredArrangements={filteredArrangements}
-                  currentPageArrangements={currentPageArrangements}
-                />
-              </TabsContent>
-
-              {/* Work-From-Home Tab */}
-              <TabsContent
-                value="Work-From-Home"
-                className="flex flex-col gap-4"
+          <Tabs defaultValue="In-Office" className="pt-4">
+            <TabsList className="">
+              <TabsTrigger
+                value="In-Office"
+                onClick={() => setSelectedTab("In-Office")}
               >
-                <TabContent
-                  isArrangementsPending={isTeamArrangementsPending}
-                  isArrangementsError={isTeamArrangementsError}
-                  filteredArrangements={filteredArrangements}
-                  currentPageArrangements={currentPageArrangements}
-                />
-              </TabsContent>
+                In-Office
+              </TabsTrigger>
+              <TabsTrigger
+                value="Work-From-Home"
+                className="sm:hidden"
+                onClick={() => setSelectedTab("Work-From-Home")}
+              >
+                WFH
+              </TabsTrigger>
+              <TabsTrigger
+                value="Work-From-Home"
+                className="hidden sm:block"
+                onClick={() => setSelectedTab("Work-From-Home")}
+              >
+                Work-From-Home
+              </TabsTrigger>
+              <TabsTrigger
+                value="Leave"
+                onClick={() => setSelectedTab("Leave")}
+              >
+                Leave
+              </TabsTrigger>
+            </TabsList>
 
-              {/* Leave Tab */}
-              <TabsContent value="Leave" className="flex flex-col gap-4">
-                <TabContent
-                  isArrangementsPending={isTeamArrangementsPending}
-                  isArrangementsError={isTeamArrangementsError}
-                  filteredArrangements={filteredArrangements}
-                  currentPageArrangements={currentPageArrangements}
-                />
-              </TabsContent>
-            </Tabs>
+            {/* In-Office Tab */}
+            <TabsContent value="In-Office" className="flex flex-col gap-4">
+              <TabContent
+                isArrangementsPending={isTeamArrangementsPending}
+                isArrangementsError={isTeamArrangementsError}
+                filteredArrangements={filteredArrangements}
+                currentPageArrangements={currentPageArrangements}
+              />
+            </TabsContent>
 
-            {filteredArrangements && totalPages > 0 && (
-              <Pagination className="pt-12">
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      className={`cursor-pointer ${currentPage === 1 && "cursor-default opacity-60 hover:bg-transparent"}`}
-                      onClick={() =>
-                        // Decrease the current page by 1 but ensure it doesn't go below 1
-                        setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
-                      }
-                    />
-                  </PaginationItem>
+            {/* Work-From-Home Tab */}
+            <TabsContent value="Work-From-Home" className="flex flex-col gap-4">
+              <TabContent
+                isArrangementsPending={isTeamArrangementsPending}
+                isArrangementsError={isTeamArrangementsError}
+                filteredArrangements={filteredArrangements}
+                currentPageArrangements={currentPageArrangements}
+              />
+            </TabsContent>
 
-                  {/* Render pagination items */}
-                  {renderPaginationItems(
-                    currentPage,
-                    setCurrentPage,
-                    totalPages,
-                  )}
+            {/* Leave Tab */}
+            <TabsContent value="Leave" className="flex flex-col gap-4">
+              <TabContent
+                isArrangementsPending={isTeamArrangementsPending}
+                isArrangementsError={isTeamArrangementsError}
+                filteredArrangements={filteredArrangements}
+                currentPageArrangements={currentPageArrangements}
+              />
+            </TabsContent>
+          </Tabs>
 
-                  <PaginationItem>
-                    <PaginationNext
-                      className={`cursor-pointer ${currentPage === totalPages && "cursor-default opacity-60 hover:bg-transparent"}`}
-                      onClick={() =>
-                        setCurrentPage((prevPage) =>
-                          // Increase the current page by 1
-                          // but ensure it doesn't exceed the total number of pages
-                          Math.min(prevPage + 1, totalPages),
-                        )
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            )}
-          </section>
-        </main>
-      </div>
-    </Suspense>
+          {filteredArrangements && totalPages > 0 && (
+            <Pagination className="pt-12">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    className={`cursor-pointer ${currentPage === 1 && "cursor-default opacity-60 hover:bg-transparent"}`}
+                    onClick={() =>
+                      // Decrease the current page by 1 but ensure it doesn't go below 1
+                      setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
+                    }
+                  />
+                </PaginationItem>
+
+                {/* Render pagination items */}
+                {renderPaginationItems(currentPage, setCurrentPage, totalPages)}
+
+                <PaginationItem>
+                  <PaginationNext
+                    className={`cursor-pointer ${currentPage === totalPages && "cursor-default opacity-60 hover:bg-transparent"}`}
+                    onClick={() =>
+                      setCurrentPage((prevPage) =>
+                        // Increase the current page by 1
+                        // but ensure it doesn't exceed the total number of pages
+                        Math.min(prevPage + 1, totalPages),
+                      )
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </section>
+      </main>
+    </div>
   );
 }
