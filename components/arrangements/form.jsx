@@ -22,7 +22,7 @@ import AdHocForm from "./ad-hoc-form";
 import RecurringForm from "./recurring-form";
 
 // Function
-import fetchPersonalArrangements from "@/app/lib/schedules/arrangements/fetch-personal-arrangements";
+import fetchPersonalArrangements from "@/app/lib/arrangements/fetch-personal-arrangements";
 
 // Schema
 import { getSchema } from "@/app/schemas/arrangement/base-schema";

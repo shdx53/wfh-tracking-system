@@ -17,12 +17,16 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Function
+import { fetchTeamArrangements } from "@/app/lib/arrangements/fetch-team-arrangements";
 import { filterTeamArrangements } from "@/app/lib/schedules/filter-team-arrangements";
-import { fetchTeamArrangements } from "@/app/lib/schedules/arrangements/fetch-team-arrangements";
 import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
 import { formatDate } from "@/app/lib/utils";
 
-export default function TeamSchedule() {
+export default function TeamSchedule({ params }) {
+  // TO BE REMOVED
+  let { team } = params; 
+  team = team.replace(/%20/g, " ");
+
   // Initialize date to current date
   const [date, setDate] = useState(new Date());
 
@@ -50,7 +54,7 @@ export default function TeamSchedule() {
   // Fetch all team arrangements for the selected date
   const teamArrangementsQuery = useQuery({
     queryKey: ["team arrangements"],
-    queryFn: () => fetchTeamArrangements("HR Team"), // Hardcoded. To be changed.
+    queryFn: () => fetchTeamArrangements(team), // TO BE CHANGED
   });
   const teamArrangements = teamArrangementsQuery.data;
   const isTeamArrangementsPending = teamArrangementsQuery.isPending;

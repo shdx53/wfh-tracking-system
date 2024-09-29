@@ -24,8 +24,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TabContent from "@/components/schedules/overall/tab-content";
 
 // Function
-import { fetchArrangements } from "@/app/lib/schedules/arrangements/fetch-arrangements";
-import { fetchTeamArrangements } from "@/app/lib/schedules/arrangements/fetch-team-arrangements";
+import { fetchArrangements } from "@/app/lib/arrangements/fetch-arrangements";
+import { fetchTeamArrangements } from "@/app/lib/arrangements/fetch-team-arrangements";
 import { fetchTeams } from "@/app/lib/schedules/overall/fetch-teams";
 import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
 import { formatDate, normalizeDate } from "@/app/lib/utils";
@@ -109,7 +109,7 @@ export default function OverallSchedule() {
       filterTeamArrangements(
         selectedTab,
         teamArrangements,
-        formattedQueryDate,
+        formattedSelectedDate,
         setFilteredArrangements,
       );
     }
