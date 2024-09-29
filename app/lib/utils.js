@@ -5,7 +5,8 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDateToShortString(dateObj) {
+export function formatDateToShortString(date) {
+  const dateObj = new Date(date);
   const formattedDate = dateObj.toLocaleDateString("en-US", {
     weekday: "short", // e.g., Mon
     month: "short", // e.g., Sep
