@@ -12,9 +12,12 @@ export async function GET(request) {
     // Get a connection from the pool
     const conn = await pool.getConnection();
 
-    // Get search params from the request
     const searchParams = request.nextUrl.searchParams;
+
+    // Get Start_Date input from the request
     const startDate = searchParams.get("startDate");
+
+    // Get Team input from the request
     const team = searchParams.get("team");
 
     let data;

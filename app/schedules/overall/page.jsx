@@ -24,8 +24,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TabContent from "@/components/schedules/overall/tab-content";
 
 // Function
-import { fetchArrangements } from "@/app/lib/schedules/overall/fetch-arrangements";
-import { fetchTeamArrangements } from "@/app/lib/schedules/overall/fetch-team-arrangements";
+import { fetchArrangements } from "@/app/lib/schedules/arrangements/fetch-arrangements";
+import { fetchTeamArrangements } from "@/app/lib/schedules/arrangements/fetch-team-arrangements";
 import { fetchTeams } from "@/app/lib/schedules/overall/fetch-teams";
 import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
 import { formatDate, normalizeDate } from "@/app/lib/utils";
@@ -63,16 +63,19 @@ export default function OverallSchedule() {
   const year = String(dateObj.getFullYear());
 
   // Formatted date
-  const formattedQueryDate = `${year}-${month}-${day}`;
+  const formattedSelectedDate = `${year}-${month}-${day}`;
 
   const [selectedTab, setSelectedTab] = useState("In-Office");
   const [filteredArrangements, setFilteredArrangements] = useState([]);
 
   // Fetch all arrangements for the selected date
   const arrangementsQuery = useQuery({
-    queryKey: ["arrangements", { formattedQueryDate: formattedQueryDate }],
+    queryKey: [
+      "arrangements",
+      { formattedSelectedDate: formattedSelectedDate },
+    ],
     queryFn: ({ queryKey }) =>
-      fetchArrangements(queryKey[1].formattedQueryDate),
+      fetchArrangements(queryKey[1].formattedSelectedDate),
   });
   const arrangements = arrangementsQuery.data;
   const isArrangementsPending = arrangementsQuery.isPending;

@@ -33,6 +33,9 @@ export default function RecurringForm({
   form,
   selectedArrangementType,
   isPending,
+  selectedStartDate,
+  setSelectedStartDate,
+  selectedDateShiftTypes,
 }) {
   const [selectedRecurringInterval, setSelectedRecurringInterval] =
     useState(null);
@@ -105,6 +108,7 @@ export default function RecurringForm({
                   selected={field.value}
                   onSelect={(value) => {
                     field.onChange(value);
+                    setSelectedStartDate(value);
 
                     // Get the current values from the form
                     const currentValues = form.getValues();
@@ -208,9 +212,35 @@ export default function RecurringForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="AM">AM</SelectItem>
-                    <SelectItem value="PM">PM</SelectItem>
-                    <SelectItem value="Full Day">All Day</SelectItem>
+                    <SelectItem
+                      value="AM"
+                      disabled={
+                        selectedDateShiftTypes &&
+                        selectedDateShiftTypes.includes("AM")
+                      }
+                    >
+                      AM
+                    </SelectItem>
+                    <SelectItem
+                      value="PM"
+                      disabled={
+                        selectedDateShiftTypes &&
+                        selectedDateShiftTypes.includes("PM")
+                      }
+                    >
+                      PM
+                    </SelectItem>
+                    <SelectItem
+                      value="Full Day"
+                      disabled={
+                        selectedDateShiftTypes &&
+                        (selectedDateShiftTypes.includes("Full Day") ||
+                          selectedDateShiftTypes.includes("AM") ||
+                          selectedDateShiftTypes.includes("PM"))
+                      }
+                    >
+                      All Day
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

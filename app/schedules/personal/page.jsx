@@ -1,14 +1,14 @@
 "use client";
 
 // Library
-import { useQuery } from "@tanstack/react-query";
+ 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 
 // Component
 import { BigCalendar } from "@/components/ui/big-calendar";
 import { Calendar } from "@/components/ui/calendar";
-import fetchArrangements from "../../lib/schedules/personal/fetch-arrangements";
+import fetchPersonalArrangements from "@/app/lib/schedules/arrangements/fetch-personal-arrangements";
 
 // Function
 import { formatDate } from "@/app/lib/utils";
@@ -37,7 +37,7 @@ function PersonalScheduleContent() {
   // Fetch approved arrangements
   const approvedArrangementsQuery = useQuery({
     queryKey: ["approved arrangements", { staffID: staffID }],
-    queryFn: ({ queryKey }) => fetchArrangements(queryKey[1], "approved"),
+    queryFn: ({ queryKey }) => fetchPersonalArrangements(queryKey[1], "approved"),
   });
   const approvedArrangements = approvedArrangementsQuery.data;
   const isApprovedArrangementsPending = approvedArrangementsQuery.isPending;
@@ -46,7 +46,7 @@ function PersonalScheduleContent() {
   // Fetch pending arrangements
   const pendingArrangementsQuery = useQuery({
     queryKey: ["pending arrangements", { staffID: staffID }],
-    queryFn: ({ queryKey }) => fetchArrangements(queryKey[1], "pending"),
+    queryFn: ({ queryKey }) => fetchPersonalArrangements(queryKey[1], "pending"),
   });
   let pendingArrangements = pendingArrangementsQuery.data;
   const isPendingArrangementsPending = pendingArrangementsQuery.isPending;

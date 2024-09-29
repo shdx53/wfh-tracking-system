@@ -27,7 +27,13 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { CalendarIcon } from "lucide-react";
 
-export default function AdHocForm({ form, isPending }) {
+export default function AdHocForm({
+  form,
+  isPending,
+  selectedStartDate,
+  setSelectedStartDate,
+  selectedDateShiftTypes,
+}) {
   return (
     <>
       {/* Start date field */}
@@ -60,7 +66,10 @@ export default function AdHocForm({ form, isPending }) {
                 <Calendar
                   mode="single"
                   selected={field.value}
-                  onSelect={field.onChange}
+                  onSelect={(value) => {
+                    field.onChange(value);
+                    setSelectedStartDate(value);
+                  }}
                   // Only allows selecting dates starting from the day after tomorrow
                   disabled={(date) => {
                     const nextDay = new Date();
@@ -76,57 +85,87 @@ export default function AdHocForm({ form, isPending }) {
         )}
       />
 
-      {/* Shift type field */}
-      <FormField
-        control={form.control}
-        name="shiftType"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Shift</FormLabel>
-            <Select
-              onValueChange={field.onChange}
-              // Ensure value is not null, so that the placeholder will be displayed
-              defaultValue={field.value || ""}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a shift" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="AM">AM</SelectItem>
-                <SelectItem value="PM">PM</SelectItem>
-                <SelectItem value="Full Day">All Day</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      {selectedStartDate && (
+        <>
+          {/* Shift type field */}
+          <FormField
+            control={form.control}
+            name="shiftType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Shift</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  // Ensure value is not null, so that the placeholder will be displayed
+                  defaultValue={field.value || ""}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a shift" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem
+                      value="AM"
+                      disabled={
+                        selectedDateShiftTypes &&
+                        selectedDateShiftTypes.includes("AM")
+                      }
+                    >
+                      AM
+                    </SelectItem>
+                    <SelectItem
+                      value="PM"
+                      disabled={
+                        selectedDateShiftTypes &&
+                        selectedDateShiftTypes.includes("PM")
+                      }
+                    >
+                      PM
+                    </SelectItem>
+                    <SelectItem
+                      value="Full Day"
+                      disabled={
+                        selectedDateShiftTypes &&
+                        (selectedDateShiftTypes.includes("Full Day") ||
+                          selectedDateShiftTypes.includes("AM") ||
+                          selectedDateShiftTypes.includes("PM"))
+                      }
+                    >
+                      All Day
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      {/* Text area field */}
-      <FormField
-        control={form.control}
-        name="applyReason"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Apply reason</FormLabel>
-            <FormControl>
-              <Textarea
-                placeholder="Type your reason here."
-                className="resize-none"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+          {/* Text area field */}
+          <FormField
+            control={form.control}
+            name="applyReason"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Apply reason</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Type your reason here."
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      {/* Submit */}
-      <Button type="submit" className="w-full" disabled={isPending}>
-        Submit
-      </Button>
+          {/* Submit */}
+          <Button type="submit" className="w-full" disabled={isPending}>
+            Submit
+          </Button>
+        </>
+      )}
     </>
   );
 }

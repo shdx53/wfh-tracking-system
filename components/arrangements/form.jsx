@@ -2,7 +2,8 @@
 
 // Library
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -20,6 +21,9 @@ import { useToast } from "@/hooks/use-toast";
 import AdHocForm from "./ad-hoc-form";
 import RecurringForm from "./recurring-form";
 
+// Function
+import fetchPersonalArrangements from "@/app/lib/schedules/arrangements/fetch-personal-arrangements";
+
 // Schema
 import { getSchema } from "@/app/schemas/arrangement/base-schema";
 
@@ -27,8 +31,71 @@ import { getSchema } from "@/app/schemas/arrangement/base-schema";
 import { newArrangement } from "@/app/actions/newArrangement";
 
 export default function ArrangementForm() {
-  const [selectedArrangementType, setSelectedArrangementType] = useState(null);
+  // Get staff ID from query params (TO BE REMOVED)
+  const searchParams = useSearchParams();
+  const staffID = searchParams.get("staffID");
 
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const [selectedArrangementType, setSelectedArrangementType] = useState(null);
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+
+  /* Disable Start_Date select option(s) logic */
+  /* Format selected date for querying */
+  const selectedStartDateObj = new Date(selectedStartDate);
+
+  // Get day and pad with leading zero if needed
+  const day = String(selectedStartDateObj.getDate()).padStart(2, "0");
+
+  // Get month (0-indexed) and pad with leading zero
+  const month = String(selectedStartDateObj.getMonth() + 1).padStart(2, "0");
+
+  // Get last two digits of year
+  const year = String(selectedStartDateObj.getFullYear());
+
+  // Formatted date
+  const formattedSelectedDate = `${year}-${month}-${day}`;
+
+  // Fetch approved arrangements for the selected date
+  const approvedArrangementsQuery = useQuery({
+    queryKey: [
+      "approved arrangements",
+      { staffID: staffID, startDate: formattedSelectedDate },
+    ],
+    queryFn: ({ queryKey }) =>
+      fetchPersonalArrangements(queryKey[1], "approved"),
+    // Only run the query if selectedStartDate is not null
+    enabled: !!selectedStartDate,
+  });
+  const approvedArrangements = approvedArrangementsQuery.data;
+
+  // Fetch pending arrangements for the selected date
+  const pendingArrangementsQuery = useQuery({
+    queryKey: [
+      "pending arrangements",
+      { staffID: staffID, startDate: formattedSelectedDate },
+    ],
+    queryFn: ({ queryKey }) =>
+      fetchPersonalArrangements(queryKey[1], "pending"),
+    // Only run the query if selectedStartDate is not null
+    enabled: !!selectedStartDate,
+  });
+  const pendingArrangements = pendingArrangementsQuery.data;
+
+  // Combine approvedArrangements and pendingArrangements if neither is undefined and is an array
+  const arrangements = approvedArrangements &&
+    Array.isArray(approvedArrangements) &&
+    pendingArrangements &&
+    Array.isArray(pendingArrangements) && [
+      ...approvedArrangements,
+      ...pendingArrangements,
+    ];
+
+  const selectedDateShiftTypes =
+    arrangements && arrangements.map((arrangement) => arrangement.Shift_Type);
+
+  /* Form logic */
   const form = useForm({
     // Dynamically get the schema based on the arrangement type
     resolver: zodResolver(getSchema(selectedArrangementType === "Recurring")),
@@ -42,13 +109,9 @@ export default function ArrangementForm() {
     },
   });
 
-  const router = useRouter();
-  const { toast } = useToast();
   const [isPending, setIsPending] = useState(false);
 
   async function onSubmit(data) {
-    const staffID = 9999; // Hardcoded. To be changed.
-
     // Convert startDate and endDate to UTC using Date.UTC
     const startDateUTC = data.startDate
       ? new Date(
@@ -68,7 +131,6 @@ export default function ArrangementForm() {
           ),
         )
       : null;
-
     const updatedDate = {
       ...data,
       startDate: startDateUTC,
@@ -138,13 +200,22 @@ export default function ArrangementForm() {
         />
 
         {selectedArrangementType === "Ad-hoc" && (
-          <AdHocForm form={form} isPending={isPending} />
+          <AdHocForm
+            form={form}
+            isPending={isPending}
+            selectedStartDate={selectedStartDate}
+            setSelectedStartDate={setSelectedStartDate}
+            selectedDateShiftTypes={selectedDateShiftTypes}
+          />
         )}
         {selectedArrangementType === "Recurring" && (
           <RecurringForm
             form={form}
             selectedArrangementType={selectedArrangementType}
             isPending={isPending}
+            selectedStartDate={selectedStartDate}
+            setSelectedStartDate={setSelectedStartDate}
+            selectedDateShiftTypes={selectedDateShiftTypes}
           />
         )}
       </form>

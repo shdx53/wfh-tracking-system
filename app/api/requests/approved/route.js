@@ -12,15 +12,32 @@ export async function GET(request) {
     // Get a connection from the pool
     const conn = await pool.getConnection();
 
-    // Get Staff_ID input from the request
     const searchParams = request.nextUrl.searchParams;
+
+    // Get Staff_ID input from the request
     const staffID = searchParams.get("staffID");
 
+    // Get Start_Date input from the request
+    const startDate = searchParams.get("startDate");
+
+    let data;
+
     // Execute the query
-    const [data] = await conn.query(
-      "SELECT Start_Date, Shift_Type FROM Arrangement WHERE Staff_ID = ? AND Request_Status = 'approved'",
-      [staffID],
-    );
+    if (staffID && !startDate) {
+      const [rows] = await conn.query(
+        "SELECT Start_Date, Shift_Type FROM Arrangement WHERE Staff_ID = ? AND Request_Status = 'approved'",
+        [staffID],
+      );
+      data = rows;
+    } 
+
+    if (staffID && startDate) {
+      const [rows] = await conn.query(
+        "SELECT Start_Date, Shift_Type FROM Arrangement WHERE Staff_ID = ? AND Start_Date = ? AND Request_Status = 'approved'",
+        [staffID, startDate]
+      );
+      data = rows;
+    }
 
     // Release the connection back to the pool
     conn.release();

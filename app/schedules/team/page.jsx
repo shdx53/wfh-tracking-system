@@ -18,7 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Function
 import { filterTeamArrangements } from "@/app/lib/schedules/filter-team-arrangements";
-import { fetchTeamArrangements } from "@/app/lib/schedules/overall/fetch-team-arrangements";
+import { fetchTeamArrangements } from "@/app/lib/schedules/arrangements/fetch-team-arrangements";
 import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
 import { formatDate } from "@/app/lib/utils";
 
