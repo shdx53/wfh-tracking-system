@@ -134,7 +134,7 @@ export default function RecurringForm({
         )}
       />
 
-      {selectedRecurringInterval && form.getValues("startDate") && (
+      {selectedRecurringInterval && selectedStartDate && (
         <>
           {/* End date field */}
           {selectedArrangementType === "Recurring" && (
