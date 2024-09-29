@@ -15,7 +15,7 @@ export function filterTeamArrangements(
       const shiftTypes = arrangement.Shift_Type;
 
       if (startDates) {
-        if (startDates.length <= 10) {
+        if (startDates.length <= 10 || startDates.includes(",")) {
           // HR and Senior Management
           const startDateArr = startDates.split(",");
           const shiftTypeArr = shiftTypes.split(",");
@@ -100,7 +100,7 @@ export function filterTeamArrangements(
       const shiftTypes = arrangement.Shift_Type;
 
       if (startDates) {
-        if (startDates.length <= 10) {
+        if (startDates.length <= 10 || startDates.includes(",")) {
           // HR and Senior Management
           const startDateArr = startDates.split(",");
           const shiftTypeArr = shiftTypes.split(",");
