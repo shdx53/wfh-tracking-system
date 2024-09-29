@@ -71,10 +71,19 @@ export default function AdHocForm({
                     setSelectedStartDate(value);
                   }}
                   // Only allows selecting dates starting from the day after tomorrow
+                  // and weekdays
                   disabled={(date) => {
                     const nextDay = new Date();
                     nextDay.setDate(nextDay.getDate() + 1);
-                    return date < nextDay;
+
+                    // Check if the date is before tomorrow
+                    const isBeforeTomorrow = date < nextDay;
+
+                    // Check if the date is a weekend (Saturday or Sunday)
+                    const isWeekend =
+                      date.getDay() === 0 || date.getDay() === 6; // 0 = Sunday, 6 = Saturday
+
+                    return isBeforeTomorrow || isWeekend;
                   }}
                   initialFocus
                 />

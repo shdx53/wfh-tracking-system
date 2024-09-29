@@ -119,11 +119,20 @@ export default function RecurringForm({
                       endDate: null,
                     });
                   }}
-                  // Disable dates before the day after tomorrow
+                  // Only allows selecting dates starting from the day after tomorrow
+                  // and weekdays
                   disabled={(date) => {
                     const nextDay = new Date();
                     nextDay.setDate(nextDay.getDate() + 1);
-                    return date < nextDay;
+
+                    // Check if the date is before tomorrow
+                    const isBeforeTomorrow = date < nextDay;
+
+                    // Check if the date is a weekend (Saturday or Sunday)
+                    const isWeekend =
+                      date.getDay() === 0 || date.getDay() === 6; // 0 = Sunday, 6 = Saturday
+
+                    return isBeforeTomorrow || isWeekend;
                   }}
                   initialFocus
                 />
@@ -168,12 +177,12 @@ export default function RecurringForm({
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
+                        // Disable dates before minEndDate or weekends
                         disabled={(date) => {
                           const startDate = form.getValues("startDate");
                           const recurringInterval =
                             form.getValues("recurringInterval");
 
-                          const oneDay = 24 * 60 * 60 * 1000; // milliseconds in a day
                           let minEndDate = new Date(startDate);
 
                           // Set minimum end date based on recurring interval
@@ -183,7 +192,11 @@ export default function RecurringForm({
                             minEndDate.setMonth(minEndDate.getMonth() + 1); // At least 1 month after
                           }
 
-                          return date < minEndDate; // Disable dates before minEndDate
+                          // Check if the date is a weekend (Saturday or Sunday)
+                          const isWeekend =
+                            date.getDay() === 0 || date.getDay() === 6; // 0 = Sunday, 6 = Saturday
+
+                          return date < minEndDate || isWeekend;
                         }}
                         initialFocus
                       />
