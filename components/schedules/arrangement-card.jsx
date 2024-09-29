@@ -3,6 +3,7 @@ export default function ArrangementCard({
   firstName,
   lastName,
   dept,
+  position,
   shiftType,
   arrangement,
   status,
@@ -19,13 +20,13 @@ export default function ArrangementCard({
     >
       <div className="flex flex-col gap-1">
         <div className="font-semibold">
-          {page === "overall" ? `${firstName} ${lastName}` : arrangement}
+          {page === "overall/team" ? `${firstName} ${lastName}` : arrangement}
         </div>
         <div className="opacity-70">
-          {page === "overall" ? dept : shiftType}
+          {page === "overall/team" ? (dept || position) : shiftType}
         </div>
       </div>
-      {page === "overall" && <div className="font-medium">{shiftType}</div>}
+      {page === "overall/team" && <div className="font-medium">{shiftType}</div>}
       {status === "pending" && <div className="italic">Pending</div>}
     </div>
   );

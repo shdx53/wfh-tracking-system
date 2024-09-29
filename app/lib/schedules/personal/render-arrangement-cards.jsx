@@ -2,12 +2,12 @@
 import ArrangementCard from "@/components/schedules/arrangement-card";
 
 // Function
-import { formatDate } from "@/app/lib/utils";
+import { formatDateToShortString } from "@/app/lib/utils";
 
 // Filter arrangements that matches selected date
 function filterArrangements(arrangements, selectedDate) {
   return arrangements.filter((arrangement) => {
-    const formattedStartDate = formatDate(arrangement.Start_Date);
+    const formattedStartDate = formatDateToShortString(arrangement.Start_Date);
     return formattedStartDate === selectedDate;
   });
 }

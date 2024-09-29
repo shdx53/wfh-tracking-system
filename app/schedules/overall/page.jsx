@@ -28,7 +28,7 @@ import { fetchArrangements } from "@/app/lib/arrangements/fetch-arrangements";
 import { fetchTeamArrangements } from "@/app/lib/arrangements/fetch-team-arrangements";
 import { fetchTeams } from "@/app/lib/schedules/overall/fetch-teams";
 import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
-import { formatDate, normalizeDate } from "@/app/lib/utils";
+import { formatDateToISO, formatDateToShortString, normalizeDate } from "@/app/lib/utils";
 import { filterArrangements } from "@/app/lib/schedules/overall/filter-arrangements";
 import { filterTeamArrangements } from "@/app/lib/schedules/filter-team-arrangements";
 
@@ -38,7 +38,7 @@ export default function OverallSchedule() {
   const normalizedDate = normalizeDate(date);
 
   // Format date for display on the UI
-  const formattedDate = formatDate(date);
+  const formattedDate = formatDateToShortString(date);
 
   /* Query teams logic */
   const teamsQuery = useQuery({
@@ -50,20 +50,8 @@ export default function OverallSchedule() {
   const isTeamsError = teamsQuery.isError;
 
   /* Query arrangements logic */
-  /* Format date for querying */
-  const dateObj = new Date(date);
-
-  // Get day and pad with leading zero if needed
-  const day = String(dateObj.getDate()).padStart(2, "0");
-
-  // Get month (0-indexed) and pad with leading zero
-  const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-
-  // Get last two digits of year
-  const year = String(dateObj.getFullYear());
-
-  // Formatted date
-  const formattedSelectedDate = `${year}-${month}-${day}`;
+  // Format date for querying 
+  const formattedSelectedDate = formatDateToISO(date);
 
   const [selectedTab, setSelectedTab] = useState("In-Office");
   const [filteredArrangements, setFilteredArrangements] = useState([]);
@@ -98,7 +86,8 @@ export default function OverallSchedule() {
   // Fetch all arrangements for the selected team
   const teamArrangementsQuery = useQuery({
     queryKey: ["team arrangements", { selectedTeam }],
-    queryFn: () => (selectedTeam ? fetchTeamArrangements(selectedTeam) : null),
+    queryFn: () =>
+      selectedTeam ? fetchTeamArrangements(selectedTeam, null, null) : null,
     // Only run the query if selectedTeam is not null
     enabled: !!selectedTeam,
   });

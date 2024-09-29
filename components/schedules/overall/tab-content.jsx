@@ -50,16 +50,18 @@ export default function TabContent({
             const firstName = arrangement.Staff_FName;
             const lastName = arrangement.Staff_LName;
             const dept = arrangement.Dept;
+            const position = arrangement.Position;
             const shiftType = arrangement.Shift_Type;
             const requestStatus = arrangement.Request_Status;
 
             return (
               <ArrangementCard
                 key={index}
-                page="overall"
+                page="overall/team"
                 firstName={firstName}
                 lastName={lastName}
                 dept={dept}
+                position={position}
                 shiftType={
                   shiftType === "Full Day" || shiftType === null
                     ? "All Day"

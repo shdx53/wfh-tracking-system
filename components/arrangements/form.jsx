@@ -23,6 +23,7 @@ import RecurringForm from "./recurring-form";
 
 // Function
 import fetchPersonalArrangements from "@/app/lib/arrangements/fetch-personal-arrangements";
+import { formatDateToISO } from "@/app/lib/utils";
 
 // Schema
 import { getSchema } from "@/app/schemas/arrangement/base-schema";
@@ -42,20 +43,8 @@ export default function ArrangementForm() {
   const [selectedStartDate, setSelectedStartDate] = useState(null);
 
   /* Disable Start_Date select option(s) logic */
-  /* Format selected date for querying */
-  const selectedStartDateObj = new Date(selectedStartDate);
-
-  // Get day and pad with leading zero if needed
-  const day = String(selectedStartDateObj.getDate()).padStart(2, "0");
-
-  // Get month (0-indexed) and pad with leading zero
-  const month = String(selectedStartDateObj.getMonth() + 1).padStart(2, "0");
-
-  // Get last two digits of year
-  const year = String(selectedStartDateObj.getFullYear());
-
-  // Formatted date
-  const formattedSelectedDate = `${year}-${month}-${day}`;
+  // Format selected date for querying 
+  const formattedSelectedDate = formatDateToISO(selectedStartDate);
 
   // Fetch approved arrangements for the selected date
   const approvedArrangementsQuery = useQuery({
