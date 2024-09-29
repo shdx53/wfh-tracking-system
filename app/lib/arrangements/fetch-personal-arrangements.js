@@ -5,11 +5,11 @@ export default async function fetchPersonalArrangements(queryKey, type) {
 
   if (staffID && startDate) {
     res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/requests/${type}?staffID=${staffID}&startDate=${startDate}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/requests/personal/${type}?staffID=${staffID}&startDate=${startDate}`,
     );
   } else if (staffID) {
     res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/requests/${type}?staffID=${staffID}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/requests/personal/${type}?staffID=${staffID}`,
     );
   }
 

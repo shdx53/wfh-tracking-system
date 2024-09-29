@@ -1,9 +1,9 @@
-import connection from "../../../lib/db";
+import connection from "@/app/lib/db";
 import { NextResponse } from "next/server";
 
-// API Endpoint: api/requests/pending?staffID=Staff_ID
+// API Endpoint: api/requests/personal/approved?staffID=Staff_ID
 
-// Fetch all OWN pending requests from the Arrangement table
+// Fetch all OWN approved requests from the Arrangement table
 export async function GET(request) {
   try {
     // Establish the connection using the pool
@@ -25,16 +25,16 @@ export async function GET(request) {
     // Execute the query
     if (staffID && !startDate) {
       const [rows] = await conn.query(
-        "SELECT Start_Date, Shift_Type FROM Arrangement WHERE Staff_ID = ? AND Request_Status = 'pending'",
+        "SELECT Start_Date, Shift_Type FROM Arrangement WHERE Staff_ID = ? AND Request_Status = 'approved'",
         [staffID],
       );
       data = rows;
-    }
+    } 
 
     if (staffID && startDate) {
       const [rows] = await conn.query(
-        "SELECT Start_Date, Shift_Type FROM Arrangement WHERE Staff_ID = ? AND Start_Date = ? AND Request_Status = 'pending'",
-        [staffID, startDate],
+        "SELECT Start_Date, Shift_Type FROM Arrangement WHERE Staff_ID = ? AND Start_Date = ? AND Request_Status = 'approved'",
+        [staffID, startDate]
       );
       data = rows;
     }
