@@ -48,21 +48,109 @@ export async function newArrangement(formData) {
     const isRecurring = arrangementType === "Ad-hoc" ? 0 : 1;
 
     if (arrangementType === "Ad-hoc") {
+      // Prepare Insert Query
       const query = `
           INSERT INTO Arrangement 
           (Staff_ID, Start_Date, Is_Recurring, Apply_Reason, Shift_Type)
           VALUES (?, ?, ?, ?, ?)
       `;
 
-      await conn.execute(query, [
-        staffID,
-        startDate,
-        isRecurring,
-        applyReason === "" ? null : applyReason,
-        shiftType,
-      ]);
+      try {
+        // Add arrangement record to Arrangement table
+        await conn.execute(query, [
+          staffID,
+          startDate,
+          isRecurring,
+          applyReason === "" ? null : applyReason,
+          shiftType,
+        ]);
+
+        // ----Preparation for Notification----
+        // Get the reporting manager's ID for the current staff
+        const managerResult = await conn.query(
+          `
+        SELECT Reporting_Manager FROM Employee
+        WHERE Staff_ID = ?
+        `,
+          staffID,
+        );
+
+        if (!managerResult) {
+          console.error(`No reporting manager found for staff ID ${staffID}`);
+          // Handle this case appropriately
+          return;
+        }
+
+        const managerID = managerResult[0][0].Reporting_Manager;
+
+        // Get the email of the reporting manager
+        const getEmailQuery = `
+        SELECT Email FROM Employee
+        WHERE Staff_ID = ?
+        `;
+        const emailResult = await conn.query(getEmailQuery, managerID);
+
+        if (!emailResult) {
+          console.error(`No email found for reporting manager ID ${managerID}`);
+          // Handle this case appropriately
+          return;
+        }
+
+        const managerEmail = emailResult[0][0].Email;
+
+        // Prepare email content
+        const subject = "New WFH Request Submitted";
+        const body = `Dear Manager/Director,\n\n
+        A new work-from-home arrangement has been submitted:\n\n
+        Staff ID: ${staffID}\n
+        Start Date: ${startDate}\n
+        Apply Reason: ${applyReason || "N/A"}\n\n
+        Please review and approve/reject the request, thank you. \n\n`;
+
+        // Send notification using Mailtrap
+        console.log(managerEmail);
+        await sendNotification(managerEmail, subject, body);
+        // ----End of Notification----
+      } catch (error) {
+        console.error("Error during arrangement setup", error);
+        // Handle error
+      }
     } else if (arrangementType === "Recurring") {
-      // Prepare SQL Query
+      // ----Preparation for Notification----
+      // Get the reporting manager's ID for the current staff
+      const managerResult = await conn.query(
+        `
+        SELECT Reporting_Manager FROM Employee
+        WHERE Staff_ID = ?
+        `,
+        staffID,
+      );
+
+      if (!managerResult) {
+        console.error(`No reporting manager found for staff ID ${staffID}`);
+        // Handle this case appropriately
+        return;
+      }
+
+      const managerID = managerResult[0][0].Reporting_Manager;
+
+      // Get the email of the reporting manager
+      const getEmailQuery = `
+        SELECT Email FROM Employee
+        WHERE Staff_ID = ?
+        `;
+      const emailResult = await conn.query(getEmailQuery, managerID);
+
+      if (!emailResult) {
+        console.error(`No email found for reporting manager ID ${managerID}`);
+        // Handle this case appropriately
+        return;
+      }
+
+      const managerEmail = emailResult[0][0].Email;
+      // ----End of Notification Preperation----
+
+      // Query for add arrangement record to Arrangement table
       const query = `
           INSERT INTO Arrangement 
           (Staff_ID, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Shift_Type)
@@ -74,6 +162,7 @@ export async function newArrangement(formData) {
       let occurrenceDateObj = startDateObj;
       const endDateObj = new Date(endDate);
 
+      // Recurring Logic to add a record for every Recurring_Interval until pointer reaches End_Date
       while (occurrenceDateObj <= endDateObj) {
         await conn.execute(query, [
           staffID,
@@ -84,6 +173,21 @@ export async function newArrangement(formData) {
           applyReason === "" ? null : applyReason,
           shiftType,
         ]);
+
+        // Prepare email content
+        const subject = "New Recurring WFH Request Submitted";
+        const body = `Dear Manager/Director,\n\n
+        A new work-from-home arrangement has been submitted:\n\n
+        Staff ID: ${staffID}\n
+        Start Date: ${occurrenceDateObj}\n
+        End Date: ${endDate}\n
+        Recurring Interval: ${recurringInterval}\n
+        Apply Reason: ${applyReason || "N/A"}\n\n
+        Please review and approve/reject the request, thank you. \n\n`;
+
+        // Send notification using Mailtrap
+        await sendNotification(managerEmail, subject, body);
+        // ----End of Notification----
 
         // Calculate next occurrence date
         occurrenceDateObj = calculateNextDate(
@@ -96,20 +200,6 @@ export async function newArrangement(formData) {
 
     // Release connection back to pool
     conn.release();
-
-    /* // Send out notifications
-    const managerEmail = "manager@example.com"; // Replace with actual email
-
-    const subject = "New WFH Request Submitted";
-    const body = `Dear Manager/Director,\n\n
-        A new work-from-home arrangement has been submitted:\n\n
-        Staff ID: ${staffID}\n
-        Start Date: ${startDate}\n
-        Apply Reason: ${applyReason}\n\n
-        Please review and approve/reject the request.\n\n
-        `;
-
-    await sendNotification(managerEmail, subject, body); */
 
     return {
       message: "Arrangement(s) added successfully",
