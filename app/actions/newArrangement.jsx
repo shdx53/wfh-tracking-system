@@ -7,7 +7,7 @@ import { addMonths, addWeeks } from "date-fns";
 
 // Helper function to calculate next occurrence date
 const calculateNextDate = (startDate, recurringInterval, count) => {
-  console.log("calculateNextDate:", { startDate, recurringInterval, count });
+  /* console.log("calculateNextDate:", { startDate, recurringInterval, count }); */
 
   switch (recurringInterval) {
     // console log the input here to test
@@ -116,7 +116,9 @@ export async function newArrangement(formData) {
         // Handle error
       }
     } else if (arrangementType === "Recurring") {
-      // ----Preparation for Notification----
+      // ----Email Setup----
+      const allDates = [];
+
       // Get the reporting manager's ID for the current staff
       const managerResult = await conn.query(
         `
@@ -148,7 +150,9 @@ export async function newArrangement(formData) {
       }
 
       const managerEmail = emailResult[0][0].Email;
-      // ----End of Notification Preperation----
+
+      // Prepare email content once for all recurring requests
+      const subject = "New Recurring WFH Request Submitted";
 
       // Query for add arrangement record to Arrangement table
       const query = `
@@ -174,20 +178,7 @@ export async function newArrangement(formData) {
           shiftType,
         ]);
 
-        // Prepare email content
-        const subject = "New Recurring WFH Request Submitted";
-        const body = `Dear Manager/Director,\n\n
-        A new work-from-home arrangement has been submitted:\n\n
-        Staff ID: ${staffID}\n
-        Start Date: ${occurrenceDateObj}\n
-        End Date: ${endDate}\n
-        Recurring Interval: ${recurringInterval}\n
-        Apply Reason: ${applyReason || "N/A"}\n\n
-        Please review and approve/reject the request, thank you. \n\n`;
-
-        // Send notification using Mailtrap
-        await sendNotification(managerEmail, subject, body);
-        // ----End of Notification----
+        allDates.push(occurrenceDateObj.toISOString().split("T")[0]);
 
         // Calculate next occurrence date
         occurrenceDateObj = calculateNextDate(
@@ -196,6 +187,22 @@ export async function newArrangement(formData) {
           ++count,
         );
       }
+
+      // Create a comma-separated string of dates
+      const formattedDates = allDates.join(", ");
+      
+      // Prepare email body using the formatted dates
+      const body = `Dear Manager/Director,\n\n
+     A new recurring work-from-home arrangement has been submitted:\n\n
+     Staff ID: ${staffID}\n
+     Date(s): ${formattedDates}\n
+     End Date: ${endDate}\n
+     Recurring Interval: ${recurringInterval}\n
+     Apply Reason: ${applyReason || "N/A"}\n\n
+     Please review and approve/reject the request. \n\n`;
+
+      // Send notification using Mailtrap
+      await sendNotification(managerEmail, subject, body);
     }
 
     // Release connection back to pool
