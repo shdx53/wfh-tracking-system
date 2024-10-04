@@ -13,7 +13,7 @@ export async function GET(request) {
     // Get Staff_ID input from the request
     const searchParams = request.nextUrl.searchParams;
     const staffID = searchParams.get("staffID");
-
+    
     // Execute query to retrieve all Arrangement of one staff
     const [data] = await conn.query(
       `
