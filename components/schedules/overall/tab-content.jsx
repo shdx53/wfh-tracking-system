@@ -60,7 +60,7 @@ export default function TabContent({
                     ? "All Day"
                     : shiftType
                 }
-                status={requestStatus}
+                requestStatus={requestStatus}
               />
             );
           })}

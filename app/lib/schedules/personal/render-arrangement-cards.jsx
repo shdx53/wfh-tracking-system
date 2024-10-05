@@ -17,12 +17,15 @@ export function renderArrangementCards(arrangements, selectedDate) {
 
   return filteredArrangements.map((arrangement, index) => {
     const shiftType = arrangement.Shift_Type;
+    const requestStatus = arrangement.Request_Status;
+
     return (
       <ArrangementCard
         key={index}
         page="personal"
         shiftType={shiftType === "Full Day" ? "All Day" : shiftType}
         arrangement="Work-From-Home"
+        requestStatus={requestStatus}
       />
     );
   });

@@ -6,7 +6,7 @@ export default function ArrangementCard({
   position,
   shiftType,
   arrangement,
-  status,
+  requestStatus,
 }) {
   const classStyles = {
     AM: "bg-blue-100/40 border-blue-700",
@@ -16,7 +16,7 @@ export default function ArrangementCard({
 
   return (
     <div
-      className={`flex justify-between rounded-lg border-l-[10px] p-6 ${classStyles[shiftType]} ${status === "pending" && "opacity-50"}`}
+      className={`flex justify-between rounded-lg border-l-[10px] p-6 ${classStyles[shiftType]} ${requestStatus === "pending" && "opacity-50"}`}
     >
       <div className="flex flex-col gap-1">
         <div className="font-semibold">
@@ -27,7 +27,7 @@ export default function ArrangementCard({
         </div>
       </div>
       {page === "overall/team" && <div className="font-medium">{shiftType}</div>}
-      {status === "pending" && <div className="italic">Pending</div>}
+      {requestStatus === "pending" && <div className="italic">Pending</div>}
     </div>
   );
 }
