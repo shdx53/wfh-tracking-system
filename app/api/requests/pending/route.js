@@ -46,6 +46,8 @@ export async function GET(request) {
           [data] = await conn.query(
             `
             SELECT Employee.Staff_ID,
+                Employee.Staff_FName,
+                Employee.Staff_LName,
 			          Arrangement.Arrangement_ID,
                 Arrangement.Request_Status,
                 Arrangement.Start_Date,  
@@ -65,6 +67,8 @@ export async function GET(request) {
             UNION
 
             SELECT Employee.Staff_ID,
+                Employee.Staff_FName,
+                Employee.Staff_LName,
                 GROUP_CONCAT(Arrangement.Arrangement_ID) as Arrangement_ID,
                 GROUP_CONCAT(Arrangement.Request_Status) as Request_Status,
                 GROUP_CONCAT(Arrangement.Start_Date) as Start_Date,  
