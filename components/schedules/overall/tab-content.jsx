@@ -2,6 +2,7 @@
 import ArrangementCard from "@/components/schedules/arrangement-card";
 
 export default function TabContent({
+  isViewTeamSchedule,
   isArrangementsPending,
   isArrangementsError,
   filteredArrangements,
@@ -33,10 +34,14 @@ export default function TabContent({
       {!isArrangementsPending && !isArrangementsError && (
         <>
           {/* Employee Count */}
-          <div className="flex flex-col gap-1 pb-4 pt-12">
-            <div>Employee Count</div>
-            <div className="text-3xl font-medium">{uniqueEmployeeCount}</div>
-          </div>
+          {!isViewTeamSchedule ? (
+            <div className="flex flex-col gap-1 pb-4 pt-12">
+              <div>Employee Count</div>
+              <div className="text-3xl font-medium">{uniqueEmployeeCount}</div>
+            </div>
+          ) : (
+            <br />
+          )}
 
           {/* Arrangements */}
           {currentPageArrangements.map((arrangement, index) => {

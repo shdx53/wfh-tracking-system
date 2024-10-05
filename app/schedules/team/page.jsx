@@ -142,6 +142,7 @@ function TeamScheduleContent() {
             {/* In-Office Tab */}
             <TabsContent value="In-Office" className="flex flex-col gap-4">
               <TabContent
+                isViewTeamSchedule={true}
                 isArrangementsPending={isTeamArrangementsPending}
                 isArrangementsError={isTeamArrangementsError}
                 filteredArrangements={filteredArrangements}
@@ -152,6 +153,7 @@ function TeamScheduleContent() {
             {/* Work-From-Home Tab */}
             <TabsContent value="Work-From-Home" className="flex flex-col gap-4">
               <TabContent
+                isViewTeamSchedule={true}
                 isArrangementsPending={isTeamArrangementsPending}
                 isArrangementsError={isTeamArrangementsError}
                 filteredArrangements={filteredArrangements}
@@ -162,6 +164,7 @@ function TeamScheduleContent() {
             {/* Leave Tab */}
             <TabsContent value="Leave" className="flex flex-col gap-4">
               <TabContent
+                isViewTeamSchedule={true}
                 isArrangementsPending={isTeamArrangementsPending}
                 isArrangementsError={isTeamArrangementsError}
                 filteredArrangements={filteredArrangements}
