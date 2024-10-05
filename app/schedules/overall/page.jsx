@@ -5,14 +5,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 // Component
+import CustomPagination from "@/components/pagination/custom-pagination";
+import TabContent from "@/components/schedules/overall/tab-content";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -21,16 +16,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TabContent from "@/components/schedules/overall/tab-content";
 
 // Function
 import { fetchArrangements } from "@/app/lib/arrangements/fetch-arrangements";
 import { fetchTeamArrangements } from "@/app/lib/arrangements/fetch-team-arrangements";
-import { fetchTeams } from "@/app/lib/schedules/overall/fetch-teams";
-import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
-import { formatDateToISO, formatDateToShortString, normalizeDate } from "@/app/lib/utils";
-import { filterArrangements } from "@/app/lib/schedules/overall/filter-arrangements";
 import { filterTeamArrangements } from "@/app/lib/schedules/filter-team-arrangements";
+import { fetchTeams } from "@/app/lib/schedules/overall/fetch-teams";
+import { filterArrangements } from "@/app/lib/schedules/overall/filter-arrangements";
+import {
+  formatDateToISO,
+  formatDateToShortString,
+  normalizeDate,
+} from "@/app/lib/utils";
 
 export default function OverallSchedule() {
   // Initialize date to current date
@@ -50,7 +47,7 @@ export default function OverallSchedule() {
   const isTeamsError = teamsQuery.isError;
 
   /* Query arrangements logic */
-  // Format date for querying 
+  // Format date for querying
   const formattedSelectedDate = formatDateToISO(date);
 
   const [selectedTab, setSelectedTab] = useState("In-Office");
@@ -200,7 +197,7 @@ export default function OverallSchedule() {
               </TabsTrigger>
             </TabsList>
 
-            {/* In-Office Tab */}
+            {/* In-Office tab */}
             <TabsContent value="In-Office" className="flex flex-col gap-4">
               <TabContent
                 isArrangementsPending={isArrangementsPending}
@@ -210,7 +207,7 @@ export default function OverallSchedule() {
               />
             </TabsContent>
 
-            {/* Work-From-Home Tab */}
+            {/* Work-From-Home tab */}
             <TabsContent value="Work-From-Home" className="flex flex-col gap-4">
               <TabContent
                 isArrangementsPending={isArrangementsPending}
@@ -220,7 +217,7 @@ export default function OverallSchedule() {
               />
             </TabsContent>
 
-            {/* Leave Tab */}
+            {/* Leave tab */}
             <TabsContent value="Leave" className="flex flex-col gap-4">
               <TabContent
                 isArrangementsPending={isArrangementsPending}
@@ -231,37 +228,12 @@ export default function OverallSchedule() {
             </TabsContent>
           </Tabs>
 
-          {filteredArrangements && totalPages > 0 && (
-            <Pagination className="pt-12">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    className={`cursor-pointer ${currentPage === 1 && "cursor-default opacity-60 hover:bg-transparent"}`}
-                    onClick={() =>
-                      // Decrease the current page by 1 but ensure it doesn't go below 1
-                      setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
-                    }
-                  />
-                </PaginationItem>
-
-                {/* Render pagination items */}
-                {renderPaginationItems(currentPage, setCurrentPage, totalPages)}
-
-                <PaginationItem>
-                  <PaginationNext
-                    className={`cursor-pointer ${currentPage === totalPages && "cursor-default opacity-60 hover:bg-transparent"}`}
-                    onClick={() =>
-                      setCurrentPage((prevPage) =>
-                        // Increase the current page by 1
-                        // but ensure it doesn't exceed the total number of pages
-                        Math.min(prevPage + 1, totalPages),
-                      )
-                    }
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          )}
+          <CustomPagination
+            data={filteredArrangements}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </section>
       </main>
     </div>

@@ -6,21 +6,14 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
 // Component
+import CustomPagination from "@/components/pagination/custom-pagination";
 import TabContent from "@/components/schedules/overall/tab-content";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Function
 import { fetchTeamArrangements } from "@/app/lib/arrangements/fetch-team-arrangements";
 import { filterTeamArrangements } from "@/app/lib/schedules/filter-team-arrangements";
-import { renderPaginationItems } from "@/app/lib/schedules/overall/render-pagination-items";
 import { formatDateToISO, formatDateToShortString } from "@/app/lib/utils";
 
 export default function TeamSchedule() {
@@ -139,7 +132,7 @@ function TeamScheduleContent() {
               </TabsTrigger>
             </TabsList>
 
-            {/* In-Office Tab */}
+            {/* In-Office tab */}
             <TabsContent value="In-Office" className="flex flex-col gap-4">
               <TabContent
                 isViewTeamSchedule={true}
@@ -150,7 +143,7 @@ function TeamScheduleContent() {
               />
             </TabsContent>
 
-            {/* Work-From-Home Tab */}
+            {/* Work-From-Home tab */}
             <TabsContent value="Work-From-Home" className="flex flex-col gap-4">
               <TabContent
                 isViewTeamSchedule={true}
@@ -161,7 +154,7 @@ function TeamScheduleContent() {
               />
             </TabsContent>
 
-            {/* Leave Tab */}
+            {/* Leave tab */}
             <TabsContent value="Leave" className="flex flex-col gap-4">
               <TabContent
                 isViewTeamSchedule={true}
@@ -173,37 +166,12 @@ function TeamScheduleContent() {
             </TabsContent>
           </Tabs>
 
-          {filteredArrangements && totalPages > 0 && (
-            <Pagination className="pt-12">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    className={`cursor-pointer ${currentPage === 1 && "cursor-default opacity-60 hover:bg-transparent"}`}
-                    onClick={() =>
-                      // Decrease the current page by 1 but ensure it doesn't go below 1
-                      setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))
-                    }
-                  />
-                </PaginationItem>
-
-                {/* Render pagination items */}
-                {renderPaginationItems(currentPage, setCurrentPage, totalPages)}
-
-                <PaginationItem>
-                  <PaginationNext
-                    className={`cursor-pointer ${currentPage === totalPages && "cursor-default opacity-60 hover:bg-transparent"}`}
-                    onClick={() =>
-                      setCurrentPage((prevPage) =>
-                        // Increase the current page by 1
-                        // but ensure it doesn't exceed the total number of pages
-                        Math.min(prevPage + 1, totalPages),
-                      )
-                    }
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          )}
+          <CustomPagination
+            data={filteredArrangements}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </section>
       </main>
     </div>
