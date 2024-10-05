@@ -19,7 +19,7 @@ export default function CustomPagination({
   return (
     <>
       {data && totalPages > 1 && (
-        <Pagination className="py-12">
+        <Pagination className="pt-12">
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
