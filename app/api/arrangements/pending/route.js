@@ -36,15 +36,20 @@ export async function GET(request) {
     const { Position } = positionData[0];
 
     // Array of Director and Manager positions that can view their own team request
-    const Senior_Management_Managers = ["MD", "Director", "Sales Manager", "Finance Manager"];
+    const Senior_Management_Managers = [
+      "MD",
+      "Director",
+      "Sales Manager",
+      "Finance Manager",
+    ];
 
     // Initialize data variable for query results
     let data;
 
     // Conditional Query based on Position
-    if (Senior_Management_Managers.includes(Position) ) {
-          [data] = await conn.query(
-            `
+    if (Senior_Management_Managers.includes(Position)) {
+      [data] = await conn.query(
+        `
             SELECT Employee.Staff_ID,
                 Employee.Staff_FName,
                 Employee.Staff_LName,
@@ -53,7 +58,8 @@ export async function GET(request) {
                 Arrangement.Start_Date,  
                 Arrangement.Shift_Type,
 			          Arrangement.End_Date,
-                Arrangement.Recurring_Interval
+                Arrangement.Recurring_Interval,
+                Arrangement.Apply_Reason
             FROM Arrangement
             RIGHT JOIN Employee ON Employee.Staff_ID = Arrangement.Staff_ID
             WHERE Employee.Staff_ID IN (
@@ -74,7 +80,8 @@ export async function GET(request) {
                 GROUP_CONCAT(Arrangement.Start_Date) as Start_Date,  
                 GROUP_CONCAT(Arrangement.Shift_Type) as Shift_Type,
                 GROUP_CONCAT(Arrangement.End_Date) as End_Date,
-                GROUP_CONCAT(Arrangement.Recurring_Interval) as Recurring_Interval
+                GROUP_CONCAT(Arrangement.Recurring_Interval) as Recurring_Interval,
+                GROUP_CONCAT(Arrangement.Apply_Reason) as Apply_Reason
             FROM Arrangement
             RIGHT JOIN Employee ON Employee.Staff_ID = Arrangement.Staff_ID
             WHERE Employee.Staff_ID IN (
@@ -87,13 +94,13 @@ export async function GET(request) {
                         
             GROUP BY Employee.Staff_ID, Arrangement.Recurring_Interval, Arrangement.End_Date, Arrangement.Shift_Type;
           `,
-            [staffID,staffID],
-          );
+        [staffID, staffID],
+      );
     } else {
-        return NextResponse.json(
-            { message: "You are not a Director or Manager." },
-            { status: 200 },
-        );
+      return NextResponse.json(
+        { message: "You are not a Director or Manager." },
+        { status: 200 },
+      );
     }
 
     // Release the connection back to the pool

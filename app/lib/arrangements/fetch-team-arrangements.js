@@ -1,17 +1,21 @@
-export async function fetchTeamArrangements(selectedTeam, staffID, selectedDate) {
+export async function fetchTeamArrangements(
+  selectedTeam,
+  staffID,
+  selectedDate,
+) {
   let res;
 
-  // For HR and Senior Management
-  if (selectedTeam && !staffID) {
+  if (selectedTeam) {
+    // For HR and Senior Management
+    // Fetch arrangements by team
     res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/requests?team=${selectedTeam}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/arrangements?team=${selectedTeam}`,
     );
-  }
-
-  // For Managers and Staff
-  if (!selectedTeam && staffID) {
+  } else if (staffID && selectedDate) {
+    // For Managers and Staff
+    // Fetch team arrangements by Staff_ID and Start_Date
     res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/requests/teams?staffID=${staffID}&startDate=${selectedDate}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/arrangements/teams?staffID=${staffID}&startDate=${selectedDate}`,
     );
   }
 
