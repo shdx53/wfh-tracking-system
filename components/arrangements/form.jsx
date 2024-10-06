@@ -29,7 +29,7 @@ import { formatDateToISO } from "@/app/lib/utils";
 import { getSchema } from "@/app/schemas/arrangement/base-schema";
 
 // Action
-import { newArrangement } from "@/app/actions/newArrangement";
+import { newArrangement } from "@/app/actions/arrangements/new/new-arrangement";
 
 export default function ArrangementForm() {
   // Get staff ID from query params (TO BE REMOVED)
@@ -43,7 +43,7 @@ export default function ArrangementForm() {
   const [selectedStartDate, setSelectedStartDate] = useState(null);
 
   /* Disable Start_Date select option(s) logic */
-  // Format selected date for querying 
+  // Format selected date for querying
   const formattedSelectedDate = formatDateToISO(selectedStartDate);
 
   // Fetch approved arrangements for the selected date
