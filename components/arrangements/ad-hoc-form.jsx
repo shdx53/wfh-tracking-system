@@ -30,7 +30,6 @@ import { CalendarIcon } from "lucide-react";
 export default function AdHocForm({
   form,
   isPending,
-  selectedStartDate,
   setSelectedStartDate,
   selectedDateShiftTypes,
 }) {
@@ -94,7 +93,7 @@ export default function AdHocForm({
         )}
       />
 
-      {selectedStartDate && (
+      {selectedDateShiftTypes && (
         <>
           {/* Shift type field */}
           <FormField

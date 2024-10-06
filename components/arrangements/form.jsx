@@ -192,7 +192,6 @@ export default function ArrangementForm() {
           <AdHocForm
             form={form}
             isPending={isPending}
-            selectedStartDate={selectedStartDate}
             setSelectedStartDate={setSelectedStartDate}
             selectedDateShiftTypes={selectedDateShiftTypes}
           />
@@ -202,7 +201,6 @@ export default function ArrangementForm() {
             form={form}
             selectedArrangementType={selectedArrangementType}
             isPending={isPending}
-            selectedStartDate={selectedStartDate}
             setSelectedStartDate={setSelectedStartDate}
             selectedDateShiftTypes={selectedDateShiftTypes}
           />

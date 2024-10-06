@@ -33,7 +33,6 @@ export default function RecurringForm({
   form,
   selectedArrangementType,
   isPending,
-  selectedStartDate,
   setSelectedStartDate,
   selectedDateShiftTypes,
 }) {
@@ -143,7 +142,7 @@ export default function RecurringForm({
         )}
       />
 
-      {selectedRecurringInterval && selectedStartDate && (
+      {selectedRecurringInterval && selectedDateShiftTypes && (
         <>
           {/* End date field */}
           {selectedArrangementType === "Recurring" && (
