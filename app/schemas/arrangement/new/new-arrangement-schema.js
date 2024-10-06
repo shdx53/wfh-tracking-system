@@ -6,19 +6,19 @@ const baseSchema = z.object({
     .enum(["Ad-hoc", "Recurring"])
     .nullable()
     .refine((value) => value !== null, {
-      message: "Required.",
+      message: "Required",
     }),
   startDate: z
     .date({})
     .nullable()
     .refine((value) => value !== null, {
-      message: "Required.",
+      message: "Required",
     }),
   shiftType: z
     .enum(["AM", "PM", "Full Day"])
     .nullable()
     .refine((value) => value !== null, {
-      message: "Required.",
+      message: "Required",
     }),
   applyReason: z
     .string()
@@ -33,14 +33,14 @@ export const getSchema = (isRecurring) => {
   if (isRecurring) {
     return baseSchema.extend({
       endDate: z
-      .date({})
-      .nullable()
-      .refine((value) => value !== null, {
-        message: "Required.",
-      }),
+        .date({})
+        .nullable()
+        .refine((value) => value !== null, {
+          message: "Required",
+        }),
       recurringInterval: z
         .enum(["Weekly", "Monthly"], {
-          required_error: "Required.",
+          required_error: "Required",
         })
         .nullable(),
     });

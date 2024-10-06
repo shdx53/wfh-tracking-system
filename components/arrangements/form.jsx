@@ -26,7 +26,7 @@ import fetchPersonalArrangements from "@/app/lib/arrangements/fetch-personal-arr
 import { formatDateToISO } from "@/app/lib/utils";
 
 // Schema
-import { getSchema } from "@/app/schemas/arrangement/base-schema";
+import { getSchema } from "@/app/schemas/arrangement/new/new-arrangement-schema";
 
 // Action
 import { newArrangement } from "@/app/actions/arrangements/new/new-arrangement";
