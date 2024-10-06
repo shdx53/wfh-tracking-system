@@ -33,6 +33,7 @@ export default function RecurringForm({
   form,
   selectedArrangementType,
   isPending,
+  selectedStartDate,
   setSelectedStartDate,
   selectedDateShiftTypes,
 }) {
@@ -141,6 +142,12 @@ export default function RecurringForm({
           </FormItem>
         )}
       />
+
+      {selectedRecurringInterval &&
+        selectedStartDate &&
+        !selectedDateShiftTypes && (
+          <div className="text-center text-sm">Loading...</div>
+        )}
 
       {selectedRecurringInterval && selectedDateShiftTypes && (
         <>
