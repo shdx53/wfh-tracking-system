@@ -58,30 +58,8 @@ export async function GET(request) {
             SELECT Staff_ID 
             FROM Employee 
             WHERE Reporting_Manager = ?)
-        AND Arrangement.Is_Recurring = 0
         AND Arrangement.Start_Date >= DATE_ADD(NOW(), INTERVAL 24 HOUR)
         AND Arrangement.Request_Status <> 'pending'
-        
-        UNION
-
-        SELECT Employee.Staff_ID,
-            GROUP_CONCAT(Arrangement.Arrangement_ID) as Arrangement_ID,
-            GROUP_CONCAT(Arrangement.Request_Status) as Request_Status,
-            GROUP_CONCAT(Arrangement.Start_Date) as Start_Date,  
-            GROUP_CONCAT(Arrangement.Shift_Type) as Shift_Type,
-            GROUP_CONCAT(Arrangement.End_Date) as End_Date,
-            GROUP_CONCAT(Arrangement.Recurring_Interval) as Recurring_Interval
-        FROM Arrangement
-        RIGHT JOIN Employee ON Employee.Staff_ID = Arrangement.Staff_ID
-        WHERE Employee.Staff_ID IN (
-            SELECT Staff_ID 
-            FROM Employee 
-            WHERE Reporting_Manager = ?)
-        AND Arrangement.Is_Recurring = 1
-        AND Arrangement.Start_Date >= DATE_ADD(NOW(), INTERVAL 24 HOUR)
-        AND Arrangement.Request_Status <> 'pending'
-                    
-        GROUP BY Employee.Staff_ID, Arrangement.Recurring_Interval, Arrangement.End_Date, Arrangement.Shift_Type;
       `,
         [staffID,staffID],
           );
