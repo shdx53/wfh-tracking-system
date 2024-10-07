@@ -36,38 +36,46 @@ export async function GET(request) {
     const { Position } = positionData[0];
 
     // Array of Director and Manager positions that can view their own team request
-    const Senior_Management_Managers = ["MD", "Director", "Sales Manager", "Finance Manager"];
+    const Senior_Management_Managers = [
+      "MD",
+      "Director",
+      "Sales Manager",
+      "Finance Manager",
+    ];
 
     // Initialize data variable for query results
     let data;
 
     // Conditional Query based on Position
-    if (Senior_Management_Managers.includes(Position) ) {
+    if (Senior_Management_Managers.includes(Position)) {
       [data] = await conn.query(
         `
         SELECT Employee.Staff_ID,
+            Employee.Staff_FName,
+            Employee.Staff_LName,
             Arrangement.Arrangement_ID,
             Arrangement.Request_Status,
             Arrangement.Start_Date,  
             Arrangement.Shift_Type,
             Arrangement.End_Date,
-            Arrangement.Recurring_Interval
+            Arrangement.Recurring_Interval,
+            Arrangement.Apply_Reason,
+            Arrangement.Update_Reason
         FROM Arrangement
         RIGHT JOIN Employee ON Employee.Staff_ID = Arrangement.Staff_ID
         WHERE Employee.Staff_ID IN (
             SELECT Staff_ID 
             FROM Employee 
             WHERE Reporting_Manager = ?)
-        AND Arrangement.Start_Date >= DATE_ADD(NOW(), INTERVAL 24 HOUR)
         AND Arrangement.Request_Status <> 'pending'
       `,
-        [staffID,staffID],
-          );
+        [staffID, staffID],
+      );
     } else {
-        return NextResponse.json(
-            { message: "You are not a Director or Manager." },
-            { status: 200 },
-        );
+      return NextResponse.json(
+        { message: "You are not a Director or Manager." },
+        { status: 200 },
+      );
     }
 
     // Release the connection back to the pool

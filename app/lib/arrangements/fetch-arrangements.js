@@ -1,4 +1,9 @@
-export async function fetchArrangements(selectedDate, arrangementID) {
+export async function fetchArrangements(
+  selectedDate,
+  arrangementID,
+  requestStatus,
+  staffID,
+) {
   let res;
 
   // Fetch arrangements by Start_Date
@@ -8,10 +13,17 @@ export async function fetchArrangements(selectedDate, arrangementID) {
     );
   }
 
-  // Fetch arrangements by Arrangement_ID
+  // Fetch pending and recurring arrangements by Arrangement_ID
   if (arrangementID) {
     res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/arrangements/pending/recurring/${arrangementID}`,
+    );
+  }
+
+  // Fetch arrangements by Request_Status and StaffID
+  if (requestStatus && staffID) {
+    res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/arrangements/${requestStatus}?staffID=${staffID}`,
     );
   }
 

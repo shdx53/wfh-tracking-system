@@ -60,7 +60,7 @@ export default function OverallSchedule() {
       { formattedSelectedDate: formattedSelectedDate },
     ],
     queryFn: ({ queryKey }) =>
-      fetchArrangements(queryKey[1].formattedSelectedDate),
+      fetchArrangements(queryKey[1].formattedSelectedDate, null, null, null),
   });
   const arrangements = arrangementsQuery.data;
   const isArrangementsPending = arrangementsQuery.isPending;

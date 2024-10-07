@@ -13,6 +13,7 @@ export function formatDateToShortString(date) {
     day: "2-digit", // e.g., 16
     year: "numeric", // e.g., 2024
   });
+
   return formattedDate;
 }
 
@@ -38,6 +39,7 @@ export function formatDateToISO(dateString) {
 export function normalizeDate(date) {
   const newDate = new Date(date);
   newDate.setHours(0, 0, 0, 0); // Set to midnight to ignore time
+
   return newDate;
 }
 
@@ -46,6 +48,24 @@ export function sortArrangementsByShiftType(arrangements) {
 
   const sortedArrangements = arrangements.sort((a, b) => {
     return order.indexOf(a.Shift_Type) - order.indexOf(b.Shift_Type);
+  });
+
+  return sortedArrangements;
+}
+
+export function getEarliestDate(dateString) {
+  const dateArray = dateString.split(",");
+
+  return dateArray.reduce((earliest, current) => {
+    return new Date(current) < new Date(earliest) ? current : earliest;
+  });
+}
+
+export function sortArrangementsByStartDate(arrangements) {
+  const sortedArrangements = arrangements.sort((a, b) => {
+    const earliestA = getEarliestDate(a.Start_Date);
+    const earliestB = getEarliestDate(b.Start_Date);
+    return new Date(earliestA) - new Date(earliestB);
   });
 
   return sortedArrangements;

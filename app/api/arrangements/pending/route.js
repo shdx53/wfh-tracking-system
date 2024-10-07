@@ -59,7 +59,8 @@ export async function GET(request) {
                 Arrangement.Shift_Type,
 			          Arrangement.End_Date,
                 Arrangement.Recurring_Interval,
-                Arrangement.Apply_Reason
+                Arrangement.Apply_Reason,
+                Arrangement.Update_Reason
             FROM Arrangement
             RIGHT JOIN Employee ON Employee.Staff_ID = Arrangement.Staff_ID
             WHERE Employee.Staff_ID IN (
@@ -81,7 +82,8 @@ export async function GET(request) {
                 GROUP_CONCAT(Arrangement.Shift_Type) as Shift_Type,
                 GROUP_CONCAT(Arrangement.End_Date) as End_Date,
                 GROUP_CONCAT(Arrangement.Recurring_Interval) as Recurring_Interval,
-                GROUP_CONCAT(Arrangement.Apply_Reason) as Apply_Reason
+                GROUP_CONCAT(Arrangement.Apply_Reason) as Apply_Reason,
+                GROUP_CONCAT(Arrangement.Update_Reason) as Update_Reason
             FROM Arrangement
             RIGHT JOIN Employee ON Employee.Staff_ID = Arrangement.Staff_ID
             WHERE Employee.Staff_ID IN (
