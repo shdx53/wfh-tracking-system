@@ -220,3 +220,19 @@ export async function newArrangement(formData) {
     if (conn) conn.release();
   }
 }
+
+// For reference from previous route.js in api/arrangement
+// Sample JSON Data:
+/* {
+  "Arrangement_ID": null,
+  "Staff_ID": 150085,
+  "Request_Status": "pending",
+  "Applied_Datetime": "2024-03-15 10:00:00",
+  "Start_Date": "2024-09-25",
+  "Recurring": true,
+  "Recurring_Interval": "weekly",
+  "End_Date": "2024-10-25",
+  "Apply_Reason": "TESTING New Code",
+  "Update_Reason": null,
+  "Shift_Type": "AM"
+} */
