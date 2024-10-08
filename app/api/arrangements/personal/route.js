@@ -13,7 +13,7 @@ export async function GET(request) {
     // Get Staff_ID input from the request
     const searchParams = request.nextUrl.searchParams;
     const staffID = searchParams.get("staffID");
-    
+
     // Execute query to retrieve all Arrangement of one staff
     const [data] = await conn.query(
       `
@@ -41,7 +41,7 @@ export async function GET(request) {
       WHERE Staff_ID = ?
       AND Arrangement.Request_Status = 'pending'
       GROUP BY Arrangement.Recurring_Interval, Arrangement.End_Date, Arrangement.Shift_Type;`,
-      [staffID,staffID],
+      [staffID, staffID],
     );
 
     // Release the connection back to the pool
