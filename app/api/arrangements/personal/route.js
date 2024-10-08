@@ -23,7 +23,7 @@ export async function GET(request) {
               Apply_Reason, Update_Reason, Shift_Type
       FROM Arrangement
       WHERE Staff_ID = ?
-      AND Arrangement.Request_Status <> 'pending'
+      AND Arrangement.Is_Recurring = 0
       
       UNION
       
@@ -39,6 +39,7 @@ export async function GET(request) {
       GROUP_CONCAT(Arrangement.Shift_Type) as Shift_Type
       FROM Arrangement
       WHERE Staff_ID = ?
+      AND Arrangement.Is_Recurring = 1
       AND Arrangement.Request_Status = 'pending'
       GROUP BY Arrangement.Recurring_Interval, Arrangement.End_Date, Arrangement.Shift_Type;`,
       [staffID, staffID],
