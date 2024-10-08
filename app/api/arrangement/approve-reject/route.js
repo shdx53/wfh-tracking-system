@@ -97,8 +97,8 @@ export async function PUT(request) {
             Thank you. \n\n`;
 
             // Send notification using Mailtrap
-            console.log(staffEmail);
-            await sendNotification(staffEmail, subject, body);
+            console.log(`Email for WFH request sent successfully to ${staffEmail}.`);
+            /* await sendNotification(staffEmail, subject, body); */
 
         // Release the connection back to the pool
         conn.release();

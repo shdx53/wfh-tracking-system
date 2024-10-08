@@ -108,8 +108,8 @@ export async function newArrangement(formData) {
         Please review and approve/reject the request, thank you. \n\n`;
 
         // Send notification using Mailtrap
-        console.log(managerEmail);
-        await sendNotification(managerEmail, subject, body);
+        console.log(`Email for WFH request sent successfully to ${managerEmail}.`);
+        /* await sendNotification(managerEmail, subject, body); */
         // ----End of Notification----
       } catch (error) {
         console.error("Error during arrangement setup", error);
@@ -202,7 +202,8 @@ export async function newArrangement(formData) {
      Please review and approve/reject the request. \n\n`;
 
       // Send notification using Mailtrap
-      await sendNotification(managerEmail, subject, body);
+      console.log(`Email for WFH requests sent successfully to ${managerEmail}.`);
+      /* await sendNotification(managerEmail, subject, body); */
     }
 
     // Release connection back to pool

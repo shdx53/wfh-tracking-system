@@ -94,7 +94,7 @@ export async function PUT(request) {
     // Send notification using Mailtrap (or any email service)
     try {
       console.log("Sending email to:", managerEmail);
-      await sendNotification(managerEmail, subject, body);
+      /* await sendNotification(managerEmail, subject, body); */
     } catch (emailError) {
       console.error("Error sending email notification:", emailError);
       conn.release();

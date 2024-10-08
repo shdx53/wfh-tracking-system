@@ -34,6 +34,7 @@ async function rejectUnapprovedWfh() {
 
     const [rows] = await conn.query(query);
     /* console.log("[CRON JOB] Number of rows fetched:", rows.length); */
+
     for (const row of rows) {
       const arrangement = {
         id: row.id,
@@ -64,7 +65,8 @@ async function rejectUnapprovedWfh() {
           const subject = "WFH Request Automatically Rejected";
           const body = `Dear Employee,\n\nYour WFH request for ${arrangement.startDate.toDateString()} has been automatically rejected due to lack of approval within 24 hours of the scheduled start date.\n\nPlease resubmit your request if needed.\n\nBest regards,\nWFH Tracking System`;
 
-          await sendNotification(arrangement.email, subject, body);
+          // Commented out to prevent bursting free plan email limit
+          /* await sendNotification(arrangement.email, subject, body); */
         } catch (err) {
           console.error(
             `[CRON JOB] Error rejecting WFH arrangement ${arrangement.id}:`,
@@ -72,13 +74,14 @@ async function rejectUnapprovedWfh() {
           );
         }
       } else {
-        /* console.log(
+        console.log(
           `[CRON JOB] WFH arrangement ${arrangement.id} for ${arrangement.staffId} not rejected (outside 24-hour window)`,
-        ); */
+        );
       }
     }
 
     /* console.log("[CRON JOB] Finished processing unapproved WFH arrangements"); */
+    
   } catch (err) {
     console.error(
       "[CRON JOB] Error rejecting unapproved WFH arrangements:",

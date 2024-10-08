@@ -10,9 +10,9 @@ export function startCronJobs() {
     if (!isRunning) {
       isRunning = true;
       try {
-        console.log(
+        /* console.log(
           `[CRON JOB ${Date.now()} in ${process.env.NODE_ENV}] Running WFH auto-reject job every minute...`,
-        );
+        ); */
         rejectUnapprovedWfh(); // Call your task function
       } finally {
         isRunning = false;
