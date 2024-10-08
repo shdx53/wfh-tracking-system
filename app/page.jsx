@@ -7,8 +7,7 @@ export default function Home() {
       <div>Home page</div>
 
       <div className="flex flex-col items-center space-y-4">
-        <LoginLink>Sign in</LoginLink>
-        <RegisterLink>Sign up</RegisterLink>
+        <LoginLink>Log in</LoginLink>
         <LogoutLink>Log out</LogoutLink>
 
       </div>
