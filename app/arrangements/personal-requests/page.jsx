@@ -13,66 +13,12 @@ import { Search } from "lucide-react";
 
 // Function
 import fetchPersonalArrangements from "@/app/lib/arrangements/fetch-personal-arrangements";
+import { handleFilter } from "@/app/lib/arrangements/requests/handle-filter";
 import { sortArrangementsByStartDate } from "@/app/lib/utils";
 import TabContent from "@/components/arrangements/requests/tab-content";
-import { formatDateToISO } from "@/app/lib/utils";
 
 // Context
 import { ArrangementRequestPageProvider } from "@/app/context/arrangement-request-page-context";
-
-function handleFilter(
-  selectedTab,
-  startDateToFilter,
-  setArrangementRequests,
-  pendingArrangementRequestsCopy,
-  processedArrangementRequestsCopy,
-  setCurrentPage,
-) {
-  // Always reset to the first page
-  // If users are not on the first page when they perform the filtering,
-  // they may not see any request
-  setCurrentPage(1);
-
-  if (startDateToFilter) {
-    let arrangementRequestsCopy = [];
-
-    if (
-      selectedTab === "Pending" &&
-      pendingArrangementRequestsCopy &&
-      Array.isArray(pendingArrangementRequestsCopy)
-    ) {
-      arrangementRequestsCopy = pendingArrangementRequestsCopy;
-    } else if (
-      selectedTab === "Processed" &&
-      processedArrangementRequestsCopy &&
-      Array.isArray(processedArrangementRequestsCopy)
-    ) {
-      arrangementRequestsCopy = processedArrangementRequestsCopy;
-    }
-
-    const filteredRequests = arrangementRequestsCopy.filter((request) => {
-      let startDate = request.Start_Date;
-
-      // If recurring request, get the earliest Start_Date
-      if (startDate.includes(",")) {
-        startDate = new Date(
-          Math.min(...startDate.split(",").map((date) => new Date(date))),
-        );
-      }
-
-      return formatDateToISO(startDate) === formatDateToISO(startDateToFilter);
-    });
-
-    setArrangementRequests(filteredRequests);
-  } else {
-    // Return to original requests
-    if (selectedTab === "Pending") {
-      setArrangementRequests(pendingArrangementRequestsCopy);
-    } else {
-      setArrangementRequests(processedArrangementRequestsCopy);
-    }
-  }
-}
 
 export default function PersonalArrangementRequests() {
   const page = { page: "Personal" };
@@ -195,8 +141,8 @@ function PersonalArrangementRequestsContent() {
         <div className="flex items-center gap-2 pt-4 sm:justify-end">
           <Input
             type="text"
-            placeholder="Search start date"
-            className="w-3/4 max-w-56"
+            placeholder="Start date (YYYY-MM-DD)"
+            className="w-3/4 max-w-52"
             onChange={(event) => setStartDateToFilter(event.target.value)}
           />
           <Search
@@ -205,6 +151,7 @@ function PersonalArrangementRequestsContent() {
             onClick={() =>
               handleFilter(
                 selectedTab,
+                null,
                 startDateToFilter,
                 setArrangementRequests,
                 pendingArrangementRequestsCopy,
@@ -222,7 +169,7 @@ function PersonalArrangementRequestsContent() {
           </div>
           <div className="col-span-4 sm:col-span-2">Start Date</div>
           <div className="hidden sm:col-span-2 sm:block">End Date</div>
-          <div className="hidden sm:col-span-1 sm:block">Shift Type</div>
+          <div className="hidden sm:col-span-1 sm:block">Shift</div>
           <div className="col-span-4 sm:col-span-2 lg:col-span-1">Status</div>
         </div>
 

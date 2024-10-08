@@ -174,8 +174,6 @@ export default function ArrangementRequestCard({ selectedTab, arrangement }) {
     }
   }, [startDate]);
 
-  console.log();
-
   return (
     <div className={`${tableStyles.grid}`}>
       {page === "Managers and Directors" && (

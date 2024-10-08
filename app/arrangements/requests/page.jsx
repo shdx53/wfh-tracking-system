@@ -12,59 +12,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search } from "lucide-react";
 
 // Function
+import { ArrangementRequestPageProvider } from "@/app/context/arrangement-request-page-context";
 import { fetchArrangements } from "@/app/lib/arrangements/fetch-arrangements";
+import { handleFilter } from "@/app/lib/arrangements/requests/handle-filter";
 import { sortArrangementsByStartDate } from "@/app/lib/utils";
 import TabContent from "@/components/arrangements/requests/tab-content";
-import { ArrangementRequestPageProvider } from "@/app/context/arrangement-request-page-context";
-
-function handleFilter(
-  selectedTab,
-  employeeToFilter,
-  setArrangementRequests,
-  pendingArrangementRequestsCopy,
-  processedArrangementRequestsCopy,
-  setCurrentPage,
-) {
-  // Always reset to the first page
-  // If users are not on the first page when they perform the filtering,
-  // they may not see any request
-  setCurrentPage(1);
-
-  if (employeeToFilter) {
-    const employee = employeeToFilter.toLowerCase();
-
-    let arrangementRequestsCopy = [];
-
-    if (
-      selectedTab === "Pending" &&
-      pendingArrangementRequestsCopy &&
-      Array.isArray(pendingArrangementRequestsCopy)
-    ) {
-      arrangementRequestsCopy = pendingArrangementRequestsCopy;
-    } else if (
-      selectedTab === "Processed" &&
-      processedArrangementRequestsCopy &&
-      Array.isArray(processedArrangementRequestsCopy)
-    ) {
-      arrangementRequestsCopy = processedArrangementRequestsCopy;
-    }
-
-    const filteredRequests = arrangementRequestsCopy.filter((request) => {
-      const fullName =
-        `${request.Staff_FName} ${request.Staff_LName}`.toLowerCase();
-      return fullName.includes(employee);
-    });
-
-    setArrangementRequests(filteredRequests);
-  } else {
-    // Return to original requests
-    if (selectedTab === "Pending") {
-      setArrangementRequests(pendingArrangementRequestsCopy);
-    } else {
-      setArrangementRequests(processedArrangementRequestsCopy);
-    }
-  }
-}
 
 export default function ArrangementRequests() {
   const page = { page: "Managers and Directors" };
@@ -144,6 +96,7 @@ function ArrangementRequestsContent() {
 
   /* Filtering logic */
   const [employeeToFilter, setEmployeeToFilter] = useState(null);
+  const [startDateToFilter, setStartDateToFilter] = useState(null);
 
   /* Pagination logic */
   const arrangementRequestsPerPage = 10;
@@ -185,9 +138,15 @@ function ArrangementRequestsContent() {
         <div className="flex items-center gap-2 pt-4 sm:justify-end">
           <Input
             type="text"
-            placeholder="Search employee"
-            className="w-3/4 max-w-56"
+            placeholder="Employee"
+            className="w-3/4 max-w-52"
             onChange={(event) => setEmployeeToFilter(event.target.value)}
+          />
+          <Input
+            type="text"
+            placeholder="Start date (YYYY-MM-DD)"
+            className="w-3/4 max-w-52"
+            onChange={(event) => setStartDateToFilter(event.target.value)}
           />
           <Search
             strokeWidth={0.5}
@@ -196,6 +155,7 @@ function ArrangementRequestsContent() {
               handleFilter(
                 selectedTab,
                 employeeToFilter,
+                startDateToFilter,
                 setArrangementRequests,
                 pendingArrangementRequestsCopy,
                 processedArrangementRequestsCopy,
@@ -218,7 +178,7 @@ function ArrangementRequestsContent() {
             End Date
           </div>
           <div className="hidden sm:col-span-2 sm:block lg:col-span-1">
-            Shift Type
+            Shift
           </div>
           <div className="col-span-3 sm:col-span-2 lg:col-span-1">Status</div>
         </div>

@@ -99,12 +99,12 @@ export default function ArrangementRequestForm({}) {
               <div className="text-black/40">Arrangement type</div>
               <div className="mt-2 text-black">{arrangementType}</div>
             </div>
+            <div className="col-span-2 sm:col-span-1">
+              <div className="text-black/40">Shift</div>
+              <div className="mt-2 text-black">{shiftType}</div>
+            </div>
             {arrangementType === "Recurring" && (
               <>
-                <div className="col-span-2 sm:col-span-1">
-                  <div className="text-black/40">Shift</div>
-                  <div className="mt-2 text-black">{shiftType}</div>
-                </div>
                 <div className="col-span-2 sm:col-span-1">
                   <div className="text-black/40">Recurring interval</div>
                   <div className="mt-2 text-black">{recurringInterval}</div>
