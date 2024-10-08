@@ -16,15 +16,50 @@ import ArrangementRequestForm from "./arrangement-request-form";
 // Library
 import { formatDateToISO } from "@/app/lib/utils";
 import { ArrangementRequestProvider } from "@/app/context/arrangement-request-context";
+import { useArrangementRequestPage } from "@/app/context/arrangement-request-page-context";
 
-const classStyles = {
+const requestStatusStyles = {
   Approved: "bg-green-950 text-green-600",
   Pending: "bg-amber-950 text-amber-600",
   Rejected: "bg-red-950 text-red-600",
   Withdrawn: "bg-blue-950 text-blue-400",
 };
 
+// Define table styles for
+// Managers and Directors Arrangement Requests page and
+// Personal Arrangement Requests page
+const managersAndDirectorsTableStyles = {
+  grid: "mx-auto grid max-w-md grid-cols-11 items-center gap-2 rounded-md border p-4 text-sm sm:max-w-none sm:gap-4 lg:grid-cols-12 xl:grid-cols-8",
+  arrangementType: "col-span-3 sm:col-span-2 xl:col-span-1",
+  recurringInterval: "hidden lg:col-span-1 lg:block",
+  startDate: "hidden sm:col-span-2 sm:block lg:col-span-2 xl:col-span-1",
+  endDate: "hidden lg:col-span-2 lg:block xl:col-span-1",
+  shiftType: "hidden sm:col-span-2 sm:block lg:col-span-1",
+  requestStatus:
+    "col-span-3 flex items-center justify-center rounded-md py-2 text-xs sm:col-span-2 sm:text-sm lg:col-span-1",
+};
+
+const personalTableStypes = {
+  grid: "mx-auto grid max-w-sm grid-cols-12 items-center gap-2 rounded-md border p-4 text-sm sm:max-w-none sm:gap-4 lg:grid-cols-11",
+  arrangementType: "col-span-3 sm:col-span-2",
+  recurringInterval: "hidden sm:col-span-2 sm:block",
+  startDate: "col-span-4 sm:col-span-2",
+  endDate: "hidden sm:col-span-2 sm:block",
+  shiftType: "hidden sm:col-span-1 sm:block",
+  requestStatus:
+    "col-span-4 flex items-center justify-center rounded-md py-2 text-xs sm:col-span-2 sm:text-sm lg:col-span-1",
+};
+
 export default function ArrangementRequestCard({ selectedTab, arrangement }) {
+  // Determine page
+  const { page } = useArrangementRequestPage();
+
+  // Determine table styles
+  const tableStyles =
+    page === "Managers and Directors"
+      ? managersAndDirectorsTableStyles
+      : personalTableStypes;
+
   /* Display logic */
   const firstName = arrangement.Staff_FName;
   const lastName = arrangement.Staff_LName;
@@ -48,7 +83,8 @@ export default function ArrangementRequestCard({ selectedTab, arrangement }) {
   let requestStatus = arrangement.Request_Status;
 
   if (startDate.includes(",")) {
-    const recurringIntervalArr = recurringInterval.split(",");
+    const recurringIntervalArr =
+      Array.isArray(recurringInterval) && recurringInterval.split(",");
     recurringInterval = recurringIntervalArr[0];
 
     const startDateArr = startDate.split(",");
@@ -138,32 +174,31 @@ export default function ArrangementRequestCard({ selectedTab, arrangement }) {
     }
   }, [startDate]);
 
+  console.log();
+
   return (
-    <div className="mx-auto grid max-w-md grid-cols-12 items-center gap-2 rounded-md border p-4 text-sm sm:max-w-none sm:gap-3 lg:gap-2 xl:gap-4 xl:px-8">
-      <div className="col-span-5 sm:col-span-3 lg:col-span-2">{name}</div>
-      <div className="col-span-3 sm:col-span-2">{arrangementType}</div>
-      <div className="hidden lg:col-span-1 lg:block 2xl:col-span-2">
+    <div className={`${tableStyles.grid}`}>
+      {page === "Managers and Directors" && (
+        <div className="col-span-3 sm:col-span-2 xl:col-span-1">{name}</div>
+      )}
+      <div className={`${tableStyles.arrangementType}`}>{arrangementType}</div>
+      <div className={`${tableStyles.recurringInterval}`}>
         {recurringInterval ? recurringInterval : "N/A"}
       </div>
-      <div className="hidden sm:col-span-2 sm:block lg:col-span-2 2xl:col-span-1">
-        {startDate}
-      </div>
-      <div className="hidden lg:col-span-2 lg:block 2xl:col-span-1">
+      <div className={`${tableStyles.startDate}`}>{startDate}</div>
+      <div className={`${tableStyles.endDate}`}>
         {endDate ? endDate : startDate}
       </div>
-      <div className="hidden sm:col-span-2 sm:block lg:col-span-1">
-        {shiftType}
-      </div>
+      <div className={`${tableStyles.shiftType}`}>{shiftType}</div>
       <div
-        className={`col-span-3 flex max-w-20 items-center justify-center rounded-md py-2 text-xs sm:col-span-2 sm:max-w-24 sm:text-sm lg:col-span-1 2xl:col-span-2 ${classStyles[requestStatus]}`}
+        className={`${tableStyles.requestStatus} ${requestStatusStyles[requestStatus]}`}
       >
         {requestStatus}
       </div>
       <div className="col-span-1 flex justify-center">
         <Sheet>
           <SheetTrigger
-            disabled={isDisabled}
-            className={`${isDisabled && "opacity-40"}`}
+            className={`${(isDisabled || (page === "Personal" && selectedTab === "Processed")) && "hidden"}`}
           >
             <ArrowUpRight strokeWidth={1} />
           </SheetTrigger>

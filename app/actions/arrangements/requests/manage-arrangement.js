@@ -17,6 +17,8 @@ export async function manageArrangement(formData) {
     // Get a connection from the pool
     const conn = await pool.getConnection();
 
+    console.log(formData);
+
     for (const key in formData) {
       if (key.includes("Action")) {
         const actionKey = key;
@@ -45,8 +47,8 @@ export async function manageArrangement(formData) {
               // Update all arrangements with the same Applied_Datetime
               await conn.query(
                 `
-                  UPDATE Arrangement 
-                  SET Request_Status = "withdrawn", Update_Reason = ? 
+                  UPDATE Arrangement
+                  SET Request_Status = "withdrawn", Update_Reason = ?
                   WHERE Applied_Datetime = ?
                 `,
                 [reason, appliedDatetime],
@@ -59,6 +61,9 @@ export async function manageArrangement(formData) {
             }
           } else {
             /* *Override Update_Reason to NULL */
+            console.log(requestStatus[action]);
+            console.log(arrangementID);
+
             await conn.query(
               "UPDATE Arrangement SET Request_Status = ?, Update_Reason = NULL WHERE Arrangement_ID = ?",
               [requestStatus[action], arrangementID],

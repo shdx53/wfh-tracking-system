@@ -12,14 +12,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search } from "lucide-react";
 
 // Function
-import { fetchArrangements } from "@/app/lib/arrangements/fetch-arrangements";
+import fetchPersonalArrangements from "@/app/lib/arrangements/fetch-personal-arrangements";
 import { sortArrangementsByStartDate } from "@/app/lib/utils";
 import TabContent from "@/components/arrangements/requests/tab-content";
+import { formatDateToISO } from "@/app/lib/utils";
+
+// Context
 import { ArrangementRequestPageProvider } from "@/app/context/arrangement-request-page-context";
 
 function handleFilter(
   selectedTab,
-  employeeToFilter,
+  startDateToFilter,
   setArrangementRequests,
   pendingArrangementRequestsCopy,
   processedArrangementRequestsCopy,
@@ -30,9 +33,7 @@ function handleFilter(
   // they may not see any request
   setCurrentPage(1);
 
-  if (employeeToFilter) {
-    const employee = employeeToFilter.toLowerCase();
-
+  if (startDateToFilter) {
     let arrangementRequestsCopy = [];
 
     if (
@@ -50,9 +51,16 @@ function handleFilter(
     }
 
     const filteredRequests = arrangementRequestsCopy.filter((request) => {
-      const fullName =
-        `${request.Staff_FName} ${request.Staff_LName}`.toLowerCase();
-      return fullName.includes(employee);
+      let startDate = request.Start_Date;
+
+      // If recurring request, get the earliest Start_Date
+      if (startDate.includes(",")) {
+        startDate = new Date(
+          Math.min(...startDate.split(",").map((date) => new Date(date))),
+        );
+      }
+
+      return formatDateToISO(startDate) === formatDateToISO(startDateToFilter);
     });
 
     setArrangementRequests(filteredRequests);
@@ -66,18 +74,18 @@ function handleFilter(
   }
 }
 
-export default function ArrangementRequests() {
-  const page = { page: "Managers and Directors" };
+export default function PersonalArrangementRequests() {
+  const page = { page: "Personal" };
   return (
     <Suspense>
       <ArrangementRequestPageProvider page={page}>
-        <ArrangementRequestsContent />
+        <PersonalArrangementRequestsContent />
       </ArrangementRequestPageProvider>
     </Suspense>
   );
 }
 
-function ArrangementRequestsContent() {
+function PersonalArrangementRequestsContent() {
   // Get staff ID from query params
   const searchParams = useSearchParams();
   const staffID = searchParams.get("staffID");
@@ -91,51 +99,53 @@ function ArrangementRequestsContent() {
     setProcessedArrangementRequestsCopy,
   ] = useState(null);
 
-  /* Query arrangement requests logic */
-  // Fetch all pending arrangement requests
-  const pendingArrangementRequestsQuery = useQuery({
-    queryKey: ["pending arrangement requests", { staffID }],
-    queryFn: ({ queryKey }) =>
-      fetchArrangements(null, null, "pending", queryKey[1].staffID),
-    enabled: selectedTab === "Pending",
+  /* Query personal arrangement requests logic */
+  const personalArrangementRequestsQuery = useQuery({
+    queryKey: ["personal arrangement requests", { staffID }],
+    queryFn: ({ queryKey }) => fetchPersonalArrangements(queryKey[1], null),
   });
-  let pendingArrangementRequests = pendingArrangementRequestsQuery.data;
-  const isPendingArrangementRequestsPending =
-    pendingArrangementRequestsQuery.isPending;
-  const isPendingArrangementRequestsError = pendingArrangementRequestsQuery.isError;
+  const personalArrangementRequests = personalArrangementRequestsQuery.data;
+  const isPersonalArrangementRequestsPending =
+    personalArrangementRequestsQuery.isPending;
+  const isPersonalArrangementRequestsError =
+    personalArrangementRequestsQuery.isError;
 
-  // Fetch all processed arrangement requests
-  const processedArrangementRequestsQuery = useQuery({
-    queryKey: ["processed arrangement requests", { staffID }],
-    queryFn: ({ queryKey }) =>
-      fetchArrangements(null, null, "processed", queryKey[1].staffID),
-    enabled: selectedTab === "Processed",
-  });
-  const processedArrangementRequests = processedArrangementRequestsQuery.data;
-  const isProcessedArrangementRequestsPending =
-    processedArrangementRequestsQuery.isPending;
-  const isProcessedArrangementRequestsError =
-    processedArrangementRequestsQuery.isError;
-
+  // Filter requests into pending and processed categories
   useEffect(() => {
     if (
-      selectedTab === "Pending" &&
-      pendingArrangementRequests &&
-      Array.isArray(pendingArrangementRequests)
+      personalArrangementRequests &&
+      Array.isArray(personalArrangementRequests)
     ) {
-      setArrangementRequests(pendingArrangementRequests);
+      const pendingArrangementRequests = personalArrangementRequests.filter(
+        (request) => {
+          return request.Request_Status.includes("pending");
+        },
+      );
       setPendingArrangementRequestsCopy(pendingArrangementRequests);
+
+      const processedArrangementRequests = personalArrangementRequests.filter(
+        (request) => {
+          return !request.Request_Status.includes("pending");
+        },
+      );
+      setProcessedArrangementRequestsCopy(processedArrangementRequests);
+    }
+  }, [personalArrangementRequests]);
+
+  useEffect(() => {
+    if (selectedTab === "Pending" && pendingArrangementRequestsCopy) {
+      setArrangementRequests(pendingArrangementRequestsCopy);
     } else if (
       selectedTab === "Processed" &&
-      processedArrangementRequests &&
-      Array.isArray(processedArrangementRequests)
+      processedArrangementRequestsCopy
     ) {
-      setArrangementRequests(processedArrangementRequests);
-      setProcessedArrangementRequestsCopy(processedArrangementRequests);
-    } else {
-      setArrangementRequests(null);
+      setArrangementRequests(processedArrangementRequestsCopy);
     }
-  }, [selectedTab, pendingArrangementRequests, processedArrangementRequests]);
+  }, [
+    selectedTab,
+    pendingArrangementRequestsCopy,
+    processedArrangementRequestsCopy,
+  ]);
 
   // Sort arrangement requests by Start_Date
   if (arrangementRequests && Array.isArray(arrangementRequests)) {
@@ -143,7 +153,7 @@ function ArrangementRequestsContent() {
   }
 
   /* Filtering logic */
-  const [employeeToFilter, setEmployeeToFilter] = useState(null);
+  const [startDateToFilter, setStartDateToFilter] = useState(null);
 
   /* Pagination logic */
   const arrangementRequestsPerPage = 10;
@@ -164,7 +174,7 @@ function ArrangementRequestsContent() {
   return (
     <div className="space-y-3">
       <h1 className="max-w-min text-2xl font-bold sm:max-w-none">
-        Arrangement Requests
+        My Arrangement Requests
       </h1>
       <Tabs defaultValue="Pending">
         <TabsList className="">
@@ -185,9 +195,9 @@ function ArrangementRequestsContent() {
         <div className="flex items-center gap-2 pt-4 sm:justify-end">
           <Input
             type="text"
-            placeholder="Search employee"
+            placeholder="Search start date"
             className="w-3/4 max-w-56"
-            onChange={(event) => setEmployeeToFilter(event.target.value)}
+            onChange={(event) => setStartDateToFilter(event.target.value)}
           />
           <Search
             strokeWidth={0.5}
@@ -195,7 +205,7 @@ function ArrangementRequestsContent() {
             onClick={() =>
               handleFilter(
                 selectedTab,
-                employeeToFilter,
+                startDateToFilter,
                 setArrangementRequests,
                 pendingArrangementRequestsCopy,
                 processedArrangementRequestsCopy,
@@ -205,30 +215,23 @@ function ArrangementRequestsContent() {
           />
         </div>
 
-        <div className="mx-auto mb-4 mt-8 grid max-w-md grid-cols-11 gap-2 rounded-md bg-secondary p-4 text-sm text-black/40 sm:max-w-none sm:gap-4 lg:grid-cols-12 xl:grid-cols-8">
-          <div className="col-span-3 sm:col-span-2 xl:col-span-1">Employee</div>
-          <div className="col-span-3 sm:col-span-2 xl:col-span-1">Type</div>
-          <div className="hidden lg:col-span-1 lg:block">
+        <div className="mx-auto mb-4 mt-8 grid max-w-sm grid-cols-12 gap-2 rounded-md bg-secondary p-4 text-sm text-black/40 sm:max-w-none sm:gap-4 lg:grid-cols-11">
+          <div className="col-span-3 sm:col-span-2">Type</div>
+          <div className="hidden sm:col-span-2 sm:block">
             Recurring Frequency
           </div>
-          <div className="hidden sm:col-span-2 sm:block lg:col-span-2 xl:col-span-1">
-            Start Date
-          </div>
-          <div className="hidden lg:col-span-2 lg:block xl:col-span-1">
-            End Date
-          </div>
-          <div className="hidden sm:col-span-2 sm:block lg:col-span-1">
-            Shift Type
-          </div>
-          <div className="col-span-3 sm:col-span-2 lg:col-span-1">Status</div>
+          <div className="col-span-4 sm:col-span-2">Start Date</div>
+          <div className="hidden sm:col-span-2 sm:block">End Date</div>
+          <div className="hidden sm:col-span-1 sm:block">Shift Type</div>
+          <div className="col-span-4 sm:col-span-2 lg:col-span-1">Status</div>
         </div>
 
         {/* Pending tab */}
         <TabsContent value="Pending" className="space-y-4">
           <TabContent
             selectedTab={selectedTab}
-            isArrangementRequestsPending={isPendingArrangementRequestsPending}
-            isArrangementRequestsError={isPendingArrangementRequestsError}
+            isArrangementRequestsPending={isPersonalArrangementRequestsPending}
+            isArrangementRequestsError={isPersonalArrangementRequestsError}
             currentPageArrangementRequests={currentPageArrangementRequests}
           />
         </TabsContent>
@@ -237,8 +240,8 @@ function ArrangementRequestsContent() {
         <TabsContent value="Processed" className="space-y-4">
           <TabContent
             selectedTab={selectedTab}
-            isArrangementRequestsPending={isProcessedArrangementRequestsPending}
-            isArrangementRequestsError={isProcessedArrangementRequestsError}
+            isArrangementRequestsPending={isPersonalArrangementRequestsPending}
+            isArrangementRequestsError={isPersonalArrangementRequestsError}
             currentPageArrangementRequests={currentPageArrangementRequests}
           />
         </TabsContent>

@@ -22,6 +22,7 @@ import { manageArrangement } from "@/app/actions/arrangements/requests/manage-ar
 
 // Context
 import { useArrangementRequest } from "@/app/context/arrangement-request-context";
+import { useArrangementRequestPage } from "@/app/context/arrangement-request-page-context";
 
 export default function ArrangementRequestForm({}) {
   const {
@@ -35,6 +36,9 @@ export default function ArrangementRequestForm({}) {
     updateReason,
   } = useArrangementRequest();
   const { toast } = useToast();
+
+  // Determine page
+  const { page } = useArrangementRequestPage();
 
   // Fetch all recurring arrangement requests
   const recurringArrangementsQuery = useQuery({
@@ -85,10 +89,12 @@ export default function ArrangementRequestForm({}) {
           className="space-y-8 text-sm"
         >
           <div className="grid grid-cols-2 gap-y-4">
-            <div className="col-span-2 sm:col-span-1">
-              <div className="text-black/40">Employee</div>
-              <div className="mt-2 text-black">{name}</div>
-            </div>
+            {page === "Managers and Directors" && (
+              <div className="col-span-2 sm:col-span-1">
+                <div className="text-black/40">Employee</div>
+                <div className="mt-2 text-black">{name}</div>
+              </div>
+            )}
             <div className="col-span-2 sm:col-span-1">
               <div className="text-black/40">Arrangement type</div>
               <div className="mt-2 text-black">{arrangementType}</div>

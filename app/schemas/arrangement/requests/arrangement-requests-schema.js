@@ -7,6 +7,7 @@ const actionSchema = z.enum([
   "Reject",
   "Withdraw entire arrangement",
   "Withdraw this specific arrangement only",
+  "Cancel",
 ]);
 const reasonSchema = z
   .string()

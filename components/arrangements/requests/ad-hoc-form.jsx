@@ -20,8 +20,12 @@ import { Textarea } from "@/components/ui/textarea";
 
 // Context
 import { useArrangementRequest } from "@/app/context/arrangement-request-context";
+import { useArrangementRequestPage } from "@/app/context/arrangement-request-page-context";
 
 export default function AdHocForm({ form }) {
+  // Determine page
+  const { page } = useArrangementRequestPage();
+
   const { selectedTab, arrangementID, startDate, requestStatus } =
     useArrangementRequest();
 
@@ -54,25 +58,31 @@ export default function AdHocForm({ form }) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="focus:outline-none">
-                  <SelectItem
-                    value="Approve"
-                    disabled={requestStatus === "Approved"}
-                  >
-                    Approve
-                  </SelectItem>
-                  <SelectItem
-                    value="Reject"
-                    disabled={requestStatus === "Rejected"}
-                  >
-                    Reject
-                  </SelectItem>
-                  {selectedTab === "Processed" && (
-                    <SelectItem
-                      value="Withdraw"
-                      disabled={requestStatus === "Withdrawn"}
-                    >
-                      Withdraw
-                    </SelectItem>
+                  {page === "Managers and Directors" ? (
+                    <>
+                      <SelectItem
+                        value="Approve"
+                        disabled={requestStatus === "Approved"}
+                      >
+                        Approve
+                      </SelectItem>
+                      <SelectItem
+                        value="Reject"
+                        disabled={requestStatus === "Rejected"}
+                      >
+                        Reject
+                      </SelectItem>
+                      {selectedTab === "Processed" && (
+                        <SelectItem
+                          value="Withdraw"
+                          disabled={requestStatus === "Withdrawn"}
+                        >
+                          Withdraw
+                        </SelectItem>
+                      )}
+                    </>
+                  ) : (
+                    <SelectItem value="Cancel">Cancel</SelectItem>
                   )}
                 </SelectContent>
               </Select>
@@ -83,25 +93,29 @@ export default function AdHocForm({ form }) {
       </div>
 
       {/* Reason field */}
-      <div className="col-span-2">
-        <FormField
-          control={form.control}
-          name={`${arrangementID}Reason`}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="font-normal">Reason for decision</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Type your reason here."
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
+      {page === "Managers and Directors" && (
+        <div className="col-span-2">
+          <FormField
+            control={form.control}
+            name={`${arrangementID}Reason`}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="font-normal">
+                  Reason for decision
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Type your reason here."
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      )}
     </div>
   );
 }

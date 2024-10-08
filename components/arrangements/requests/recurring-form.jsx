@@ -23,6 +23,7 @@ import { formatDateToISO } from "@/app/lib/utils";
 
 // Context
 import { useArrangementRequest } from "@/app/context/arrangement-request-context";
+import { useArrangementRequestPage } from "@/app/context/arrangement-request-page-context";
 
 export default function RecurringForm({
   form,
@@ -30,6 +31,9 @@ export default function RecurringForm({
   isRecurringArrangementsPending,
   isRecurringArrangementsError,
 }) {
+  // Determine page
+  const { page } = useArrangementRequestPage();
+
   const { selectedTab, arrangementID, startDate, requestStatus } =
     useArrangementRequest();
 
@@ -90,8 +94,16 @@ export default function RecurringForm({
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="Approve">Approve</SelectItem>
-                              <SelectItem value="Reject">Reject</SelectItem>
+                              {page === "Managers and Directors" ? (
+                                <>
+                                  <SelectItem value="Approve">
+                                    Approve
+                                  </SelectItem>
+                                  <SelectItem value="Reject">Reject</SelectItem>
+                                </>
+                              ) : (
+                                <SelectItem value="Cancel">Cancel</SelectItem>
+                              )}
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -101,27 +113,29 @@ export default function RecurringForm({
                   </div>
 
                   {/* Reason field */}
-                  <div className="col-span-2">
-                    <FormField
-                      control={form.control}
-                      name={`${arrangementID}Reason`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-normal">
-                            Reason for decision
-                          </FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Type your reason here."
-                              className="resize-none"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  {page === "Managers and Directors" && (
+                    <div className="col-span-2">
+                      <FormField
+                        control={form.control}
+                        name={`${arrangementID}Reason`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="font-normal">
+                              Reason for decision
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Type your reason here."
+                                className="resize-none"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
                 </div>
               );
             })}
