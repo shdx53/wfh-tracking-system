@@ -17,8 +17,6 @@ export async function manageArrangement(formData) {
     // Get a connection from the pool
     const conn = await pool.getConnection();
 
-    console.log(formData);
-
     for (const key in formData) {
       if (key.includes("Action")) {
         const actionKey = key;
