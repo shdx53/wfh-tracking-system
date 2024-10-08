@@ -74,7 +74,7 @@ export default function AdHocForm({ form }) {
                       </SelectItem>
                       {selectedTab === "Processed" && (
                         <SelectItem
-                          value="Withdraw"
+                          value="Withdraw this specific arrangement only"
                           disabled={requestStatus === "Withdrawn"}
                         >
                           Withdraw

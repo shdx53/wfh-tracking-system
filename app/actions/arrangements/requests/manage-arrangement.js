@@ -59,9 +59,6 @@ export async function manageArrangement(formData) {
             }
           } else {
             /* *Override Update_Reason to NULL */
-            console.log(requestStatus[action]);
-            console.log(arrangementID);
-
             await conn.query(
               "UPDATE Arrangement SET Request_Status = ?, Update_Reason = NULL WHERE Arrangement_ID = ?",
               [requestStatus[action], arrangementID],
