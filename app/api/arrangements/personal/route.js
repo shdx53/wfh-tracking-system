@@ -3,21 +3,23 @@ import { NextResponse } from "next/server";
 
 // Example Endpoint: http://localhost:3000/api/requests/all-personal-arrangement?staffID=150085
 export async function GET(request) {
+  let conn; // Declare conn outside of try block for access in finally
+
   try {
     // Establish the connection using the pool
     const pool = await connection();
 
     // Get a connection from the pool
-    const conn = await pool.getConnection();
+    conn = await pool.getConnection();
 
     // Get Staff_ID input from the request
     const searchParams = request.nextUrl.searchParams;
     const staffID = searchParams.get("staffID");
 
-    // Execute query to retrieve all Arrangement of one staff
+    // Execute query to retrieve all arrangements of one staff
     const [data] = await conn.query(
       `
-      SELECT Arrangement_ID,Request_Status,
+      SELECT Arrangement_ID, Request_Status,
               Applied_Datetime, Start_Date,
               Recurring_Interval, End_Date,
               Apply_Reason, Update_Reason, Shift_Type
@@ -28,15 +30,15 @@ export async function GET(request) {
       UNION
       
       SELECT
-      GROUP_CONCAT(Arrangement.Arrangement_ID) as Arrangement_ID,
-      GROUP_CONCAT(Arrangement.Request_Status) as Request_Status,
-      GROUP_CONCAT(Arrangement.Applied_Datetime) as Applied_Datetime,
-      GROUP_CONCAT(Arrangement.Start_Date) as Start_Date,  
-      GROUP_CONCAT(Arrangement.Recurring_Interval) as Recurring_Interval,  
-      GROUP_CONCAT(Arrangement.End_Date) as End_Date,
-      GROUP_CONCAT(Arrangement.Apply_Reason) as Apply_Reason,
-      GROUP_CONCAT(Arrangement.Update_Reason) as Update_Reason,
-      GROUP_CONCAT(Arrangement.Shift_Type) as Shift_Type
+      GROUP_CONCAT(Arrangement.Arrangement_ID) AS Arrangement_ID,
+      GROUP_CONCAT(Arrangement.Request_Status) AS Request_Status,
+      GROUP_CONCAT(Arrangement.Applied_Datetime) AS Applied_Datetime,
+      GROUP_CONCAT(Arrangement.Start_Date) AS Start_Date,  
+      GROUP_CONCAT(Arrangement.Recurring_Interval) AS Recurring_Interval,  
+      GROUP_CONCAT(Arrangement.End_Date) AS End_Date,
+      GROUP_CONCAT(Arrangement.Apply_Reason) AS Apply_Reason,
+      GROUP_CONCAT(Arrangement.Update_Reason) AS Update_Reason,
+      GROUP_CONCAT(Arrangement.Shift_Type) AS Shift_Type
       FROM Arrangement
       WHERE Staff_ID = ?
       AND Arrangement.Is_Recurring = 1
@@ -45,20 +47,25 @@ export async function GET(request) {
       [staffID, staffID],
     );
 
-    // Release the connection back to the pool
-    conn.release();
-
-    // return a response if a staff do not have any arrangement
-    if (data.length === 0) {
+    // return a response if a staff does not have any arrangements
+    if (!data.length) {
       return NextResponse.json(
         { message: "You do not have any past or present application." },
         { status: 200 },
       );
     }
 
-    // Return the fetched data as a JSON response
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    return NextResponse.json(error, { status: 500 });
+    console.error("Database query error:", error); // Log the error for debugging
+    return NextResponse.json(
+      { message: "Internal server error" }, // Remove details for consistency with tests
+      { status: 500 }
+    );
+  } finally {
+    // Release the connection back to the pool if it was established
+    if (conn) {
+      conn.release();
+    }
   }
 }
