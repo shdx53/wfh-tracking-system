@@ -16,8 +16,7 @@ export async function GET(request) {
 
     // Get Staff_ID input from the request
     const staffID = searchParams.get("staffID");
-
-    // Get Staff_ID input from the request
+    // Get Start_Date input from the request
     const startDate = searchParams.get("startDate");
 
     // Execute the query
@@ -58,6 +57,13 @@ export async function GET(request) {
     // Return the fetched data as a JSON response
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    return NextResponse.json(error, { status: 500 });
+    console.error("Database query error:", error); // Log the error for debugging
+    return NextResponse.json(
+      {
+        message: "Internal server error",
+        details: error.message, // Include error message for debugging
+      },
+      { status: 500 }
+    );
   }
 }
