@@ -1,5 +1,8 @@
 "use client";
 
+// Authentication
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+
 // Library
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
@@ -30,6 +33,29 @@ export default function ArrangementRequests() {
 }
 
 function ArrangementRequestsContent() {
+  const { isAuthenticated, getUser } = useKindeBrowserClient();
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated !== undefined) {
+      setIsAuthChecked(true);
+    }
+  }, [isAuthenticated]);
+
+  // Return Session Details
+  // Will give null in npm console, but refer to browser console it will give the correct obj after some time
+  /*  Object JSON {
+    "id": "kp_2aa7e1a9c81d49579407ae4bcdc593e8",
+    "email": "Derek.Wong@allinone.com.sg",
+    "family_name": "Wong",
+    "given_name": "Derek",
+    "username": "150155"
+  } */
+  // Take note that Kinde's 'username' field is our csv 'staff_ID' field
+
+  const userObj = getUser();
+  console.log(userObj);
+
   // Get staff ID from query params
   const searchParams = useSearchParams();
   const staffID = searchParams.get("staffID");
@@ -54,7 +80,8 @@ function ArrangementRequestsContent() {
   let pendingArrangementRequests = pendingArrangementRequestsQuery.data;
   const isPendingArrangementRequestsPending =
     pendingArrangementRequestsQuery.isPending;
-  const isPendingArrangementRequestsError = pendingArrangementRequestsQuery.isError;
+  const isPendingArrangementRequestsError =
+    pendingArrangementRequestsQuery.isError;
 
   // Fetch all processed arrangement requests
   const processedArrangementRequestsQuery = useQuery({

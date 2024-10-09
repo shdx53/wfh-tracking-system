@@ -1,5 +1,5 @@
-import {RegisterLink, LoginLink, LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
 
+import {LoginLink, LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
 
 export default function Home() {
   return (
