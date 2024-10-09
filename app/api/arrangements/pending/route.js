@@ -3,16 +3,25 @@ import { NextResponse } from "next/server";
 
 // Example endpoint to fetch all records from the employee table
 export async function GET(request) {
+  let conn; // Declare conn variable to manage connection
   try {
     // Establish the connection using the pool
     const pool = await connection();
 
     // Get a connection from the pool
-    const conn = await pool.getConnection();
+    conn = await pool.getConnection();
 
     // Get Staff_ID and Team input from the request
     const searchParams = request.nextUrl.searchParams;
     const staffID = searchParams.get("staffID");
+
+    // Check if staffID is provided
+    if (!staffID) {
+      return NextResponse.json(
+        { error: "Staff_ID is required" },
+        { status: 400 }
+      );
+    }
 
     // Query to get Position from the Employee table
     const [positionData] = await conn.query(
@@ -28,7 +37,7 @@ export async function GET(request) {
     if (positionData.length === 0) {
       return NextResponse.json(
         { error: "No employee found with the provided Staff_ID" },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
@@ -53,11 +62,11 @@ export async function GET(request) {
             SELECT Employee.Staff_ID,
                 Employee.Staff_FName,
                 Employee.Staff_LName,
-			          Arrangement.Arrangement_ID,
+                Arrangement.Arrangement_ID,
                 Arrangement.Request_Status,
                 Arrangement.Start_Date,  
                 Arrangement.Shift_Type,
-			          Arrangement.End_Date,
+                Arrangement.End_Date,
                 Arrangement.Recurring_Interval,
                 Arrangement.Apply_Reason,
                 Arrangement.Update_Reason
@@ -67,8 +76,8 @@ export async function GET(request) {
                 SELECT Staff_ID 
                 FROM Employee 
                 WHERE Reporting_Manager = ?)
-			      AND Arrangement.Is_Recurring = 0
-			      AND Arrangement.Start_Date >= DATE_ADD(NOW(), INTERVAL 24 HOUR)
+            AND Arrangement.Is_Recurring = 0
+            AND Arrangement.Start_Date >= DATE_ADD(NOW(), INTERVAL 24 HOUR)
             AND Arrangement.Request_Status = 'pending'
             
             UNION
@@ -101,16 +110,22 @@ export async function GET(request) {
     } else {
       return NextResponse.json(
         { message: "You are not a Director or Manager." },
-        { status: 200 },
+        { status: 403 }, // Updated to return a 403 status
       );
     }
-
-    // Release the connection back to the pool
-    conn.release();
 
     // Return the fetched data as a JSON response
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    return NextResponse.json(error, { status: 500 });
+    console.error("Error in GET /api/arrangements/pending:", error); // Log the error for debugging
+    return NextResponse.json(
+      { error: "An unexpected error occurred while processing your request." },
+      { status: 500 }
+    );
+  } finally {
+    // Release the connection back to the pool if it was acquired
+    if (conn) {
+      conn.release();
+    }
   }
 }
