@@ -3,16 +3,25 @@ import { NextResponse } from "next/server";
 
 // Example endpoint to fetch all records from the employee table
 export async function GET(request) {
+  let conn; // Declare conn variable to manage connection
   try {
     // Establish the connection using the pool
     const pool = await connection();
 
     // Get a connection from the pool
-    const conn = await pool.getConnection();
+    conn = await pool.getConnection();
 
     // Get Staff_ID and Team input from the request
     const searchParams = request.nextUrl.searchParams;
     const staffID = searchParams.get("staffID");
+
+    // Check if staffID is provided
+    if (!staffID) {
+      return NextResponse.json(
+        { error: "Staff_ID is required" },
+        { status: 400 }
+      );
+    }
 
     // Query to get Position from the Employee table
     const [positionData] = await conn.query(
@@ -69,21 +78,27 @@ export async function GET(request) {
             WHERE Reporting_Manager = ?)
         AND Arrangement.Request_Status <> 'pending'
       `,
-        [staffID, staffID],
+        [staffID],
       );
     } else {
       return NextResponse.json(
         { message: "You are not a Director or Manager." },
-        { status: 200 },
+        { status: 403 }, // Return 403 for unauthorized access
       );
     }
-
-    // Release the connection back to the pool
-    conn.release();
 
     // Return the fetched data as a JSON response
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    return NextResponse.json(error, { status: 500 });
+    console.error("Error in GET /api/arrangements/processed:", error); // Log the error for debugging
+    return NextResponse.json(
+      { error: "An unexpected error occurred while processing your request." },
+      { status: 500 }
+    );
+  } finally {
+    // Release the connection back to the pool if it was acquired
+    if (conn) {
+      conn.release();
+    }
   }
 }
