@@ -73,15 +73,9 @@ export async function manageArrangement(formData) {
               // Get staff email, start date
               const [staffID_query] = await conn.query("SELECT Staff_ID FROM Arrangement WHERE Arrangement_ID = ?", [arrangementID]);
               const staffID = staffID_query[0]['Staff_ID'];
-              console.log(staffID)
-
-              const [staffEmail_query] = await conn.query("SELECT Email FROM Employee WHERE Staff_ID = ?", [staffID]);
-              const staffEmail = staffEmail_query[0]['Email'];
-              console.log(staffEmail)
 
               // Get all start dates from the recurring arrangement using applied_datetime
               const [startDate_query] = await conn.query("SELECT Start_Date FROM Arrangement WHERE Applied_Datetime = ?", [appliedDatetime]);
-              console.log(startDate_query);
               const startDates_ = startDate_query.map((rec) => rec.Start_Date);
               const startDates = startDates_.join(', ');
 
