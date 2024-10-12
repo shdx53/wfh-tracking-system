@@ -22,8 +22,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatDateToISO } from "@/app/lib/utils";
 
 // Context
-import { useArrangementRequest } from "@/app/context/arrangement-request-context";
-import { useArrangementRequestPage } from "@/app/context/arrangement-request-page-context";
+import { useArrangementRequest } from "@/app/context/arrangements/requests/arrangement-request-context";
+import { useArrangementRequestPage } from "@/app/context/arrangements/requests/arrangement-request-page-context";
 
 export default function RecurringForm({
   form,

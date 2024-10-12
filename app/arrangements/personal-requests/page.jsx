@@ -18,7 +18,7 @@ import { sortArrangementsByStartDate } from "@/app/lib/utils";
 import TabContent from "@/components/arrangements/requests/tab-content";
 
 // Context
-import { ArrangementRequestPageProvider } from "@/app/context/arrangement-request-page-context";
+import { ArrangementRequestPageProvider } from "@/app/context/arrangements/requests/arrangement-request-page-context";
 
 export default function PersonalArrangementRequests() {
   const page = { page: "Personal" };

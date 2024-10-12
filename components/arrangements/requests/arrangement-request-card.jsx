@@ -15,8 +15,8 @@ import ArrangementRequestForm from "./arrangement-request-form";
 
 // Library
 import { formatDateToISO } from "@/app/lib/utils";
-import { ArrangementRequestProvider } from "@/app/context/arrangement-request-context";
-import { useArrangementRequestPage } from "@/app/context/arrangement-request-page-context";
+import { ArrangementRequestProvider } from "@/app/context/arrangements/requests/arrangement-request-context";
+import { useArrangementRequestPage } from "@/app/context/arrangements/requests/arrangement-request-page-context";
 
 const requestStatusStyles = {
   Approved: "bg-green-950 text-green-600",

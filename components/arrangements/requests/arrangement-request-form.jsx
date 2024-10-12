@@ -21,8 +21,8 @@ import { arrangementRequestsSchema } from "@/app/schemas/arrangement/requests/ar
 import { manageArrangement } from "@/app/actions/arrangements/requests/manage-arrangement";
 
 // Context
-import { useArrangementRequest } from "@/app/context/arrangement-request-context";
-import { useArrangementRequestPage } from "@/app/context/arrangement-request-page-context";
+import { useArrangementRequest } from "@/app/context/arrangements/requests/arrangement-request-context";
+import { useArrangementRequestPage } from "@/app/context/arrangements/requests/arrangement-request-page-context";
 
 export default function ArrangementRequestForm({}) {
   const {
