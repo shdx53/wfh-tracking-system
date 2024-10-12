@@ -119,8 +119,33 @@ describe("GET /api/requests/team-overall", () => {
     expect(mockConn.release).toHaveBeenCalled(); // Ensure connection is released
   });
 
+  it("should return 200 with no arrangements for non-senior staff with no reporting manager", async () => {
+    const mockPositionData = [{ Position: "Employee" }];
+    const mockData = []; // No data for the non-senior staff
+
+    const mockConn = {
+      query: jest.fn()
+        .mockResolvedValueOnce([mockPositionData]) // Non-senior position
+        .mockResolvedValueOnce([mockData]), // No arrangements for reporting team
+      release: jest.fn(),
+    };
+
+    const mockPool = {
+      getConnection: jest.fn().mockResolvedValue(mockConn),
+    };
+
+    connection.mockResolvedValue(mockPool);
+
+    const response = await GET(request);
+
+    expect(response.status).toBe(200); // Should return 200 even if no arrangements exist
+    expect(await response.json()).toEqual(mockData); // Expect an empty array or no data
+    expect(mockConn.query).toHaveBeenCalledTimes(2);
+    expect(mockConn.release).toHaveBeenCalled(); 
+  });
+
   it("should return 500 if there is a database error", async () => {
-    const errorMessage = "DB connection failed"; // Simulated error message
+    const errorMessage = "An unexpected error occurred."; // Simulated error message
     const mockConn = {
       query: jest.fn().mockRejectedValueOnce(new Error(errorMessage)), // Simulate DB query error
       release: jest.fn(), // Mock connection release function
@@ -136,6 +161,27 @@ describe("GET /api/requests/team-overall", () => {
 
     expect(response.status).toBe(500); // Check if the status is 500
     expect(await response.json()).toEqual({ error: errorMessage }); // Check if the response contains the error message
+    expect(mockConn.release).toHaveBeenCalled(); // Ensure connection is released
+    expect(await response.json()).toEqual({ error: "An unexpected error occurred." });
+
+  });
+
+  it("should return an unexpected error message if a generic error occurs", async () => {
+    const mockConn = {
+      query: jest.fn().mockRejectedValueOnce(new Error("Some unexpected error")), // Simulate a generic error
+      release: jest.fn(),
+    };
+
+    const mockPool = {
+      getConnection: jest.fn().mockResolvedValue(mockConn),
+    };
+
+    connection.mockResolvedValue(mockPool); // Mock the connection pool
+
+    const response = await GET(request); // Call the GET function
+
+    expect(response.status).toBe(500); // Check if the status is 500
+    expect(await response.json()).toEqual({ error: "Some unexpected error" }); // Check if the response contains the specific error message
     expect(mockConn.release).toHaveBeenCalled(); // Ensure connection is released
   });
 });
