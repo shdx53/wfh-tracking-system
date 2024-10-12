@@ -57,7 +57,6 @@ export async function GET(request) {
 
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    console.error("Database query error:", error); // Log the error for debugging
     return NextResponse.json(
       { message: "Internal server error" }, // Remove details for consistency with tests
       { status: 500 }
