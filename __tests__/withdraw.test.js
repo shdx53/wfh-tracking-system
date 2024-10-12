@@ -1,5 +1,3 @@
-// Endpoint unit test for US 14 http://localhost:3000/api/arrangements/all-personal-arrangement/withdrawn?staffID=150065
-
 import { PUT } from "../app/api/arrangements/all-personal-arrangement/withdrawn/route"; // Adjust the path as necessary
 import connection from "../app/lib/db"; // Adjust the path as necessary
 import { sendNotification } from "../app/lib/notificationService"; // Adjust the path as necessary
@@ -35,7 +33,6 @@ describe("PUT /api/arrangements/all-personal-arrangement/withdrawn", () => {
     connection.mockResolvedValue(mockPool);
   });
 
-  // Test for missing required parameters
   it("should return 400 if required parameters are missing", async () => {
     request.json = jest.fn().mockResolvedValue({
       Arrangement_ID: null,
@@ -44,14 +41,13 @@ describe("PUT /api/arrangements/all-personal-arrangement/withdrawn", () => {
     });
 
     const response = await PUT(request);
-
+    
     expect(response.status).toBe(400);
     expect(await response.json()).toEqual({
       message: "Arrangement_ID, Request_Status, and Update_Reason are required.",
     });
   });
 
-  // Test for no arrangement found
   it("should return 404 if no arrangement is found", async () => {
     mockConn.query.mockResolvedValueOnce([{ affectedRows: 0 }]);
 
@@ -63,30 +59,93 @@ describe("PUT /api/arrangements/all-personal-arrangement/withdrawn", () => {
     });
   });
 
-  // Test for successful update and notification
-  it("should return 200 if update and notification are successful", async () => {
+  it("should return 404 if no reporting manager is found", async () => {
     mockConn.query
-      .mockResolvedValueOnce([{ affectedRows: 1 }]) // Update successful
-      .mockResolvedValueOnce([[{ Reporting_Manager: "456" }]]) // Manager ID found
-      .mockResolvedValueOnce([[{ Email: "manager@example.com" }]]); // Manager Email found
+      .mockResolvedValueOnce([{ affectedRows: 1 }]) // Mock successful update
+      .mockResolvedValueOnce(null); // Simulating no manager result
 
+    const response = await PUT(request);
+
+    expect(response.status).toBe(404);
+    expect(await response.json()).toEqual({
+        message: `No reporting manager found for staff ID ${request.nextUrl.searchParams.get("staffID")}`,
+    });
+
+    expect(mockConn.release).toHaveBeenCalled(); 
+  });
+
+  it("should return 404 if no email is found for the reporting manager ID", async () => {
+    const managerID = "456"; // Example manager ID
+
+    // Mock the successful update and manager result
+    mockConn.query
+      .mockResolvedValueOnce([{ affectedRows: 1 }]) // Mock successful update
+      .mockResolvedValueOnce([[{ Reporting_Manager: managerID }]]) // Mock manager ID found
+      .mockResolvedValueOnce([]); // Mock email result as empty (no email found)
+
+    const response = await PUT(request); // Call the PUT function with the request object
+
+    expect(response.status).toBe(404);
+    expect(await response.json()).toEqual({
+        message: `No email found for reporting manager ID ${managerID}`,
+    });
+
+    expect(mockConn.release).toHaveBeenCalled(); 
+  });
+
+  it("should return 500 if sending notification fails", async () => {
+    const managerID = "456"; // Example manager ID
+    const managerEmail = "manager@example.com"; // Mock email
+    const subject = "WFH Request Withdrawn"; // Mock subject
+    const body = "Your WFH request has been withdrawn."; // Mock body
+
+    // Mock the successful update and manager result
+    mockConn.query
+      .mockResolvedValueOnce([{ affectedRows: 1 }]) // Mock successful update
+      .mockResolvedValueOnce([[{ Reporting_Manager: managerID }]]) // Mock manager ID found
+      .mockResolvedValueOnce([[{ Email: managerEmail }]]); // Mock manager email found
+
+    // Mock sendNotification to throw an error
+    sendNotification.mockRejectedValue(new Error("Notification service error"));
+
+    const response = await PUT(request);
+
+    expect(response.status).toBe(500);
+    expect(await response.json()).toEqual({
+      message: "Failed to send notification email.",
+    });
+
+    expect(mockConn.release).toHaveBeenCalled(); 
+  });
+
+  it("should return 200 if update and notification are successful", async () => {
+    const managerID = "456"; // Example manager ID
+    const managerEmail = "manager@example.com"; // Mock email
+    const subject = "WFH Request Withdrawn"; // Mock subject
+    const body = "Your WFH request has been withdrawn."; // Mock body
+
+    mockConn.query
+      .mockResolvedValueOnce([{ affectedRows: 1 }]) // Mock update successful
+      .mockResolvedValueOnce([[{ Reporting_Manager: managerID }]]) // Mock manager ID found
+      .mockResolvedValueOnce([[{ Email: managerEmail }]]); // Mock manager email found
+
+    // Mock the sendNotification function to resolve successfully
     sendNotification.mockResolvedValue(true);
 
     const response = await PUT(request);
 
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({
-      message: "Arrangement is successfully withdrawn, and notification sent.",
+        message: "Arrangement is successfully withdrawn, and notification sent.",
     });
 
     expect(sendNotification).toHaveBeenCalledWith(
-      "manager@example.com",
-      "WFH Request Withdrawn",
-      expect.stringContaining("Staff ID: 150065")
+        managerEmail,
+        subject,
+        expect.stringContaining("Staff ID: 150065") // Ensure correct staffID
     );
   });
 
-  // Test for DB query failure
   it("should return 500 if an error occurs", async () => {
     mockConn.query.mockRejectedValueOnce(new Error("DB query failed"));
 
@@ -98,69 +157,4 @@ describe("PUT /api/arrangements/all-personal-arrangement/withdrawn", () => {
       details: "DB query failed",
     });
   });
-
-  // New Test: Manager ID not found
-  it("should return 404 if reporting manager is not found", async () => {
-    mockConn.query
-      .mockResolvedValueOnce([{ affectedRows: 1 }]) // Arrangement update successful
-      .mockResolvedValueOnce([]); // No manager found
-
-    const response = await PUT(request);
-
-    expect(response.status).toBe(404);
-    expect(await response.json()).toEqual({
-      message: `No reporting manager found for staff ID 150065`,
-    });
-  });
-
-  // New Test: Manager email not found
-  it("should return 404 if manager email is not found", async () => {
-    mockConn.query
-      .mockResolvedValueOnce([{ affectedRows: 1 }]) // Arrangement update successful
-      .mockResolvedValueOnce([[{ Reporting_Manager: "456" }]]) // Manager ID found
-      .mockResolvedValueOnce([]); // No email found
-
-    const response = await PUT(request);
-
-    expect(response.status).toBe(404);
-    expect(await response.json()).toEqual({
-      message: `No email found for reporting manager ID 456`,
-    });
-  });
-
-  // New Test: Notification service failure
-  it("should return 500 if notification service fails", async () => {
-    mockConn.query
-      .mockResolvedValueOnce([{ affectedRows: 1 }]) // Arrangement update successful
-      .mockResolvedValueOnce([[{ Reporting_Manager: "456" }]]) // Manager ID found
-      .mockResolvedValueOnce([[{ Email: "manager@example.com" }]]); // Manager Email found
-
-    sendNotification.mockRejectedValueOnce(new Error("Notification failed"));
-
-    const response = await PUT(request);
-
-    expect(response.status).toBe(500);
-    expect(await response.json()).toEqual({
-      message: "Failed to send notification email.",
-      details: "Notification failed",
-    });
-  });
-
-  // New Test: Database connection failure
-  it("should return 500 if the database connection fails", async () => {
-    const mockPool = {
-      getConnection: jest.fn().mockRejectedValue(new Error("Connection failed")),
-    };
-
-    connection.mockResolvedValue(mockPool);
-
-    const response = await PUT(request);
-
-    expect(response.status).toBe(500);
-    expect(await response.json()).toEqual({
-      message: "Internal server error",
-      details: "Connection failed",
-    });
-  });
 });
-

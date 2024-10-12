@@ -55,7 +55,6 @@ export async function PUT(request) {
     );
 
     if (!managerResult || managerResult.length === 0) {
-      console.error(`No reporting manager found for staff ID ${staffID}`);
       conn.release();
       return NextResponse.json(
         { message: `No reporting manager found for staff ID ${staffID}` },
@@ -73,7 +72,6 @@ export async function PUT(request) {
     const emailResult = await conn.query(getEmailQuery, [managerID]);
 
     if (!emailResult || emailResult.length === 0) {
-      console.error(`No email found for reporting manager ID ${managerID}`);
       conn.release();
       return NextResponse.json(
         { message: `No email found for reporting manager ID ${managerID}` },
@@ -88,7 +86,7 @@ export async function PUT(request) {
     const body = `Dear Manager/Director,\n\n
     A work-from-home arrangement has been withdrawn:\n\n
     Staff ID: ${staffID}\n
-    Withdraw Reason: ${Update_Reason || "N/A"}\n\n
+    Withdraw Reason: ${Update_Reason}\n\n
     Please review the request, thank you.\n\n`;
 
     // Send notification using Mailtrap (or any email service)
@@ -96,10 +94,9 @@ export async function PUT(request) {
       console.log("Sending email to:", managerEmail);
       await sendNotification(managerEmail, subject, body);
     } catch (emailError) {
-      console.error("Error sending email notification:", emailError);
       conn.release();
       return NextResponse.json(
-        { message: "Failed to send notification email.", details: emailError.message },
+        { message: "Failed to send notification email."},
         { status: 500 }
       );
     }
