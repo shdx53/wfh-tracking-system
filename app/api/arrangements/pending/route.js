@@ -117,7 +117,6 @@ export async function GET(request) {
     // Return the fetched data as a JSON response
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    console.error("Error in GET /api/arrangements/pending:", error); // Log the error for debugging
     return NextResponse.json(
       { error: "An unexpected error occurred while processing your request." },
       { status: 500 }
