@@ -45,7 +45,7 @@ export async function manageArrangement(formData) {
         }
 
         // Update arrangement
-        try {
+        // try {
           if (reason) {
             /* If a reason is provided (for rejection or withdrawawl) */
             if (action === "Withdraw entire arrangement") {
@@ -82,13 +82,13 @@ export async function manageArrangement(formData) {
               // Prepare email content 
               // for withdrawal of entire arrangement
               if (action === "Withdraw entire arrangement") {
-                // Prepare email content
+                // Prepare email content - reason is not optional
                 var subject = "WFH Request " + requestStatus[action];
                 var body = `Dear Staff,\n\n
                 An entire recurring work-from-home arrangement was ${requestStatus[action]}:\n\n
                 Staff ID: ${staffID}\n
                 Start Dates: ${startDates}\n
-                Reason: ${reason || "N/A"}\n\n
+                Reason: ${reason}\n\n
                 Thank you. \n\n`;
               }       
             } 
@@ -122,11 +122,12 @@ export async function manageArrangement(formData) {
             outcome[startDate] = { "action": requestStatus[action],
                                       "reason": reason };
           }   
-        } catch (error) {
-          return {
-            message: "Failed to update arrangement(s)",
-          };
-        }
+        // } 
+        // catch (error) {
+        //   return {
+        //     message: "Failed to update arrangement(s)",
+        //   };
+        // }
       }
     }
 
@@ -145,9 +146,9 @@ export async function manageArrangement(formData) {
         const date = key; // The date string as the key
         const { action, reason } = outcome[key]; // Destructure to get action and reason
         details += 
-        `Start Date: ${date}\n
-        Outcome: ${action}\n
-        Reason: ${reason || "N/A"}\n\n`;
+      `\nStart Date: ${date}\n
+      Outcome: ${action}\n
+      Reason: ${reason || "N/A"}\n\n`;
       }
       // Prepare email content
       var subject = "WFH Request outcome";
@@ -179,7 +180,7 @@ export async function manageArrangement(formData) {
     console.log(body);
     // Send notification using Mailtrap
     console.log(`Email for WFH request sent successfully to ${staffEmail}.`);
-    /* await sendNotification(staffEmail, subject, body); */
+    await sendNotification(staffEmail, subject, body);
 
 
     // Release the connection back to the pool
