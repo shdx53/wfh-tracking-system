@@ -115,7 +115,6 @@ export async function PUT(request) {
     );
   } catch (error) {
     // Handle any errors and return an error response
-    console.error("Error occurred:", error);
     return NextResponse.json({ message: "Internal server error", details: error.message }, { status: 500 });
   }
 }

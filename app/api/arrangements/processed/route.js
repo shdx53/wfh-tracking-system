@@ -1,3 +1,4 @@
+// api/arrangements/all-personal-arragement/withdrawn
 import connection from "@/app/lib/db";
 import { NextResponse } from "next/server";
 
