@@ -86,7 +86,7 @@ export async function GET(request) {
   } catch (error) {
     // Return a structured error response
     return NextResponse.json(
-      { error: "An unexpected error occurred." },
+      { error: "An unexpected error occurred." }, //corrected error handling
       { status: 500 }
     );
   } finally {
@@ -95,3 +95,4 @@ export async function GET(request) {
     }
   }
 }
+
