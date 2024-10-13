@@ -5,22 +5,22 @@ dotenv.config();
 
 // To send to Mailtrap Sandbox
 var transporter = nodemailer.createTransport({
-  host: "sandbox.smtp.mailtrap.io",
-  port: 2525,
+  host: "live.smtp.mailtrap.io",
+  port: 587,
   auth: {
     user: process.env.MAILTRAP_USER,
     pass: process.env.MAILTRAP_PASS
   }
 });
 
-export async function sendNotification(to, subject, body) {
+
+export async function sendNotification(subject, body) {
   try {
     await transporter.sendMail({
-      from: '"WFH Tracking System" <noreply@wfh-tracking-system.com>',
-      to: to,
+      from: '"WFH Tracking System" <noreply@demomailtrap.com>',
+      to: '"User" <spm.wfh.tracking.sys@gmail.com>',
       subject: subject,
       text: body,
-      html: `<p>${body}</p>`,
     });
     console.log("Email sent successfully");
   } catch (error) {

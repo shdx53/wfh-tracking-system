@@ -63,10 +63,15 @@ async function rejectUnapprovedWfh() {
 
           // Send notification to employee
           const subject = "WFH Request Automatically Rejected";
-          const body = `Dear Employee,\n\nYour WFH request for ${arrangement.startDate.toDateString()} has been automatically rejected due to lack of approval within 24 hours of the scheduled start date.\n\nPlease resubmit your request if needed.\n\nBest regards,\nWFH Tracking System`;
+          const body = `Dear Employee ${arrangement.staffId} (${arrangement.email}),\n
+          Your WFH request for ${arrangement.startDate.toDateString()} has been automatically rejected due to an absence of approval within 24 hours of the scheduled start date.\n
+          Please resubmit your request if needed.\n
+          Best regards,
+          WFH Tracking System`;
 
-          // Commented out to prevent bursting free plan email limit
-          /* await sendNotification(arrangement.email, subject, body); */
+          // Send notification using Mailtrap
+          console.log(`Email for WFH request sent successfully to ${arrangement.email}.`)
+          await sendNotification(subject, body);
         } catch (err) {
           console.error(
             `[CRON JOB] Error rejecting WFH arrangement ${arrangement.id}:`,
