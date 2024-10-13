@@ -1,5 +1,6 @@
 // Component
 import ArrangementRequestCard from "@/components/arrangements/requests/arrangement-request-card";
+import Loading from "@/components/loading";
 
 export default function TabContent({
   selectedTab,
@@ -10,8 +11,8 @@ export default function TabContent({
   return (
     <>
       {isArrangementRequestsPending && (
-        <div className="text-center text-sm">
-          Loading arrangement requests...
+        <div className="flex justify-center">
+          <Loading />
         </div>
       )}
 

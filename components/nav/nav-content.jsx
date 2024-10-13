@@ -11,15 +11,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function NavContent({ staffName }) {
+  const router = useRouter();
   const pathname = usePathname();
 
   return (
     <>
       {pathname !== "/login" && (
         <nav className="flex items-center justify-between py-8">
-          Nav placeholder
+          <div
+            className="cursor-pointer font-bold"
+            onClick={() => router.push("/")}
+          >
+            All-In-One
+          </div>
           {staffName ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

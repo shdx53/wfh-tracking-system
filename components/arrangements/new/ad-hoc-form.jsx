@@ -3,6 +3,7 @@ import { cn } from "@/app/lib/utils";
 import { format } from "date-fns";
 
 // Component
+import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -95,7 +96,7 @@ export default function AdHocForm({
       />
 
       {selectedStartDate && !selectedDateShiftTypes && (
-        <div className="text-center text-sm">Loading...</div>
+        <div className="flex justify-center"><Loading /></div>
       )}
 
       {selectedDateShiftTypes && (
@@ -177,7 +178,7 @@ export default function AdHocForm({
 
           {/* Submit */}
           <Button type="submit" className="w-full" disabled={isPending}>
-            Submit
+            {isPending ? <Loading /> : "Submit"}
           </Button>
         </>
       )}

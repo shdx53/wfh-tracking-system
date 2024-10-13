@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { useState } from "react";
 
 // Component
+import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -146,7 +147,9 @@ export default function RecurringForm({
       {selectedRecurringInterval &&
         selectedStartDate &&
         !selectedDateShiftTypes && (
-          <div className="text-center text-sm">Loading...</div>
+          <div className="flex justify-center">
+            <Loading />
+          </div>
         )}
 
       {selectedRecurringInterval && selectedDateShiftTypes && (
@@ -290,7 +293,7 @@ export default function RecurringForm({
 
           {/* Submit button */}
           <Button type="submit" className="w-full" disabled={isPending}>
-            Submit
+            {isPending ? <Loading /> : "Submit"}
           </Button>
         </>
       )}

@@ -1,5 +1,6 @@
 // Component
 import ArrangementCard from "@/components/schedules/arrangement-card";
+import Loading from "@/components/loading";
 
 export default function TabContent({
   isViewTeamSchedule,
@@ -21,7 +22,7 @@ export default function TabContent({
   return (
     <>
       {isArrangementsPending && (
-        <div className="pt-12">Loading arrangements...</div>
+        <div className="pt-12 flex justify-center"><Loading /></div>
       )}
 
       {isArrangementsError && (

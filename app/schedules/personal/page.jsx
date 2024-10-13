@@ -7,6 +7,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 
 // Component
 import fetchPersonalArrangements from "@/app/lib/arrangements/fetch-personal-arrangements";
+import Loading from "@/components/loading";
 import { BigCalendar } from "@/components/ui/big-calendar";
 import { Calendar } from "@/components/ui/calendar";
 
@@ -130,7 +131,9 @@ function PersonalScheduleContent() {
           <div className="flex flex-col gap-4">
             {(isApprovedArrangementsPending ||
               isPendingArrangementsPending) && (
-              <div>Loading arrangements...</div>
+              <div className="flex justify-center">
+                <Loading />
+              </div>
             )}
             {(isApprovedArrangementsError || isPendingArrangementsError) && (
               <div>

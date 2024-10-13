@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 
 // Component
+import Loading from "@/components/loading";
 import {
   FormControl,
   FormField,
@@ -49,8 +50,8 @@ export default function RecurringForm({
       {selectedTab === "Pending" && (
         <>
           {isRecurringArrangementsPending && (
-            <div className="text-center text-sm">
-              Loading arrangement requests...
+            <div className="flex justify-center">
+              <Loading />
             </div>
           )}
 

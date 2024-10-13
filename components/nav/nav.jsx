@@ -6,7 +6,6 @@ import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 // Component
 import Loading from "../loading";
@@ -26,8 +25,6 @@ const teamSchedulePageAuthorizedPositions = [
 ];
 
 export default function Nav({ children }) {
-  const router = useRouter();
-
   /* Determine protected page logic */
   const pathname = usePathname();
 
@@ -61,14 +58,6 @@ export default function Nav({ children }) {
     employeePositionObj[0].Position;
   const isEmployeePositionPending = employeePositionQuery.isPending;
   const isEmployeePositionError = employeePositionQuery.isError;
-
-  // Redirect to the home page if the user access the login page
-  // while already logged in
-  useEffect(() => {
-    if (!isLoading && staffID && router.pathname === "/login") {
-      router.push("/");
-    }
-  }, [isLoading, staffID, router]);
 
   /* Determine whether employee is authorized logic */
   const isOverallSchedulePage = pathname === "/schedules/overall";
