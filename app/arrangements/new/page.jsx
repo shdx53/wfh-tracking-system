@@ -2,7 +2,7 @@
 import { Suspense } from "react";
 
 // Component
-import ArrangementForm from "@/components/arrangements/form";
+import ArrangementForm from "@/components/arrangements/new/form";
 
 export default function NewArrangement() {
   return (
