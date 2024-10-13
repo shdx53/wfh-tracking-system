@@ -1,17 +1,9 @@
-"use client";
-
-// Library
-import { useState } from "react";
-
 // Component
-import Loading from "@/components/loading";
-import { Button } from "@/components/ui/button";
+import LoginButton from "@/components/login/login-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function Login() {
-  const [isPending, setIsPending] = useState(false);
-
   return (
     <div className="absolute left-1/2 top-1/2 h-1/2 w-[90%] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-8 rounded-lg border p-8 md:left-1/2 md:flex md:h-3/4 md:max-w-5xl md:-translate-x-1/2">
       <div className="flex h-full flex-col justify-center space-y-6 md:w-1/2">
@@ -35,9 +27,7 @@ export default function Login() {
             />
           </div>
         </div>
-        <Button className="w-full" onClick={() => setIsPending(true)}>
-          {isPending ? <Loading className="py-2" /> : "Log in"}
-        </Button>
+        <LoginButton />
       </div>
       <img
         className="hidden w-1/2 object-cover md:block"
