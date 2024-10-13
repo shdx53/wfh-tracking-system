@@ -2,6 +2,7 @@
 import Providers from "@/app/lib/query-provider";
 
 // Component
+import Nav from "@/components/nav/nav";
 import { Toaster } from "@/components/ui/toaster";
 
 // Style
@@ -18,8 +19,7 @@ export default function RootLayout({ children }) {
       <body>
         <div className="mx-auto w-[90%] max-w-7xl">
           <Providers>
-            <nav className="py-8">Nav placeholder</nav>
-            {children}
+            <Nav>{children}</Nav>
             <Toaster />
           </Providers>
         </div>

@@ -7,7 +7,7 @@ export default function Login() {
   return (
     <div className="absolute left-1/2 top-1/2 h-1/2 w-[90%] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-8 rounded-lg border p-8 md:left-1/2 md:flex md:h-3/4 md:max-w-5xl md:-translate-x-1/2">
       <div className="flex h-full flex-col justify-center space-y-6 md:w-1/2">
-        <div>
+        <div className="space-y-1 text-center">
           <h1 className="text-2xl font-bold">Welcome back!</h1>
           <h2 className="text-sm text-black/40">
             Enter your staff ID and password to continue

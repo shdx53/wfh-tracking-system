@@ -1,0 +1,155 @@
+"use client";
+
+// Library
+import { fetchEmployeePosition } from "@/app/lib/employees/fetch-employee-position";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { useQuery } from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+// Component
+import Loading from "../loading";
+import NavContent from "./nav-content";
+
+// Define authorized positions for protected pages
+const overallSchedulePageAuthorizedPositions = ["MD", "Director", "HR Team"];
+const arrangementRequestsPageAuthorizedPositions = [
+  "MD",
+  "Director",
+  "Sales Manager",
+  "Finance Managers",
+];
+const teamSchedulePageAuthorizedPositions = [
+  ...arrangementRequestsPageAuthorizedPositions,
+  "Account Managers",
+];
+
+export default function Nav({ children }) {
+  const router = useRouter();
+
+  /* Determine protected page logic */
+  const pathname = usePathname();
+
+  // All pages require login except the home page and login page
+  const isProtectedPage = pathname !== "/" && pathname !== "/login";
+
+  /* Get Staff_ID logic */
+  const { getUser, isLoading } = useKindeBrowserClient();
+  const [staffID, setStaffID] = useState(null);
+  const [staffName, setStaffName] = useState(null);
+
+  useEffect(() => {
+    if (getUser()) {
+      const authenticatedStaffID = getUser().username;
+      const authenticatedStaffName = `${getUser().given_name} ${getUser().family_name}`;
+      setStaffID(authenticatedStaffID);
+      setStaffName(authenticatedStaffName);
+    }
+  }, [getUser]);
+
+  /* Get employee position logic */
+  const employeePositionQuery = useQuery({
+    queryKey: ["employee position", { staffID }],
+    queryFn: ({ queryKey }) => fetchEmployeePosition(queryKey[1].staffID),
+    enabled: isProtectedPage && staffID !== null,
+  });
+  const employeePositionObj = employeePositionQuery.data;
+  const employeePosition =
+    employeePositionObj &&
+    Array.isArray(employeePositionObj) &&
+    employeePositionObj[0].Position;
+  const isEmployeePositionPending = employeePositionQuery.isPending;
+  const isEmployeePositionError = employeePositionQuery.isError;
+
+  // Redirect to the home page if the user access the login page
+  // while already logged in
+  useEffect(() => {
+    if (!isLoading && staffID && router.pathname === "/login") {
+      router.push("/");
+    }
+  }, [isLoading, staffID, router]);
+
+  /* Determine whether employee is authorized logic */
+  const isOverallSchedulePage = pathname === "/schedules/overall";
+  const isArrangementRequestsPage = pathname === "/arrangements/requests";
+  const isTeamSchedulePage = pathname === "/schedules/team";
+  const hasAccess =
+    (isOverallSchedulePage &&
+      overallSchedulePageAuthorizedPositions.includes(employeePosition)) ||
+    (isArrangementRequestsPage &&
+      arrangementRequestsPageAuthorizedPositions.includes(employeePosition)) ||
+    (isTeamSchedulePage &&
+      teamSchedulePageAuthorizedPositions.includes(employeePosition)) ||
+    (!isOverallSchedulePage &&
+      !isArrangementRequestsPage &&
+      !isTeamSchedulePage);
+
+  return (
+    <>
+      {/* Protected page */}
+      {isProtectedPage && (
+        <>
+          {/* Include staffID as a condition to ensure */}
+          {/* isPending is not always true if staffID is null */}
+
+          {/* Loading state */}
+          {isEmployeePositionPending && staffID && (
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2">
+              <Loading />
+            </div>
+          )}
+
+          {/* Error state */}
+          {isEmployeePositionError && staffID && (
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2">
+              Oops! Something went wrong. Please try again later.
+            </div>
+          )}
+
+          {/* Not logged in state */}
+          {!isLoading && !staffID && (
+            // Staff is not logged in
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2">
+              Please log in to access this page.
+            </div>
+          )}
+
+          {/* Access control */}
+          {!isEmployeePositionPending &&
+            !isEmployeePositionError &&
+            staffID &&
+            (hasAccess ? (
+              // Staff has access to the protected page
+              <>
+                <NavContent staffName={staffName} />
+                {children}
+              </>
+            ) : (
+              // Staff does not have access to the protected page
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2">
+                You are not authorized to view this page.
+              </div>
+            ))}
+        </>
+      )}
+
+      {/* Unprotected page */}
+      {!isProtectedPage && (
+        <>
+          {isLoading ? (
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2">
+              {/* Awaiting authentication */}
+              <Loading />
+            </div>
+          ) : (
+            <>
+              <NavContent staffName={staffName} />
+              {children}
+            </>
+          )}
+        </>
+      )}
+    </>
+  );
+}
