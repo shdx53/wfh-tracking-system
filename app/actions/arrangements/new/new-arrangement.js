@@ -47,7 +47,7 @@ export async function newArrangement(formData) {
     const isRecurring = arrangementType === "Ad-hoc" ? 0 : 1;
 
     if (arrangementType === "Ad-hoc") {
-      if (staffID === 130002) {
+      if (staffID === "130002") {
         // Check if it is Jack Sim's Request -> Auto approve
         const query = `
           INSERT INTO Arrangement 
@@ -122,8 +122,8 @@ export async function newArrangement(formData) {
 
           // Prepare email content
           const subject = "New WFH Request Submitted";
-          const body = `Dear Manager/Director,\n\n
-          A new work-from-home arrangement has been submitted:\n\n
+          const body = `Dear Manager/Director ${managerID} (${managerEmail}),\n
+          A new work-from-home arrangement has been submitted:\n
           Staff ID: ${staffID}\n
           Start Date: ${startDate}\n
           Apply Reason: ${applyReason || "N/A"}\n\n
@@ -133,14 +133,14 @@ export async function newArrangement(formData) {
           console.log(
             `Email for WFH request sent successfully to ${managerEmail}.`,
           );
-          /* await sendNotification(managerEmail, subject, body); */
+          await sendNotification(subject, body);
           // ----End of Notification----
         } catch (error) {
           console.error("Error during arrangement setup", error);
         }
       }
     } else if (arrangementType === "Recurring") {
-      if (staffID === 130002) {
+      if (staffID === "130002") {
         // For Jack Sim
 
         // Query for add arrangement record to Arrangement table
@@ -252,7 +252,7 @@ export async function newArrangement(formData) {
         const formattedDates = allDates.join(", ");
 
         // Prepare email body using the formatted dates
-        const body = `Dear Manager/Director,\n\n
+        const body = `Dear Manager/Director ${managerID} (${managerEmail}),\n
         A new recurring work-from-home arrangement has been submitted:\n\n
         Staff ID: ${staffID}\n
         Date(s): ${formattedDates}\n
@@ -265,7 +265,7 @@ export async function newArrangement(formData) {
         console.log(
           `Email for WFH requests sent successfully to ${managerEmail}.`,
         );
-        /* await sendNotification(managerEmail, subject, body); */
+        await sendNotification(subject, body);
       }
     }
 
