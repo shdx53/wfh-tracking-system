@@ -117,8 +117,10 @@ export default function Nav({ children }) {
             (hasAccess ? (
               // Staff has access to the protected page
               <>
-                <NavContent staffName={staffName} />
-                {children}
+                <LoginProvider loginData={loginData}>
+                  <NavContent staffName={staffName} />
+                  {children}
+                </LoginProvider>
               </>
             ) : (
               // Staff does not have access to the protected page

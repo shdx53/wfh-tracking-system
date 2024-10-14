@@ -2,8 +2,7 @@
 
 // Library
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // Component
 import CustomPagination from "@/components/pagination/custom-pagination";
@@ -18,21 +17,21 @@ import { handleFilter } from "@/app/lib/arrangements/requests/handle-filter";
 import { sortArrangementsByStartDate } from "@/app/lib/utils";
 import TabContent from "@/components/arrangements/requests/tab-content";
 
+// Context
+import { useLogin } from "@/app/context/login/login-context";
+
 export default function ArrangementRequests() {
   const page = { page: "Managers and Directors" };
   return (
-    <Suspense>
       <ArrangementRequestPageProvider page={page}>
         <ArrangementRequestsContent />
       </ArrangementRequestPageProvider>
-    </Suspense>
   );
 }
 
 function ArrangementRequestsContent() {
-  // Get staff ID from query params
-  const searchParams = useSearchParams();
-  const staffID = searchParams.get("staffID");
+  // Get staff ID 
+  const { staffID } = useLogin();
 
   const [selectedTab, setSelectedTab] = useState("Pending");
   let [arrangementRequests, setArrangementRequests] = useState(null);

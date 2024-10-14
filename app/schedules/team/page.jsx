@@ -2,8 +2,7 @@
 
 // Library
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // Component
 import CustomPagination from "@/components/pagination/custom-pagination";
@@ -12,22 +11,16 @@ import { Calendar } from "@/components/ui/calendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Function
-import { fetchTeamArrangements } from "@/app/lib/arrangements/fetch-team-arrangements";
+import { fetchTeamArrangements } from "@/a]pp/lib/arrangements/fetch-team-arrangements";
 import { filterTeamArrangements } from "@/app/lib/schedules/filter-team-arrangements";
 import { formatDateToISO, formatDateToShortString } from "@/app/lib/utils";
 
-export default function TeamSchedule() {
-  return (
-    <Suspense>
-      <TeamScheduleContent />
-    </Suspense>
-  );
-}
+// Context
+import { useLogin } from "@/app/context/login/login-context";
 
-function TeamScheduleContent() {
-  // Get staff ID from query params
-  const searchParams = useSearchParams();
-  const staffID = searchParams.get("staffID");
+export default function TeamSchedule() {
+  // Get staff ID
+  const { staffID } = useLogin();
 
   // Initialize date to current date
   const [date, setDate] = useState(new Date());

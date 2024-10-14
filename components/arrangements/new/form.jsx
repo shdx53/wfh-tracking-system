@@ -3,7 +3,7 @@
 // Library
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -31,10 +31,12 @@ import { getSchema } from "@/app/schemas/arrangement/new/new-arrangement-schema"
 // Action
 import { newArrangement } from "@/app/actions/arrangements/new/new-arrangement";
 
+// Context
+import { useLogin } from "@/app/context/login/login-context";
+
 export default function ArrangementForm() {
-  // Get staff ID from query params (TO BE REMOVED)
-  const searchParams = useSearchParams();
-  const staffID = searchParams.get("staffID");
+  // Get staff ID 
+  const { staffID } = useLogin();
 
   const router = useRouter();
   const { toast } = useToast();
@@ -50,7 +52,7 @@ export default function ArrangementForm() {
   const approvedArrangementsQuery = useQuery({
     queryKey: [
       "approved arrangements",
-      { staffID: staffID, startDate: formattedSelectedDate },
+      { staffID, startDate: formattedSelectedDate },
     ],
     queryFn: ({ queryKey }) =>
       fetchPersonalArrangements(queryKey[1], "approved"),
@@ -63,7 +65,7 @@ export default function ArrangementForm() {
   const pendingArrangementsQuery = useQuery({
     queryKey: [
       "pending arrangements",
-      { staffID: staffID, startDate: formattedSelectedDate },
+      { staffID, startDate: formattedSelectedDate },
     ],
     queryFn: ({ queryKey }) =>
       fetchPersonalArrangements(queryKey[1], "pending"),

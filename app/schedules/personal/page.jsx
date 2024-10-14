@@ -2,8 +2,7 @@
 
 // Library
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Component
 import fetchPersonalArrangements from "@/app/lib/arrangements/fetch-personal-arrangements";
@@ -16,18 +15,12 @@ import { formatDateToShortString } from "@/app/lib/utils";
 import { renderArrangementCards } from "../../lib/schedules/personal/render-arrangement-cards";
 import { renderArrangementTags } from "../../lib/schedules/personal/render-arrangement-tags";
 
-export default function PersonalSchedule() {
-  return (
-    <Suspense>
-      <PersonalScheduleContent />
-    </Suspense>
-  );
-}
+// Context
+import { useLogin } from "@/app/context/login/login-context";
 
-function PersonalScheduleContent() {
-  // Get staff ID from query params
-  const searchParams = useSearchParams();
-  const staffID = searchParams.get("staffID");
+export default function PersonalSchedule() {
+  // Get staff ID
+  const { staffID } = useLogin();
 
   // Initialize date to current date
   const [date, setDate] = useState(new Date());
@@ -37,7 +30,7 @@ function PersonalScheduleContent() {
 
   // Fetch approved arrangements
   const approvedArrangementsQuery = useQuery({
-    queryKey: ["approved arrangements", { staffID: staffID }],
+    queryKey: ["approved arrangements", { staffID }],
     queryFn: ({ queryKey }) =>
       fetchPersonalArrangements(queryKey[1], "approved"),
   });
@@ -47,7 +40,7 @@ function PersonalScheduleContent() {
 
   // Fetch pending arrangements
   const pendingArrangementsQuery = useQuery({
-    queryKey: ["pending arrangements", { staffID: staffID }],
+    queryKey: ["pending arrangements", { staffID }],
     queryFn: ({ queryKey }) =>
       fetchPersonalArrangements(queryKey[1], "pending"),
   });
