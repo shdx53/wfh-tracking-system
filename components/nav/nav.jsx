@@ -11,6 +11,9 @@ import { useEffect, useState } from "react";
 import Loading from "../loading";
 import NavContent from "./nav-content";
 
+// Context
+import { LoginProvider } from "@/app/context/login/login-context";
+
 // Define authorized positions for protected pages
 const overallSchedulePageAuthorizedPositions = ["MD", "Director", "HR Team"];
 const arrangementRequestsPageAuthorizedPositions = [
@@ -74,6 +77,9 @@ export default function Nav({ children }) {
       !isArrangementRequestsPage &&
       !isTeamSchedulePage);
 
+  // Login context
+  const loginData = { staffID };
+
   return (
     <>
       {/* Protected page */}
@@ -132,10 +138,10 @@ export default function Nav({ children }) {
               <Loading />
             </div>
           ) : (
-            <>
+            <LoginProvider loginData={loginData}>
               <NavContent staffName={staffName} />
               {children}
-            </>
+            </LoginProvider>
           )}
         </>
       )}
