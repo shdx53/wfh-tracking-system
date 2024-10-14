@@ -36,7 +36,7 @@ export default function NavContent({ staffName }) {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem>
-                  <LogoutLink className="flex">
+                  <LogoutLink className="flex items-center">
                     <LogOut className="mr-2 h-4 w-4" />
                     Log out
                   </LogoutLink>
