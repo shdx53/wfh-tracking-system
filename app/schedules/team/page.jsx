@@ -11,7 +11,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Function
-import { fetchTeamArrangements } from "@/a]pp/lib/arrangements/fetch-team-arrangements";
+import { fetchTeamArrangements } from "@/app/lib/arrangements/fetch-team-arrangements";
 import { filterTeamArrangements } from "@/app/lib/schedules/filter-team-arrangements";
 import { formatDateToISO, formatDateToShortString } from "@/app/lib/utils";
 
