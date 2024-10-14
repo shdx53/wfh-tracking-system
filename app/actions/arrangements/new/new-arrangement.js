@@ -15,8 +15,8 @@ const calculateNextDate = (startDate, recurringInterval, count) => {
       return addWeeks(startDate, count);
     case "Monthly":
       return addMonths(startDate, count);
-    default:
-      return startDate; // fallback for custom interval
+    // default:
+    //   return startDate; // fallback for custom interval
   }
 };
 
@@ -279,9 +279,10 @@ export async function newArrangement(formData) {
     return {
       message: "Failed to add arrangement",
     };
-  } finally {
-    if (conn) conn.release();
-  }
+  } 
+  // finally {
+  //   if (conn) conn.release();
+  // }
 }
 
 // For reference from previous route.js in api/arrangement
