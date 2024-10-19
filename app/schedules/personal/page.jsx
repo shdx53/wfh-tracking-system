@@ -86,7 +86,7 @@ export default function PersonalSchedule() {
   return (
     <div className="mx-auto max-w-lg sm:max-w-xl md:max-w-none">
       <header className="flex flex-col gap-3 py-8">
-        <h1 className="text-2xl font-bold">My Schedule</h1>
+        <h1 className="text-2xl font-bold">My schedule</h1>
         <div className="text-sm text-black/50">
           <span className="italic">Note:</span>
           <span>

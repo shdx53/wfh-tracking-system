@@ -23,16 +23,15 @@ export default function TabContent({
         </div>
       )}
 
-      {currentPageArrangementRequests &&
-        Array.isArray(currentPageArrangementRequests) &&
+      {!isArrangementRequestsPending &&
+        !isArrangementRequestsError &&
         currentPageArrangementRequests.length === 0 && (
           <div className="text-center text-sm">
             No arrangement requests found.
           </div>
         )}
 
-      {currentPageArrangementRequests &&
-        Array.isArray(currentPageArrangementRequests) &&
+      {currentPageArrangementRequests.length > 0 &&
         currentPageArrangementRequests.map((arrangement, index) => {
           return (
             <ArrangementRequestCard

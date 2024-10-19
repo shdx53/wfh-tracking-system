@@ -14,18 +14,9 @@ import NavContent from "./nav-content";
 // Context
 import { LoginProvider } from "@/app/context/login/login-context";
 
-// Define authorized positions for protected pages
-const overallSchedulePageAuthorizedPositions = ["MD", "Director", "HR Team"];
-const arrangementRequestsPageAuthorizedPositions = [
-  "MD",
-  "Director",
-  "Sales Manager",
-  "Finance Managers",
-];
-const teamSchedulePageAuthorizedPositions = [
-  ...arrangementRequestsPageAuthorizedPositions,
-  "Account Managers",
-];
+// Util
+import { overallSchedulePageAuthorizedPositions } from "@/app/lib/utils";
+import { arrangementRequestsPageAuthorizedPositions } from "@/app/lib/utils";
 
 export default function Nav({ children }) {
   /* Determine protected page logic */
@@ -52,7 +43,7 @@ export default function Nav({ children }) {
   const employeePositionQuery = useQuery({
     queryKey: ["employee position", { staffID }],
     queryFn: ({ queryKey }) => fetchEmployeePosition(queryKey[1].staffID),
-    enabled: isProtectedPage && staffID !== null,
+    enabled: staffID !== null,
   });
   const employeePositionObj = employeePositionQuery.data;
   const employeePosition =
@@ -65,20 +56,16 @@ export default function Nav({ children }) {
   /* Determine whether employee is authorized logic */
   const isOverallSchedulePage = pathname === "/schedules/overall";
   const isArrangementRequestsPage = pathname === "/arrangements/requests";
-  const isTeamSchedulePage = pathname === "/schedules/team";
   const hasAccess =
     (isOverallSchedulePage &&
       overallSchedulePageAuthorizedPositions.includes(employeePosition)) ||
     (isArrangementRequestsPage &&
       arrangementRequestsPageAuthorizedPositions.includes(employeePosition)) ||
-    (isTeamSchedulePage &&
-      teamSchedulePageAuthorizedPositions.includes(employeePosition)) ||
     (!isOverallSchedulePage &&
-      !isArrangementRequestsPage &&
-      !isTeamSchedulePage);
+      !isArrangementRequestsPage);
 
   // Login context
-  const loginData = { staffID };
+  const loginData = { staffID, staffName, employeePosition };
 
   return (
     <>
@@ -118,7 +105,7 @@ export default function Nav({ children }) {
               // Staff has access to the protected page
               <>
                 <LoginProvider loginData={loginData}>
-                  <NavContent staffName={staffName} />
+                  <NavContent />
                   {children}
                 </LoginProvider>
               </>
@@ -141,7 +128,7 @@ export default function Nav({ children }) {
             </div>
           ) : (
             <LoginProvider loginData={loginData}>
-              <NavContent staffName={staffName} />
+              <NavContent />
               {children}
             </LoginProvider>
           )}

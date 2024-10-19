@@ -78,7 +78,7 @@ export default function TeamSchedule() {
   return (
     <div className="mx-auto max-w-lg sm:max-w-xl md:max-w-none">
       <header className="flex flex-col gap-3 py-8">
-        <h1 className="text-2xl font-bold">Schedule</h1>
+        <h1 className="text-2xl font-bold">Team schedule</h1>
       </header>
 
       <main className="items-start md:flex md:gap-4 lg:gap-8">

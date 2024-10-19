@@ -29,7 +29,7 @@ const requestStatusStyles = {
 // Managers and Directors Arrangement Requests page and
 // Personal Arrangement Requests page
 const managersAndDirectorsTableStyles = {
-  grid: "mx-auto grid max-w-md grid-cols-11 items-center gap-2 rounded-md border p-4 text-sm sm:max-w-none sm:gap-4 lg:grid-cols-12 xl:grid-cols-8",
+  grid: "mx-auto grid max-w-md grid-cols-10 items-center gap-2 rounded-md border p-4 text-sm sm:max-w-none sm:grid-cols-11 sm:gap-4 lg:grid-cols-12 xl:grid-cols-8",
   arrangementType: "col-span-3 sm:col-span-2 xl:col-span-1",
   recurringInterval: "hidden lg:col-span-1 lg:block",
   startDate: "hidden sm:col-span-2 sm:block lg:col-span-2 xl:col-span-1",
@@ -196,7 +196,7 @@ export default function ArrangementRequestCard({ selectedTab, arrangement }) {
       <div className="col-span-1 flex justify-center">
         <Sheet>
           <SheetTrigger
-            className={`${(isDisabled || (page === "Personal" && selectedTab === "Processed")) && "hidden"}`}
+            className={`${(isDisabled || (page === "Personal" && selectedTab === "Processed" && requestStatus !== "Approved")) && "hidden"}`}
           >
             <ArrowUpRight strokeWidth={1} />
           </SheetTrigger>

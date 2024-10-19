@@ -34,13 +34,13 @@ function PersonalArrangementRequestsContent() {
   const { staffID } = useLogin();
 
   const [selectedTab, setSelectedTab] = useState("Pending");
-  let [arrangementRequests, setArrangementRequests] = useState(null);
+  let [arrangementRequests, setArrangementRequests] = useState([]);
   const [pendingArrangementRequestsCopy, setPendingArrangementRequestsCopy] =
-    useState(null);
+    useState([]);
   const [
     processedArrangementRequestsCopy,
     setProcessedArrangementRequestsCopy,
-  ] = useState(null);
+  ] = useState([]);
 
   /* Query personal arrangement requests logic */
   const personalArrangementRequestsQuery = useQuery({
@@ -91,7 +91,7 @@ function PersonalArrangementRequestsContent() {
   ]);
 
   // Sort arrangement requests by Start_Date
-  if (arrangementRequests && Array.isArray(arrangementRequests)) {
+  if (arrangementRequests.length > 0) {
     arrangementRequests = sortArrangementsByStartDate(arrangementRequests);
   }
 
@@ -111,13 +111,12 @@ function PersonalArrangementRequestsContent() {
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * arrangementRequestsPerPage;
   const endIndex = startIndex + arrangementRequestsPerPage;
-  const currentPageArrangementRequests =
-    arrangementRequests && arrangementRequests.slice(startIndex, endIndex);
+  const currentPageArrangementRequests = arrangementRequests.slice(startIndex, endIndex);
 
   return (
     <div className="space-y-3">
-      <h1 className="max-w-min text-2xl font-bold sm:max-w-none">
-        My Arrangement Requests
+      <h1 className="max-w-52 text-2xl font-bold sm:max-w-none">
+        My arrangement requests
       </h1>
       <Tabs defaultValue="Pending">
         <TabsList className="">

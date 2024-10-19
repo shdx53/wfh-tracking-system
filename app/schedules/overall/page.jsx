@@ -119,7 +119,9 @@ export default function OverallSchedule() {
   return (
     <div className="mx-auto max-w-lg sm:max-w-xl md:max-w-none">
       <header className="flex flex-col gap-3 py-8">
-        <h1 className="text-2xl font-bold">Schedule</h1>
+        <h1 className="max-w-52 text-2xl font-bold sm:max-w-none">
+          Overall and team schedule
+        </h1>
         <div className="flex gap-4">
           <Select onValueChange={(value) => setSelectedTeam(value)}>
             <SelectTrigger className="w-[180px]">

@@ -82,7 +82,20 @@ export default function AdHocForm({ form }) {
                       )}
                     </>
                   ) : (
-                    <SelectItem value="Cancel">Cancel</SelectItem>
+                    <>
+                      <SelectItem
+                        value="Withdraw entire arrangement"
+                        disabled={requestStatus === "Withdrawn"}
+                      >
+                        Withdraw entire arrangement
+                      </SelectItem>
+                      <SelectItem
+                        value="Withdraw this specific arrangement only"
+                        disabled={requestStatus === "Withdrawn"}
+                      >
+                        Withdraw this specific arrangement only
+                      </SelectItem>
+                    </>
                   )}
                 </SelectContent>
               </Select>

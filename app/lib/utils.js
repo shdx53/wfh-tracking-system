@@ -5,6 +5,15 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
+// Define authorized positions for protected pages
+export const overallSchedulePageAuthorizedPositions = ["MD", "Director", "HR Team"];
+export const arrangementRequestsPageAuthorizedPositions = [
+  "MD",
+  "Director",
+  "Sales Manager",
+  "Finance Managers",
+];
+
 export function formatDateToShortString(date) {
   const dateObj = new Date(date);
   const formattedDate = dateObj.toLocaleDateString("en-US", {

@@ -23,24 +23,24 @@ import { useLogin } from "@/app/context/login/login-context";
 export default function ArrangementRequests() {
   const page = { page: "Managers and Directors" };
   return (
-      <ArrangementRequestPageProvider page={page}>
-        <ArrangementRequestsContent />
-      </ArrangementRequestPageProvider>
+    <ArrangementRequestPageProvider page={page}>
+      <ArrangementRequestsContent />
+    </ArrangementRequestPageProvider>
   );
 }
 
 function ArrangementRequestsContent() {
-  // Get staff ID 
+  // Get staff ID
   const { staffID } = useLogin();
 
   const [selectedTab, setSelectedTab] = useState("Pending");
-  let [arrangementRequests, setArrangementRequests] = useState(null);
+  let [arrangementRequests, setArrangementRequests] = useState([]);
   const [pendingArrangementRequestsCopy, setPendingArrangementRequestsCopy] =
-    useState(null);
+    useState([]);
   const [
     processedArrangementRequestsCopy,
     setProcessedArrangementRequestsCopy,
-  ] = useState(null);
+  ] = useState([]);
 
   /* Query arrangement requests logic */
   // Fetch all pending arrangement requests
@@ -85,12 +85,12 @@ function ArrangementRequestsContent() {
       setArrangementRequests(processedArrangementRequests);
       setProcessedArrangementRequestsCopy(processedArrangementRequests);
     } else {
-      setArrangementRequests(null);
+      setArrangementRequests([]);
     }
   }, [selectedTab, pendingArrangementRequests, processedArrangementRequests]);
 
   // Sort arrangement requests by Start_Date
-  if (arrangementRequests && Array.isArray(arrangementRequests)) {
+  if (arrangementRequests.length > 0) {
     arrangementRequests = sortArrangementsByStartDate(arrangementRequests);
   }
 
@@ -111,13 +111,15 @@ function ArrangementRequestsContent() {
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * arrangementRequestsPerPage;
   const endIndex = startIndex + arrangementRequestsPerPage;
-  const currentPageArrangementRequests =
-    arrangementRequests && arrangementRequests.slice(startIndex, endIndex);
+  const currentPageArrangementRequests = arrangementRequests.slice(
+    startIndex,
+    endIndex,
+  );
 
   return (
     <div className="space-y-3">
-      <h1 className="max-w-min text-2xl font-bold sm:max-w-none">
-        Arrangement Requests
+      <h1 className="max-w-52 text-2xl font-bold sm:max-w-none">
+        Arrangement requests
       </h1>
       <Tabs defaultValue="Pending">
         <TabsList className="">
@@ -165,7 +167,7 @@ function ArrangementRequestsContent() {
           />
         </div>
 
-        <div className="mx-auto mb-4 mt-8 grid max-w-md grid-cols-11 gap-2 rounded-md bg-secondary p-4 text-sm text-black/40 sm:max-w-none sm:gap-4 lg:grid-cols-12 xl:grid-cols-8">
+        <div className="mx-auto mb-4 mt-8 grid max-w-md grid-cols-10 gap-2 rounded-md bg-secondary p-4 text-sm text-black/40 sm:max-w-none sm:grid-cols-11 sm:gap-4 lg:grid-cols-12 xl:grid-cols-8">
           <div className="col-span-3 sm:col-span-2 xl:col-span-1">Employee</div>
           <div className="col-span-3 sm:col-span-2 xl:col-span-1">Type</div>
           <div className="hidden lg:col-span-1 lg:block">
