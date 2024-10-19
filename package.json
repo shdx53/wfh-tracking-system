@@ -49,7 +49,7 @@
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^14.3.1",
     "babel-jest": "^29.7.0",
-    "cypress": "^13.0.0",
+    "cypress": "^13.15.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.10",
     "identity-obj-proxy": "^3.0.0",
