@@ -1,4 +1,9 @@
+<div align="center">
+    <h1>Work-From-Home (WFH) Tracking System</h1>
+</div>
+
 ## Getting Started
+
 ```bash
 # Step 1: Place .env, .env.local, and .env.production files in the root directory
 
@@ -10,7 +15,9 @@ npm run dev
 ```
 
 ## Log in
+
 All pages, except the home page, require employees to log in for access.
+
 ```bash
 # Username
 Enter your Staff ID
