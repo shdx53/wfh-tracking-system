@@ -1,6 +1,5 @@
-<div align="center">
-    <h1>Work-From-Home (WFH) Tracking System</h1>
-</div>
+## Deployment
+[Link](https://wfh-tracking-system.vercel.app/)
 
 ## Getting Started
 
