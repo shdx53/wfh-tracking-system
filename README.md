@@ -13,7 +13,7 @@ npm run dev
 All pages, except the home page, require employees to log in for access.
 ```bash
 # Username
-Enter yourr Staff ID
+Enter your Staff ID
 
 # Password
 password
