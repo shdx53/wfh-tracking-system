@@ -180,7 +180,7 @@ export async function manageArrangement(formData) {
     console.log(body);
     // Send notification using Mailtrap
     console.log(`Email for WFH request sent successfully to ${staffEmail}.`);
-    await sendNotification(staffEmail, subject, body);
+    await sendNotification(subject, body);
 
 
     // Release the connection back to the pool
