@@ -1,0 +1,44 @@
+name: Cypress Coverage CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code from the repository
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Start the Next.js development server in the background
+      - name: Start Next.js server
+        run: npm run dev &
+        env:
+          PORT: 3000  # Ensure the server runs on the correct port
+
+      # Step 5: Run Cypress tests in headless mode
+      - name: Run Cypress tests
+        run: npx cypress run
+
+      # Step 6: Generate code coverage report
+      - name: Generate Coverage Report
+        run: npx nyc report --reporter=text-summary
+
+      # Step 7: Upload HTML Coverage Report (optional)
+      - name: Upload HTML Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage/index.html
