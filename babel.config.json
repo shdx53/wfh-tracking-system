@@ -1,0 +1,12 @@
+// This ensures that your code is instrumented for
+// coverage during E2E testing with Cypress.
+
+{
+    "presets": ["next/babel"],
+    "env": {
+      "test": {
+        "plugins": ["istanbul"]
+      }
+    }
+  }
+  
