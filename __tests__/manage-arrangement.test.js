@@ -52,7 +52,6 @@ describe('manageArrangement', () => {
 
         expect(sendNotification).toHaveBeenCalledTimes(1);
         expect(sendNotification).toHaveBeenCalledWith(
-            'staff@example.com',
             'WFH Request approved',
             expect.stringContaining('Staff ID: 123456') && 
             expect.stringContaining('Start Date: 2024-10-10')
@@ -83,7 +82,6 @@ describe('manageArrangement', () => {
 
         expect(sendNotification).toHaveBeenCalledTimes(1);
         expect(sendNotification).toHaveBeenCalledWith(
-            'staff@example.com',
             'WFH Request rejected',
             expect.stringContaining('Staff ID: 123456') && 
             expect.stringContaining('Start Date: 2024-10-10') && 
@@ -123,7 +121,6 @@ describe('manageArrangement', () => {
 
         expect(sendNotification).toHaveBeenCalledTimes(1);
         expect(sendNotification).toHaveBeenCalledWith(
-            'staff@example.com',
             'WFH Request outcome',
             expect.stringContaining('Staff ID: 123456') && 
             expect.stringContaining('Start Date: 2024-10-10') && 
@@ -159,7 +156,6 @@ describe('manageArrangement', () => {
 
         expect(sendNotification).toHaveBeenCalledTimes(1);
         expect(sendNotification).toHaveBeenCalledWith(
-            'staff@example.com',
             'WFH Request withdrawn',
             expect.stringContaining('Staff ID: 123456') && 
             expect.stringContaining('Start Date: 2024-10-10') && 
@@ -198,7 +194,6 @@ describe('manageArrangement', () => {
 
         expect(sendNotification).toHaveBeenCalledTimes(1);
         expect(sendNotification).toHaveBeenCalledWith(
-            'staff@example.com',
             'WFH Request withdrawn',
             expect.stringContaining('Staff ID: 123456') && 
             expect.stringContaining('Start Dates: 2024-10-10, 2024-10-17') && 
@@ -208,6 +203,44 @@ describe('manageArrangement', () => {
         expect(result_withdraw_entire).toEqual({ message: "Arrangement(s) updated successfully" });
 
         
+    });
+
+    it('should cancel an arrangement successfully', async () => {
+        const formData = {
+            '144Action': 'Cancel',
+            '145Action': 'Cancel'
+        };
+
+        // First query for Start_Date should look like
+        mockConnection.query.mockResolvedValueOnce([[{ Start_Date: '2024-10-10' }]]); // will run this in the manageArrangement logic
+
+        // Second query for deleting should look like
+        mockConnection.query.mockResolvedValueOnce([]);
+
+        // Third query for Start_Date should look like
+        mockConnection.query.mockResolvedValueOnce([[{ Start_Date: '2024-10-17' }]]); // will run this in the manageArrangement logic
+
+        // Fourth query for deleting should look like
+        mockConnection.query.mockResolvedValueOnce([]);
+
+        // Fifth query for Staff_ID should look like
+        mockConnection.query.mockResolvedValueOnce([[{ Staff_ID: '123456' }]]);
+
+        // Sixth query for Email should look like
+        mockConnection.query.mockResolvedValueOnce([[{ Email: 'staff@example.com' }]]);
+
+        const result_approve = await manageArrangement(formData);
+
+        expect(sendNotification).toHaveBeenCalledTimes(1);
+        expect(sendNotification).toHaveBeenCalledWith(
+            'WFH Request cancelled',
+            expect.stringContaining('Staff ID: 123456') && 
+            expect.stringContaining('Start Date: 2024-10-10') &&
+            expect.stringContaining('Outcome: cancelled') && 
+            expect.stringContaining('Start Date: 2024-10-17')
+        );
+
+        expect(result_approve).toEqual({ message: "Arrangement(s) updated successfully" });
     });
 
     it('should handle the error', async () => {
