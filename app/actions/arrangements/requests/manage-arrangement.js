@@ -9,6 +9,7 @@ const requestStatus = {
   Reject: "rejected",
   "Withdraw this specific arrangement only": "withdrawn",
   "Withdraw entire arrangement": "withdrawn",
+  Cancel: "cancelled"
 };
 
 
@@ -70,7 +71,7 @@ export async function manageArrangement(formData) {
 
               // Notification to staff (only for withdrawal of entire arrangement)
 
-              // Get staff email, start date
+              // Get staffID, start date
               const [staffID_query] = await conn.query("SELECT Staff_ID FROM Arrangement WHERE Arrangement_ID = ?", [arrangementID]);
               const staffID = staffID_query[0]['Staff_ID'];
 
@@ -108,7 +109,7 @@ export async function manageArrangement(formData) {
             }
           } 
 
-          else {
+          else if (action === "Approve") {
             /* Approve arrangement */
             /* *Override Update_Reason to NULL */
             await conn.query(
@@ -121,7 +122,26 @@ export async function manageArrangement(formData) {
             const startDate = startDate_query[0]['Start_Date'];
             outcome[startDate] = { "action": requestStatus[action],
                                       "reason": reason };
-          }   
+          }
+          
+          else {
+            /* Cancel arrangement */
+            /* Entire arrangement is deleted */
+
+            // (for email) Get startDate before arrangement is deleted
+            const [startDate_query] = await conn.query("SELECT Start_Date FROM Arrangement WHERE Arrangement_ID = ?", [arrangementID]);
+            const startDate = startDate_query[0]['Start_Date'];
+
+            // Delete the arrangement
+            await conn.query(
+              "DELETE FROM Arrangement WHERE Arrangement_ID = ?",
+              [arrangementID],
+            );
+
+            // (for email) Get outcome details of the single arrangement
+            outcome[startDate] = { "action": requestStatus[action],
+                                      "reason": reason };
+          }
         // } 
         // catch (error) {
         //   return {
