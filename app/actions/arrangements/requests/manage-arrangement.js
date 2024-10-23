@@ -170,13 +170,26 @@ export async function manageArrangement(formData) {
       Outcome: ${action}\n
       Reason: ${reason || "N/A"}\n\n`;
       }
-      // Prepare email content
-      var subject = "WFH Request outcome";
-      var body = `Dear Staff,\n\n
-      Please see the outcomes of your recurring work-from-home arrangement dates:\n\n
-      Staff ID: ${staffID}\n
-      ${details}\n
-      Thank you. \n\n`;
+
+      // Prepare email content for cancelled requests
+      if (details.includes("cancelled")) {
+        var subject = "WFH Request cancelled";
+        var body = `Dear Staff,\n\n
+        The following recurring work-from-home arrangement dates have been cancelled:\n\n
+        Staff ID: ${staffID}\n
+        ${details}\n
+        Thank you. \n\n`;
+      }
+      
+      // Prepare email content for other requests
+      else {
+        var subject = "WFH Request outcome";
+        var body = `Dear Staff,\n\n
+        Please see the outcomes of your recurring work-from-home arrangement dates:\n\n
+        Staff ID: ${staffID}\n
+        ${details}\n
+        Thank you. \n\n`;
+      } 
     }
     // Email content for ad-hoc arrangements
     else if (Object.keys(outcome).length === 1) { // there will be ONLY 1 start date in 'outcome'
