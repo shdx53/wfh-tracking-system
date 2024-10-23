@@ -2,11 +2,12 @@
 // coverage during E2E testing with Cypress.
 
 {
-    "presets": ["next/babel"],
-    "env": {
-      "test": {
-        "plugins": ["istanbul"]
-      }
+  "presets": ["next/babel"],
+  "env": {
+    "test": {
+      "plugins": ["istanbul"]
     }
-  }
+  },
+  "plugins": ["@babel/plugin-transform-private-methods"]
+}
   
