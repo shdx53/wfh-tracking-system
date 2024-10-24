@@ -1,9 +1,0 @@
-{
-"presets": ["next/babel"],
-"env": {
-  "test": {
-    "plugins": ["istanbul"]
-  }
-},
-"plugins": ["@babel/plugin-transform-private-methods"]
-}
