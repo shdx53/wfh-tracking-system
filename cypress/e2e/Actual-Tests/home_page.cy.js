@@ -3,8 +3,18 @@ describe('Homepage Test', () => {
     // Visit the homepage
     cy.visit('https://wfh-tracking-system.vercel.app/'); // Change the URL if needed
 
-    // Check if the page title contains the expected text
-    cy.get('href').contains('/_next/static/chunks/webpack-8b785e33a384d227.js');
+    // Log the current URL
+    cy.url().then((url) => {
+      console.log('Current URL:', url);
+    });
 
+    // Check if the page loads successfully
+    cy.get('body').should('be.visible');
+
+    // Check if 'Nav Bar' is visible on the page
+    cy.get('div').should('contain','All-In-One')
+
+    // Check if 'Home Page'
+        
   });
 });
