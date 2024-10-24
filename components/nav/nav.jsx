@@ -61,8 +61,7 @@ export default function Nav({ children }) {
       overallSchedulePageAuthorizedPositions.includes(employeePosition)) ||
     (isArrangementRequestsPage &&
       arrangementRequestsPageAuthorizedPositions.includes(employeePosition)) ||
-    (!isOverallSchedulePage &&
-      !isArrangementRequestsPage);
+    (!isOverallSchedulePage && !isArrangementRequestsPage);
 
   // Login context
   const loginData = { staffID, staffName, employeePosition };
