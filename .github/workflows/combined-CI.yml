@@ -1,0 +1,107 @@
+name: Combined CI Workflow
+
+# Environment variables for Vercel deployment
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+# Trigger the workflow on pushes and pull requests to the main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  jest-tests:
+    name: Run Jest Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run Jest tests
+      - name: Run Jest tests
+        run: npm test
+
+  cypress-tests:
+    name: Run Cypress Tests
+    runs-on: ubuntu-latest
+    needs: jest-tests  # Cypress tests will run after Jest tests succeed
+
+    steps:
+      # Step 1: Check out the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Start the Next.js server in the background
+      - name: Start Next.js server
+        run: npm run dev &
+        env:
+          PORT: 3000
+
+      # Step 5: Run Cypress tests in headless mode
+      - name: Run Cypress tests
+        run: npx cypress run
+
+      # Step 6: Generate code coverage report
+      - name: Generate Coverage Report
+        run: npx nyc report --reporter=text-summary
+
+      # Step 7: Upload HTML Coverage Report (optional)
+      - name: Upload HTML Coverage Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-coverage-report
+          path: coverage/index.html
+
+  deploy:
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+    needs: [jest-tests, cypress-tests]  # Deployment will only run if both test jobs succeed
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Install the Vercel CLI globally
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      # Step 3: Pull Vercel environment information
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      # Step 4: Build the project locally using Vercel
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      # Step 5: Deploy prebuilt artifacts to Vercel
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
