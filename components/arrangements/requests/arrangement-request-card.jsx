@@ -83,8 +83,7 @@ export default function ArrangementRequestCard({ selectedTab, arrangement }) {
   let requestStatus = arrangement.Request_Status;
 
   if (startDate.includes(",")) {
-    const recurringIntervalArr =
-      Array.isArray(recurringInterval) && recurringInterval.split(",");
+    const recurringIntervalArr = recurringInterval.split(",");
     recurringInterval = recurringIntervalArr[0];
 
     const startDateArr = startDate.split(",");

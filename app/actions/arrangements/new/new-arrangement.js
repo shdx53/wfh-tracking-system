@@ -20,6 +20,21 @@ const calculateNextDate = (startDate, recurringInterval, count) => {
   }
 };
 
+// Helper function to get current datetime
+const getCurrentDatetime = () => {
+  const now = new Date();
+
+  const year = now.getUTCFullYear();
+  const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(now.getUTCDate()).padStart(2, '0');
+  
+  const hours = String(now.getUTCHours()).padStart(2, '0');
+  const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 export async function newArrangement(formData) {
   let conn;
   try {
@@ -44,6 +59,8 @@ export async function newArrangement(formData) {
       ${recurringInterval},
       ${endDate}`); */
 
+    const currentDatetime = getCurrentDatetime();
+
     const isRecurring = arrangementType === "Ad-hoc" ? 0 : 1;
 
     if (arrangementType === "Ad-hoc") {
@@ -51,14 +68,15 @@ export async function newArrangement(formData) {
         // Check if it is Jack Sim's Request -> Auto approve
         const query = `
           INSERT INTO Arrangement 
-          (Staff_ID, Request_Status, Start_Date, Is_Recurring, Apply_Reason, Shift_Type)
-          VALUES (?, ?, ?, ?, ?, ?)
+          (Staff_ID, Request_Status, Applied_Datetime, Start_Date, Is_Recurring, Apply_Reason, Shift_Type)
+          VALUES (?, ?, ?, ?, ?, ?, ?)
           `;
         try {
           // Add arrangement record to Arrangement table
           await conn.execute(query, [
             staffID,
             "approved",
+            currentDatetime,
             startDate,
             isRecurring,
             applyReason === "" ? null : applyReason,
@@ -71,14 +89,15 @@ export async function newArrangement(formData) {
         // Others -> Set to pending status
         const query = `
           INSERT INTO Arrangement 
-          (Staff_ID, Start_Date, Is_Recurring, Apply_Reason, Shift_Type)
-          VALUES (?, ?, ?, ?, ?)
+          (Staff_ID, Applied_Datetime, Start_Date, Is_Recurring, Apply_Reason, Shift_Type)
+          VALUES (?, ?, ?, ?, ?, ?)
           `;
 
         try {
           // Add arrangement record to Arrangement table
           await conn.execute(query, [
             staffID,
+            currentDatetime,
             startDate,
             isRecurring,
             applyReason === "" ? null : applyReason,
@@ -146,8 +165,8 @@ export async function newArrangement(formData) {
         // Query for add arrangement record to Arrangement table
         const query = `
         INSERT INTO Arrangement 
-        (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Shift_Type)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        (Staff_ID, Request_Status, Applied_Datetime, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Shift_Type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const startDateObj = new Date(startDate);
@@ -160,6 +179,7 @@ export async function newArrangement(formData) {
           await conn.execute(query, [
             staffID,
             "approved",
+            currentDatetime,
             occurrenceDateObj.toISOString().split("T")[0],
             isRecurring,
             recurringInterval,
@@ -217,8 +237,8 @@ export async function newArrangement(formData) {
         // Query for add arrangement record to Arrangement table
         const query = `
         INSERT INTO Arrangement 
-        (Staff_ID, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Shift_Type)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        (Staff_ID, Applied_Datetime, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Shift_Type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const startDateObj = new Date(startDate);
@@ -230,6 +250,7 @@ export async function newArrangement(formData) {
         while (occurrenceDateObj <= endDateObj) {
           await conn.execute(query, [
             staffID,
+            currentDatetime,
             occurrenceDateObj.toISOString().split("T")[0],
             isRecurring,
             recurringInterval,
