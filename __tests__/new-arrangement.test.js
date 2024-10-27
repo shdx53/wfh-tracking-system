@@ -25,6 +25,20 @@ describe('newArrangement', () => {
         jest.clearAllMocks();
     });
 
+    const getCurrentDatetime = () => {
+        const now = new Date();
+      
+        const year = now.getUTCFullYear();
+        const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(now.getUTCDate()).padStart(2, '0');
+        
+        const hours = String(now.getUTCHours()).padStart(2, '0');
+        const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+        const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+      
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      }
+
     
     // AD-HOC ARRANGEMENTS
 
@@ -42,7 +56,7 @@ describe('newArrangement', () => {
 
         expect(mockConnection.execute).toHaveBeenCalledWith(
             expect.stringContaining('INSERT INTO Arrangement'),
-            expect.arrayContaining(["130002", 'approved', '2024-09-25', 0, 'Testing New Code', 'AM'])
+            expect.arrayContaining(["130002", 'approved', getCurrentDatetime(), '2024-09-25', 0, 'Testing New Code', 'AM'])
         );       
         
         expect(result).toEqual({ message: "Arrangement(s) added successfully" });
@@ -62,7 +76,7 @@ describe('newArrangement', () => {
 
         expect(mockConnection.execute).toHaveBeenCalledWith(
             expect.stringContaining('INSERT INTO Arrangement'),
-            expect.arrayContaining(["130002", 'approved', '2024-09-25', 0, null, 'AM'])
+            expect.arrayContaining(["130002", 'approved', getCurrentDatetime(), '2024-09-25', 0, null, 'AM'])
         );       
         
         expect(result).toEqual({ message: "Arrangement(s) added successfully" });
@@ -225,9 +239,9 @@ describe('newArrangement', () => {
 
         expect(mockConnection.execute).toHaveBeenCalledWith(`
           INSERT INTO Arrangement 
-          (Staff_ID, Start_Date, Is_Recurring, Apply_Reason, Shift_Type)
-          VALUES (?, ?, ?, ?, ?)
-          `, ["123456", "2024-09-25", 0, "Testing New Code", "AM"]);
+          (Staff_ID, Applied_Datetime, Start_Date, Is_Recurring, Apply_Reason, Shift_Type)
+          VALUES (?, ?, ?, ?, ?, ?)
+          `, ["123456", getCurrentDatetime(), "2024-09-25", 0, "Testing New Code", "AM"]);
 
         // Second query for getting Reporting Manager StaffID should look like
         mockConnection.query.mockResolvedValueOnce([[{ Reporting_Manager: 246800 }], ['`Reporting_Manager` INT']]);
