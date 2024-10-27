@@ -16,6 +16,7 @@ export default function ArrangementCard({
 
   return (
     <div
+      {...(page === "personal" && { id: `${shiftType}`})}
       className={`flex justify-between rounded-lg border-l-[10px] p-6 ${classStyles[shiftType]} ${requestStatus === "pending" && "opacity-50"}`}
     >
       <div className="flex flex-col gap-1">

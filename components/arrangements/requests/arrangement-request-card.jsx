@@ -195,6 +195,7 @@ export default function ArrangementRequestCard({ selectedTab, arrangement }) {
       <div className="col-span-1 flex justify-center">
         <Sheet>
           <SheetTrigger
+            id="arrangement-sheet-trigger"
             className={`${(isDisabled || (page === "Personal" && selectedTab === "Processed" && requestStatus !== "Approved")) && "hidden"}`}
           >
             <ArrowUpRight strokeWidth={1} />

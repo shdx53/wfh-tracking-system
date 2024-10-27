@@ -121,12 +121,14 @@ function PersonalArrangementRequestsContent() {
       <Tabs defaultValue="Pending">
         <TabsList className="">
           <TabsTrigger
+            id="pending-tab-trigger"
             value="Pending"
             onClick={() => setSelectedTab("Pending")}
           >
             Pending
           </TabsTrigger>
           <TabsTrigger
+            id="processed-tab-trigger"
             value="Processed"
             onClick={() => setSelectedTab("Processed")}
           >
@@ -136,12 +138,14 @@ function PersonalArrangementRequestsContent() {
 
         <div className="flex items-center gap-2 pt-4 sm:justify-end">
           <Input
+            id="start-date-input"
             type="text"
             placeholder="Start date (YYYY-MM-DD)"
             className="w-3/4 max-w-52"
             onChange={(event) => setStartDateToFilter(event.target.value)}
           />
           <Search
+            id="search-icn"
             strokeWidth={0.5}
             className="cursor-pointer"
             onClick={() =>

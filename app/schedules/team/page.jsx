@@ -98,12 +98,14 @@ export default function TeamSchedule() {
           <Tabs defaultValue="In-Office" className="pt-4">
             <TabsList className="">
               <TabsTrigger
+                id="in-office-tab-trigger"
                 value="In-Office"
                 onClick={() => setSelectedTab("In-Office")}
               >
                 In-Office
               </TabsTrigger>
               <TabsTrigger
+                id="wfh-tab-trigger"
                 value="Work-From-Home"
                 className="sm:hidden"
                 onClick={() => setSelectedTab("Work-From-Home")}
