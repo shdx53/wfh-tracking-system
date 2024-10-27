@@ -166,9 +166,9 @@ export async function manageArrangement(formData) {
             /* Cancel arrangement */
             /* Entire arrangement is deleted */
 
-            // (for email) Get startDate before arrangement is deleted
-            const [startDate_query] = await conn.query("SELECT Start_Date FROM Arrangement WHERE Arrangement_ID = ?", [arrangementID]);
-            const startDate = startDate_query[0]['Start_Date'];
+            // // (for email) Get startDate before arrangement is deleted
+            // const [startDate_query] = await conn.query("SELECT Start_Date FROM Arrangement WHERE Arrangement_ID = ?", [arrangementID]);
+            // const startDate = startDate_query[0]['Start_Date'];
 
             // Delete the arrangement
             await conn.query(
@@ -176,9 +176,9 @@ export async function manageArrangement(formData) {
               [arrangementID],
             );
 
-            // (for email) Get outcome details of the single arrangement
-            outcome[startDate] = { "action": requestStatus[action],
-                                      "reason": reason };
+            // // (for email) Get outcome details of the single arrangement
+            // outcome[startDate] = { "action": requestStatus[action],
+            //                           "reason": reason };
 
             // Cancelling requests stops here, does not send any email
             console.log('Arrangement ID:', arrangementID, 'Cancel success')
@@ -246,7 +246,7 @@ export async function manageArrangement(formData) {
           A work-from-home arrangement was ${action}:\n\n
           Staff ID: ${staffID}\n
           Start Date: ${date}\n
-          Reason: ${reason || "N/A"}\n\n
+          Reason: ${reason}\n\n
           Thank you. \n\n`;
         }
       }
