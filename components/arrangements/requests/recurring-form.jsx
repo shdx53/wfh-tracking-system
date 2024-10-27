@@ -1,5 +1,5 @@
 // Library
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Component
 import Loading from "@/components/loading";
@@ -39,11 +39,19 @@ export default function RecurringForm({
     useArrangementRequest();
 
   const focusRef = useRef(null);
-
   useEffect(() => {
     // Focus on this div to prevent auto-focus on the Select field
     focusRef.current?.focus();
   }, []);
+
+  /* Fixes the issue where clicking on two or more Select fields without making a choice */
+  /* and then closing the sheet prevents the rest of the page from being clickable */
+  // State to track which Select is open
+  const [openSelectId, setOpenSelectId] = useState(null);
+  const handleSelectOpenChange = (id, isOpen) => {
+    // Close any opened Select when one is clicked
+    setOpenSelectId(isOpen ? (openSelectId === id ? null : id) : null);
+  };
 
   return (
     <>
@@ -87,6 +95,10 @@ export default function RecurringForm({
                           </FormLabel>
                           <Select
                             onValueChange={field.onChange}
+                            onOpenChange={(isOpen) =>
+                              handleSelectOpenChange(arrangementID, isOpen)
+                            }
+                            open={openSelectId === arrangementID} 
                             defaultValue=""
                           >
                             <FormControl>
@@ -167,18 +179,22 @@ export default function RecurringForm({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem
-                        value="Approve"
-                        disabled={requestStatus === "Approved"}
-                      >
-                        Approve
-                      </SelectItem>
-                      <SelectItem
-                        value="Reject"
-                        disabled={requestStatus === "Rejected"}
-                      >
-                        Reject
-                      </SelectItem>
+                      {page === "Managers and Directors" && (
+                        <>
+                          <SelectItem
+                            value="Approve"
+                            disabled={requestStatus === "Approved"}
+                          >
+                            Approve
+                          </SelectItem>
+                          <SelectItem
+                            value="Reject"
+                            disabled={requestStatus === "Rejected"}
+                          >
+                            Reject
+                          </SelectItem>
+                        </>
+                      )}
                       <SelectItem
                         value="Withdraw entire arrangement"
                         disabled={requestStatus === "Withdrawn"}

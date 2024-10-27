@@ -96,7 +96,9 @@ export default function AdHocForm({
       />
 
       {selectedStartDate && !selectedDateShiftTypes && (
-        <div className="flex justify-center"><Loading /></div>
+        <div className="flex justify-center">
+          <Loading />
+        </div>
       )}
 
       {selectedDateShiftTypes && (

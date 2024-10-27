@@ -42,7 +42,6 @@ export async function GET(request) {
       FROM Arrangement
       WHERE Staff_ID = ?
       AND Arrangement.Is_Recurring = 1
-      AND Arrangement.Request_Status = 'pending'
       GROUP BY Arrangement.Recurring_Interval, Arrangement.End_Date, Arrangement.Shift_Type;`,
       [staffID, staffID],
     );

@@ -30,7 +30,6 @@ export default function AdHocForm({ form }) {
     useArrangementRequest();
 
   const focusRef = useRef(null);
-
   useEffect(() => {
     // Focus on this div to prevent auto-focus on the Select field
     focusRef.current?.focus();
@@ -82,7 +81,15 @@ export default function AdHocForm({ form }) {
                       )}
                     </>
                   ) : (
-                    <SelectItem value="Cancel">Cancel</SelectItem>
+                    <>
+                      {selectedTab === "Pending" ? (
+                        <SelectItem value="Cancel">Cancel</SelectItem>
+                      ) : (
+                        <SelectItem value="Withdraw this specific arrangement only">
+                          Withdraw
+                        </SelectItem>
+                      )}
+                    </>
                   )}
                 </SelectContent>
               </Select>
