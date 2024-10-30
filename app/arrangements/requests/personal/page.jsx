@@ -66,11 +66,41 @@ function PersonalArrangementRequestsContent() {
       );
       setPendingArrangementRequestsCopy(pendingArrangementRequests);
 
-      const processedArrangementRequests = personalArrangementRequests.filter(
-        (request) => {
-          return !request.Request_Status.includes("pending");
-        },
-      );
+      const processedArrangementRequests = personalArrangementRequests
+        .flatMap((request) => {
+          if (!request.Request_Status.includes("pending")) {
+            // Recurring request
+            if (request.Recurring_Interval) {
+              const arrangementIDs = request.Arrangement_ID.split(",");
+              const requestStatuses = request.Request_Status.split(",");
+              const appliedDatetimes = request.Applied_Datetime.split(",");
+              const startDates = request.Start_Date.split(",");
+              const recurringIntervals = request.Recurring_Interval.split(",");
+              const endDates = request.End_Date.split(",");
+              const shiftTypes = request.Shift_Type.split(",");
+
+              return arrangementIDs.map((id, index) => ({
+                Arrangement_ID: id,
+                Request_Status: requestStatuses[index],
+                Applied_Datetime: appliedDatetimes[index],
+                Start_Date: startDates[index],
+                Recurring_Interval: recurringIntervals[index],
+                End_Date: endDates[index],
+                Apply_Reason: request.Apply_Reason,
+                Update_Reason: request.Update_Reason,
+                Shift_Type: shiftTypes[index],
+              }));
+            } else {
+              return request;
+            }
+          }
+        })
+        .filter(Boolean)
+        .map((request) =>
+          Object.fromEntries(
+            Object.entries(request).filter(([_, value]) => value !== undefined),
+          ),
+        );
       setProcessedArrangementRequestsCopy(processedArrangementRequests);
     }
   }, [personalArrangementRequests]);
@@ -111,7 +141,10 @@ function PersonalArrangementRequestsContent() {
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * arrangementRequestsPerPage;
   const endIndex = startIndex + arrangementRequestsPerPage;
-  const currentPageArrangementRequests = arrangementRequests.slice(startIndex, endIndex);
+  const currentPageArrangementRequests = arrangementRequests.slice(
+    startIndex,
+    endIndex,
+  );
 
   return (
     <div className="space-y-3">

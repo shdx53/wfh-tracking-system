@@ -100,7 +100,7 @@ export default function AdHocForm({ form }) {
       </div>
 
       {/* Reason field */}
-      {page === "Managers and Directors" && (
+      {(page === "Managers and Directors" || selectedTab === "Processed") && (
         <div className="col-span-2">
           <FormField
             control={form.control}

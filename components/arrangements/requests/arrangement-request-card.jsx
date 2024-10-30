@@ -61,9 +61,12 @@ export default function ArrangementRequestCard({ selectedTab, arrangement }) {
       : personalTableStypes;
 
   /* Display logic */
-  const firstName = arrangement.Staff_FName;
-  const lastName = arrangement.Staff_LName;
-  const name = `${firstName} ${lastName}`;
+  let name;
+  if (page === "Managers and Directors") {
+    const firstName = arrangement.Staff_FName;
+    const lastName = arrangement.Staff_LName;
+    name = `${firstName} ${lastName}`;
+  }
 
   let recurringInterval = arrangement.Recurring_Interval;
   const arrangementType = recurringInterval === null ? "Ad-hoc" : "Recurring";
