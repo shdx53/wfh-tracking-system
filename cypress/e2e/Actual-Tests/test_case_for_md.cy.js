@@ -1,3 +1,4 @@
+// Test Case 3.1:
 describe("View Team's Schedule for Manager/Director", () => {
   // Use before to run setup code before the tests
   before(() => {
@@ -25,7 +26,7 @@ describe("View Team's Schedule for Manager/Director", () => {
       );
 
       cy.get('input[name="p_password"]').type("password");
-      cy.get('button[type="submit"]').click({ multiple: true });
+      cy.contains('button[type="submit"]', 'Continue').click({ multiple: true });
     });
 
     // Step 3: Navigate to team schedules page
@@ -34,7 +35,6 @@ describe("View Team's Schedule for Manager/Director", () => {
     cy.get("nav").contains("Team").click();
   });
 
-  // Test Case 3.1:
   it("should view own team member's historical and future schedules", () => {
     // Step 4: Get current dates and the relevant dates from intervals for verification
     const today = new Date();
@@ -320,8 +320,19 @@ describe("View Team's Schedule for Manager/Director", () => {
         });
     }
   });
+
+  // Clear sessions after each test
+  afterEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+    });
+  });
 });
 
+
+// Test Case 3.2:
 describe("Filter by 'In Office' and 'WFH'", () => {
   // Use before to run setup code before the tests
   before(() => {
@@ -349,7 +360,7 @@ describe("Filter by 'In Office' and 'WFH'", () => {
       );
 
       cy.get('input[name="p_password"]').type("password");
-      cy.get('button[type="submit"]').click({ multiple: true });
+      cy.contains('button[type="submit"]', 'Continue').click({ multiple: true });
     });
 
     // Step 3: Navigate to team schedules page
@@ -358,12 +369,20 @@ describe("Filter by 'In Office' and 'WFH'", () => {
     cy.get("nav").contains("Team").click();
   });
 
-  // Test Case 3.2:
   it("should filter team members' schedules by 'In Office' and 'WFH'", () => {
     cy.get('[role="tablist"]').contains("Work-From-Home").click();
     cy.get('[role="tablist"]').contains("In-Office").click();
 
     // Verify there's a list under tabs
     cy.get('[role="tabpanel"]').should("exist");
+  });
+
+  // Clear sessions after each test
+  afterEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+    });
   });
 });
