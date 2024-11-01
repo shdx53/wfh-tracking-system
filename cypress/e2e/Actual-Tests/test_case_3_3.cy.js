@@ -13,7 +13,7 @@ describe('Responsive Design Validation for Schedule View', () => {
       // Navigate to the login page
       cy.get('a').click();
   
-      // Step 2: Log in as Bui Nguyen using cy.origin for third-party login
+      // Step 2: Log in as Sophia Toh using cy.origin for third-party login
       cy.origin('https://wfhtrackingsystem.kinde.com', () => {
         cy.get('input[name="p_username"]').type('140103');
         cy.get('button[type="submit"]').click();
