@@ -78,12 +78,4 @@ describe("Manager/Director Approve WFH Requests with Less than 24hrs before WFH 
 
   });
 
-  // Clear sessions after each test
-  afterEach(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
-    cy.window().then((win) => {
-      win.sessionStorage.clear();
-    });
-  });
 });

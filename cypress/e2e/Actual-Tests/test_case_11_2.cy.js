@@ -78,12 +78,4 @@ describe("Manager/Director Reject Pending WFH Requests", () => {
     
   });
 
-  // Clear sessions after each test
-  afterEach(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
-    cy.window().then((win) => {
-      win.sessionStorage.clear();
-    });
-  });
 });
