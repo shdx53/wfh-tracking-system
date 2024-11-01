@@ -1,5 +1,5 @@
-// Test Case 4.1:
-describe("View work schedules of departments/teams for HR/Senior Management", () => {
+// Test Case 4.3:
+describe("Filter Department Schedule by Status (In Office/WFH", () => {
   // Use before to run setup code before the tests
   before(() => {
     // Step 1: Visit the homepage and log in once
@@ -25,17 +25,16 @@ describe("View work schedules of departments/teams for HR/Senior Management", ()
         "be.visible",
       );
       cy.get('input[name="p_password"]').type("password");
-      cy.contains('button[type="submit"]', "Continue").click({
-        multiple: true,
-      });
+      cy.contains('button[type="submit"]', 'Continue').click({ multiple: true });
     });
+   
   });
 
-  it("should view departmental work schedule", () => {
+  it("should filter departmental work schedules by 'In Office' and 'WFH'", () => {
     // Ensure the page has loaded
     cy.get("body").should("be.visible");
 
-    // Step 3: Navigate to team schedules page
+    // Step 3: Navigate to Team schedules page
     cy.get("nav", { timeout: 10000 }).should("contain", "All-In-One");
     cy.get("nav", { timeout: 10000 }).contains("Schedule").click();
     cy.get("nav", { timeout: 10000 }).contains("Team").click();
@@ -44,45 +43,14 @@ describe("View work schedules of departments/teams for HR/Senior Management", ()
     cy.get("nav").contains("Schedule").click();
     cy.get("nav").contains("Overall and team").click();
 
-    // Step 5: Click on dropdown to select through all departments
+    // Step 5: Cycle through location tabs
 
-    // List of options to click
-    const options = [
-      "Test",
-      "MD",
-      "Director",
-      "Account Manager",
-      "Sales Manager",
-      "Senior Engineers",
-      "Junior Engineers",
-      "Call Centre",
-      "Operation Planning Team",
-      "HR Team",
-      "LD Team",
-      "Admin Team",
-      "Finance Executive",
-      "Finance Manager",
-      "Counsultant",
-      "Developers",
-      "Support Team",
-      "IT Team",
-    ];
+    cy.get('[role="tablist"]').contains("Work-From-Home").click();
+    cy.get('[role="tabpanel"]').should("exist");
+    
+    cy.get('[role="tablist"]').contains("In-Office").click();
+    cy.get('[role="tabpanel"]').should("exist");
 
-    // Loop through each option and perform the click and assertion
-    options.forEach((option) => {
-      // Interact with dropdown element
-      cy.get('button[role="combobox"]').click();
-
-      // Wait for the dropdown content to be visible
-      cy.get('[role="listbox"]').should("be.visible");
-
-      // Select individual option
-      cy.get('[role="option"]').contains(option).click();
-      cy.get('[role="tabpanel"]', { timeout: 10000 }).should(
-        "contain",
-        "Employee Count",
-      );
-    });
   });
 
   // Clear sessions after each test
