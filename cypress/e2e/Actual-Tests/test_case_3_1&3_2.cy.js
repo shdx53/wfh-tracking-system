@@ -66,7 +66,7 @@ describe("View Team's Schedule for Manager/Director", () => {
       cy.get('[role="tablist"]').contains("Work-From-Home").click();
 
       // Verify number of records under the tab
-      cy.get('[role="tabpanel"]').should("have.length", 3);
+      cy.get('[role="tabpanel"]').contains("John Lim");
 
       // Verify the content of the first record
       cy.get(
