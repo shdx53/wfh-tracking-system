@@ -25,6 +25,7 @@
             cy.get('button[type="submit"]').click({ multiple: true });
         });
 
+        
         // Step 3: Navigate to the new arrangement page
         cy.get('nav').should('contain', 'All-In-One');
         cy.get('nav').contains('Arrangement').click();
