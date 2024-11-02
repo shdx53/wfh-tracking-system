@@ -71,7 +71,7 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
           mysql -h $DB_IP -u $DB_USER -p$DB_PASS $DB_NAME < tcAll.sql
-
+          
       # Step 6: Start the Next.js server in the background
       - name: Start Next.js server
         run: npm run dev &
