@@ -52,7 +52,7 @@
             return adjustForWeekend(newDate);
         };
     
-        // Calculate dates: 2 days later
+        // Calculate dates: 5 days later
         const dates = {
             todayDay: today.getDate(),
             fiftenDaysLater: getAdjustedDate(15).getDate(),
