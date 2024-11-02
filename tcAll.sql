@@ -225,35 +225,35 @@ VALUES
 INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
 (210018, "approved", CURRENT_DATE + INTERVAL 4 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 11 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 2 SECOND),
-(210018, "approved", CURRENT_DATE + INTERVAL 11 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 11 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 2 SECOND);
+(210018, "approved", CURRENT_DATE + INTERVAL 11 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 11 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 3 SECOND);
 
 
 
 
 # 13.2 - Staff Withdraw Own SPECIFIC Approved Recurring WFH Arrangement
 ## Contains approved recurring request of IT Team: Manni Devi (210018)
-INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type)
+INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
-(210018, "approved", CURRENT_DATE + INTERVAL 5 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 12 DAY, NULL, NULL, "Full Day"),
-(210018, "approved", CURRENT_DATE + INTERVAL 12 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 12 DAY, NULL, NULL, "Full Day");
+(210018, "approved", CURRENT_DATE + INTERVAL 5 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 12 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 5 SECOND),
+(210018, "approved", CURRENT_DATE + INTERVAL 12 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 12 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 9 SECOND);
 
 
 
 
 # 13.3 - Staff Withdraw an Approved Ad-Hoc WFH Arrangement
 ## Contains approved ad-hoc request of IT Team: Manni Devi (210018)
-INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type)
+INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
-(210018, "approved", CURRENT_DATE + INTERVAL 3 DAY, 0, NULL, NULL, NULL, NULL, "Full Day");
+(210018, "approved", CURRENT_DATE + INTERVAL 3 DAY, 0, NULL, NULL, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 6 SECOND);
 
 
 
 
 # 13.4 - Staff Withdraw an Approved WFH Arrangement Less Than 24 Hours Before WFH Day
 ## Contains approved ad-hoc request of IT Team: Manni Devi (210018) for the current date
-INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type)
+INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
-(210018, "approved", CURRENT_DATE, 0, NULL, NULL, NULL, NULL, "Full Day");
+(210018, "approved", CURRENT_DATE, 0, NULL, NULL, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 7 SECOND);
 
 
 
