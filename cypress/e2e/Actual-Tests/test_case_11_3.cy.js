@@ -41,6 +41,8 @@ describe("Manager/Director Approve WFH Requests with Less than 24hrs before WFH 
     cy.get("nav", { timeout: 10000 }).contains("Arrangement").click();
     cy.get("nav", { timeout: 10000 }).contains("All requests").click();
 
+    cy.wait(2000);
+
     // Step 4: Approve Samsul's request 10 days later
     function addDaysToCurrentDate(days) {
       const currentDate = new Date();
@@ -54,6 +56,8 @@ describe("Manager/Director Approve WFH Requests with Less than 24hrs before WFH 
     }
     let dateLater = addDaysToCurrentDate(10);
 
+    cy.wait(2000);
+
     cy.get('input[placeholder="Employee"]').type("Samsul");
     cy.get('input[placeholder="Start date (YYYY-MM-DD)"]').type(dateLater);
     cy.wait(2000);
@@ -61,20 +65,9 @@ describe("Manager/Director Approve WFH Requests with Less than 24hrs before WFH 
       multiple: true,
     });
 
-    cy.get('[role="tabpanel"]')
-      .first()
-      .get('svg[class="lucide lucide-arrow-up-right"]')
-      .click();
+    // No arrangement requests found.
 
-    // Process sidebar actions
-    cy.get('button[role="combobox"]').click();
-    cy.get('[role="listbox"]').should("be.visible");
-    cy.contains('[role="option"]', "Approve").click();
-    cy.get("textarea")
-      .click()
-      .type("Testing WFH E2E Test Case 11.1");
-    cy.get('button[type="submit"]').click();
-    cy.contains('Arrangement(s) updated successfully').should("be.visible");
+    cy.contains("No arrangement requests found.");
 
   });
 

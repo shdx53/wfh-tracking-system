@@ -97,8 +97,7 @@ jobs:
   deploy:
     name: Deploy to Vercel
     runs-on: ubuntu-latest
-    # needs: [jest-tests, cypress-tests]  # Deployment will only run if both test jobs succeed
-    needs: [jest-tests]
+    needs: [jest-tests, cypress-tests]  # Deployment will only run if both test jobs succeed
 
     steps:
       # Step 1: Checkout the code
