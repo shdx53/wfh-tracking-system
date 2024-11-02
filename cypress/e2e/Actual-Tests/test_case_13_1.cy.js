@@ -35,7 +35,7 @@ describe('Withdraw Entire Approved Recurring WFH Arrangement ', () => {
         cy.get('button').contains('Processed').click();
         cy.wait(2000);
 
-        cy.get('button[id="arrangement-sheet-trigger"]').eq(6).click({ force: true });
+        cy.get('button[id="arrangement-sheet-trigger"]').eq(2).click({ force: true });
 
         // Interact with the <select> element
         cy.get('button[role="combobox"]').first().click(); // Click the first matching button
