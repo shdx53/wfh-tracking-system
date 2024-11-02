@@ -58,21 +58,35 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Start the Next.js server in the background
+      # Step 4: Install MySQL client
+      - name: Install MySQL client
+        run: sudo apt-get install mysql-client
+
+      # Step 5: Run SQL file to reset database
+      - name: Reset Database
+        env:
+          DB_IP: ${{ secrets.DB_IP }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          mysql -h $DB_IP -u $DB_USER -p$DB_PASS $DB_NAME < tc.All.sql
+
+      # Step 6: Start the Next.js server in the background
       - name: Start Next.js server
         run: npm run dev &
         env:
           PORT: 3000
 
-      # Step 5: Run Cypress tests in headless mode
+      # Step 7: Run Cypress tests in headless mode
       - name: Run Cypress tests
         run: npx cypress run
 
-      # Step 6: Generate code coverage report
+      # Step 8: Generate code coverage report
       - name: Generate Coverage Report
         run: npx nyc report --reporter=text-summary
 
-      # Step 7: Upload HTML Coverage Report (optional)
+      # Step 9: Upload HTML Coverage Report (optional)
       - name: Upload HTML Coverage Report
         if: always()
         uses: actions/upload-artifact@v3
