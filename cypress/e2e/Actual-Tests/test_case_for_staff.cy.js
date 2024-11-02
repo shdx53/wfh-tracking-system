@@ -474,6 +474,63 @@ describe('View Personal Schedule for Staff', () => {
           });  
       });
   
+
+// Test Case 2.3: No Team Members Available
+describe('No team members Available', () => {
+    // Use before to run setup code before the tests
+    before(() => {
+        // Step 1: Visit the homepage and log in once
+        cy.visit('https://wfh-tracking-system.vercel.app/'); // Adjust the URL if needed
+
+        // Ensure the page has loaded
+        cy.get('body').should('be.visible');
+
+        // Verify the 'Nav Bar' is visible
+        cy.get('nav').should('contain', 'All-In-One');
+
+        // Navigate to the login page
+        cy.get('a').click();
+
+        // Step 2: Log in as Jack Sim using cy.origin for third-party login
+        cy.origin('https://wfhtrackingsystem.kinde.com', () => {
+            cy.get('input[name="p_username"]').type('130002');
+            cy.get('button[type="submit"]').click();
+
+            cy.get('input[name="p_password"]', { timeout: 10000 }).should('be.visible');
+
+            cy.get('input[name="p_password"]').type('password');
+            cy.get('button[type="submit"]').click({ multiple: true });
+        });
+    });
+
+    it('should be able to cancel Ad-ho', () => {
+        // Step 3: Navigate to the Team Schedule page
+        cy.get('nav').should('contain', 'All-In-One');
+        cy.get('nav').contains('Schedule').click();
+        cy.get('nav').contains('Team').click();
+        
+        cy.wait(2000);
+
+        // Check no team members in office tab
+        // Code check there is no tab banner with the below class
+        cy.get('.flex.justify-between.rounded-lg.border-l-\\[10px\\].p-6.bg-teal-100\\/40.border-teal-700').should('not.exist');
+        
+
+        // Check no team members working from home tab
+        cy.wait(2000);
+        cy.contains('button', 'Work-From-Home').click();
+
+        cy.get('.flex.justify-between.rounded-lg.border-l-\\[10px\\].p-6.bg-teal-100\\/40.border-teal-700').should('not.exist');
+
+        // No team in leave tab
+        cy.wait(2000);
+        cy.contains('button', 'Leave').click();
+        cy.get('.flex.justify-between.rounded-lg.border-l-\\[10px\\].p-6.bg-teal-100\\/40.border-teal-700').should('not.exist');
+
+        
+    });
+});
+
   // Test Case 2.4: Responsive Design Validation for Team Schedule View
   describe('Responsive Design Testing', () => {
       beforeEach(() => {
@@ -522,155 +579,231 @@ describe('View Personal Schedule for Staff', () => {
       });
     });
   
-    // Test Case 5.1: Apply for Ad-Hoc WFH Arrangement
-  describe('Apply for Ad-Hoc WFH Arrangement', () => {
-      // Use before to run setup code before the tests
-      before(() => {
-          // Step 1: Visit the homepage and log in once
-          cy.visit('https://wfh-tracking-system.vercel.app/'); // Adjust the URL if needed
-  
-          // Ensure the page has loaded
-          cy.get('body').should('be.visible');
-  
-          // Verify the 'Nav Bar' is visible
-          cy.get('nav').should('contain', 'All-In-One');
-  
-          // Navigate to the login page
-          cy.get('a').click();
-  
-          // Step 2: Log in as Samsul Saifullah using cy.origin for third-party login
-          cy.origin('https://wfhtrackingsystem.kinde.com', () => {
-              cy.get('input[name="p_username"]').type('151495');
-              cy.get('button[type="submit"]').click();
-  
-              cy.get('input[name="p_password"]', { timeout: 10000 }).should('be.visible');
-  
-              cy.get('input[name="p_password"]').type('password');
-              cy.get('button[type="submit"]').click({ multiple: true });
-          });
-  
-          // Step 3: Navigate to the new arrangement page
-          cy.get('nav').should('contain', 'All-In-One');
-          cy.get('nav').contains('Arrangement').click();
-          cy.get('nav').contains('New request').click();
-      });
-  
-      it('should apply for Ad-hoc WFH Arrangement', () => {
+   // Test Case 5.1: Apply for Ad-Hoc WFH Arrangement
+describe('Apply for Ad-Hoc WFH Arrangement', () => {
+    // Use before to run setup code before the tests
+    before(() => {
+        // Step 1: Visit the homepage and log in once
+        cy.visit('https://wfh-tracking-system.vercel.app/'); // Adjust the URL if needed
+
+        // Ensure the page has loaded
+        cy.get('body').should('be.visible');
+
+        // Verify the 'Nav Bar' is visible
+        cy.get('nav').should('contain', 'All-In-One');
+
+        // Navigate to the login page
+        cy.get('a').click();
+
+        // Step 2: Log in as Samsul Saifullah using cy.origin for third-party login
+        cy.origin('https://wfhtrackingsystem.kinde.com', () => {
+            cy.get('input[name="p_username"]').type('151495');
+            cy.get('button[type="submit"]').click();
+
+            cy.get('input[name="p_password"]', { timeout: 10000 }).should('be.visible');
+
+            cy.get('input[name="p_password"]').type('password');
+            cy.get('button[type="submit"]').click({ multiple: true });
+        });
+
+        // Step 3: Navigate to the new arrangement page
+        cy.get('nav').should('contain', 'All-In-One');
+        cy.get('nav').contains('Arrangement').click();
+        cy.get('nav').contains('New request').click();
+    });
+
+    it('should apply for Ad-hoc WFH Arrangement', () => {
+        const today = new Date();
+
+        // Helper function to get a new date by adding/subtracting days
+        const adjustForWeekend = (date) => {
+            const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+            if (dayOfWeek === 6) { // Saturday
+                date.setDate(date.getDate() + 2); // Add 2 days
+            } else if (dayOfWeek === 0) { // Sunday
+                date.setDate(date.getDate() + 1); // Add 1 day
+            }
+            return date;
+        };
+        
+        // Helper function to get a new date by adding/subtracting days
+        const getAdjustedDate = (days) => {
+            const newDate = new Date(today);
+            newDate.setDate(today.getDate() + days);
+            return adjustForWeekend(newDate);
+        };
+    
+        // Calculate dates: 2 days later
+        const dates = {
+            todayDay: today.getDate(),
+            fiftenDaysLater: getAdjustedDate(15).getDate(),
+
+        };
+
+        const { todayDay, fiftenDaysLater} = dates;
+
           // Step 4: Click on Ad-hoc radio button
           cy.get('button[value="Ad-hoc"]').click();
           cy.get('button[id=":re:-form-item"]').click();
+
+         // 15 days later is a new month
+         if ( todayDay > fiftenDaysLater) {
+            cy.get('button[name="next-month"]').click({ multiple: true, force: true }); // Click the button
+            cy.get('button[name="day"]').contains(fiftenDaysLater.toString()).click();
+            cy.get('button[id=":re:-form-item"]').click();
+         };
+
+        // 15 days later in the same month
+        if ( todayDay < fiftenDaysLater) {
+            cy.get('button[name="day"]').contains(fiftenDaysLater.toString()).click();
+            cy.get('button[id=":re:-form-item"]').click();
+
+        };
+            
+        // Interact with the <select> element
+        cy.get('button[role="combobox"]').click();
   
-          // Loop to click the 'next-month' button 7 times
-          for (let i = 0; i < 7; i++) {
-              cy.get('button[name="next-month"]').click({ multiple: true, force: true }); // Click the button
-          }
-  
-          cy.get('button[name="day"]').contains('9').click();
-  
-          cy.get('button[id=":re:-form-item"]').click();
-  
-         // Interact with the <select> element
-         cy.get('button[role="combobox"]').click();
-  
-         // Wait for the dropdown content to be visible (optional, for stability)
-         cy.get('[role="listbox"]').should('be.visible');
-  
-          // Click on the "AM" option
-         cy.contains('[role="option"]', 'AM').click(); // Ensure this matches your SelectItem structure
+        // Wait for the dropdown content to be visible (optional, for stability)
+        cy.get('[role="listbox"]').should('be.visible');
+ 
+         // Click on the "AM" option
+        cy.contains('[role="option"]', 'AM').click(); // Ensure this matches your SelectItem structure
+       
+ 
+         cy.get('textarea') // Use the appropriate selector for your textarea
+         .click() // Click on the textarea to focus it
+         .type('Testing WFH E2E Test Case 5.1'); // Type the desired text
+ 
+         // Submit
+         cy.get('button[type="submit"]').click();
+ 
+
+    });
+});
+
+//Test Case 5.2: Apply for Recurring WFH Arrangement (Weekly)
+describe('Apply for Recurring WFH Arrangement', () => {
+    // Use before to run setup code before the tests
+    before(() => {
+        // Step 1: Visit the homepage and log in once
+        cy.visit('https://wfh-tracking-system.vercel.app/'); // Adjust the URL if needed
+
+        // Ensure the page has loaded
+        cy.get('body').should('be.visible');
+
+        // Verify the 'Nav Bar' is visible
+        cy.get('nav').should('contain', 'All-In-One');
+
+        // Navigate to the login page
+        cy.get('a').click();
+
+        // Step 2: Log in as Samsul Saifullah using cy.origin for third-party login
+        cy.origin('https://wfhtrackingsystem.kinde.com', () => {
+            cy.get('input[name="p_username"]').type('151495');
+            cy.get('button[type="submit"]').click();
+
+            cy.get('input[name="p_password"]', { timeout: 10000 }).should('be.visible');
+
+            cy.get('input[name="p_password"]').type('password');
+            cy.get('button[type="submit"]').click({ multiple: true });
+        });
+
+        // Step 3: Navigate to the new arrangement page
+        cy.get('nav').should('contain', 'All-In-One');
+        cy.get('nav').contains('Arrangement').click();
+        cy.get('nav').contains('New request').click();
+    });
+
+    it('should apply for Recurring WFH Arrangement', () => {
+        const today = new Date();
+
+        // Helper function to get a new date by adding/subtracting days
+        const adjustForWeekend = (date) => {
+            const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+            if (dayOfWeek === 6) { // Saturday
+                date.setDate(date.getDate() + 2); // Add 2 days
+            } else if (dayOfWeek === 0) { // Sunday
+                date.setDate(date.getDate() + 1); // Add 1 day
+            }
+            return date;
+        };
         
-  
-          cy.get('textarea') // Use the appropriate selector for your textarea
-          .click() // Click on the textarea to focus it
-          .type('Testing WFH E2E Test Case 5.1'); // Type the desired text
-  
-          // Submit
-          cy.get('button[type="submit"]').click();
-  
-      });
-  });
-  
-  //Test Case 5.2: Apply for Recurring WFH Arrangement (Weekly)
-  describe('Apply for Recurring WFH Arrangement', () => {
-      // Use before to run setup code before the tests
-      before(() => {
-          // Step 1: Visit the homepage and log in once
-          cy.visit('https://wfh-tracking-system.vercel.app/'); // Adjust the URL if needed
-  
-          // Ensure the page has loaded
-          cy.get('body').should('be.visible');
-  
-          // Verify the 'Nav Bar' is visible
-          cy.get('nav').should('contain', 'All-In-One');
-  
-          // Navigate to the login page
-          cy.get('a').click();
-  
-          // Step 2: Log in as Samsul Saifullah using cy.origin for third-party login
-          cy.origin('https://wfhtrackingsystem.kinde.com', () => {
-              cy.get('input[name="p_username"]').type('151495');
-              cy.get('button[type="submit"]').click();
-  
-              cy.get('input[name="p_password"]', { timeout: 10000 }).should('be.visible');
-  
-              cy.get('input[name="p_password"]').type('password');
-              cy.get('button[type="submit"]').click({ multiple: true });
-          });
-  
-          // Step 3: Navigate to the new arrangement page
-          cy.get('nav').should('contain', 'All-In-One');
-          cy.get('nav').contains('Arrangement').click();
-          cy.get('nav').contains('New request').click();
-      });
-  
-      it('should apply for Recurring WFH Arrangement', () => {
-  
-          // Changeport view
-          cy.viewport(1024, 1024);
-  
-          // Step 4: Click on Recurring and Weekly radio button
-          cy.get('button[value="Recurring"]').click();
-          cy.get('button[value="Weekly"]').click();
-  
-          cy.get('button').contains('Pick a date').click();
-  
-          // Loop to click the 'next-month' button 7 times
-          for (let i = 0; i < 7; i++) {
-              cy.get('button[name="next-month"]').click({ multiple: true, force: true }); // Click the button
-          }
-  
-          cy.get('button[name="day"]').contains('12').click();
-  
-          // Click on white space
-          cy.get('body').click(); // Click on the body element (might not work if it has pointer-events: none)
-  
-          cy.get('button').contains('Pick a date').click();
-  
-          // Loop to click the 'next-month' button 7 times
-          for (let i = 0; i < 7; i++) {
-              cy.get('button[name="next-month"]').click({ multiple: true, force: true }); // Click the button
-          }
-  
-          cy.get('button[name="day"]').contains('30').click();
-  
-          // Interact with the <select> element
-          cy.get('button[role="combobox"]').click();
-  
-          // Wait for the dropdown content to be visible (optional, for stability)
-          cy.get('[role="listbox"]').should('be.visible');
-  
-           // Click on the "AM" option
-          cy.contains('[role="option"]', 'PM').click(); // Ensure this matches your SelectItem structure
-        
-  
-          cy.get('textarea') // Use the appropriate selector for your textarea
-          .click() // Click on the textarea to focus it
-          .type('Testing WFH E2E Test Case 5.2'); // Type the desired text
-  
-          // Submit
-          cy.get('button[type="submit"]').click();
-  
-      });
-  });
+        // Helper function to get a new date by adding/subtracting days
+        const getAdjustedDate = (days) => {
+            const newDate = new Date(today);
+            newDate.setDate(today.getDate() + days);
+            return adjustForWeekend(newDate);
+        };
+    
+        // Calculate dates: 5 days and 12 days later
+        const dates = {
+            todayDay: today.getDate(),
+            twentyDaysLater: getAdjustedDate(20).getDate(),
+            thirtyDaysLater: getAdjustedDate(34).getDate(),
+
+        };
+
+        const { todayDay, twentyDaysLater, thirtyDaysLater} = dates;
+
+        // Changeport view
+        cy.viewport(1024, 1024);
+
+        // Step 4: Click on Recurring and Weekly radio button
+        cy.get('button[value="Recurring"]').click();
+        cy.get('button[value="Weekly"]').click();
+
+        cy.get('button').contains('Pick a date').click();
+
+        // 20 days later is a new month
+        if ( todayDay > twentyDaysLater) {
+            cy.get('button[name="next-month"]').click({ multiple: true, force: true }); // Click the button
+            
+            cy.get('button[name="day"]').contains(twentyDaysLater.toString()).click();
+
+            cy.get('body').click(); // Click on the body element (might not work if it has pointer-events: none)
+
+            cy.get('button').contains('Pick a date').click();
+            
+            cy.get('button[name="next-month"]').click({ multiple: true, force: true }); // Click the button
+
+            cy.get('button[name="day"]').contains(thirtyDaysLater.toString()).click();
+            
+        }
+
+        // 20 days later in same month but 34 days later is a new month
+        if ( todayDay < twentyDaysLater && twentyDaysLater > thirtyDaysLater) {
+            cy.get('button[name="day"]').contains(twentyDaysLater.toString()).click();
+
+            cy.get('body').click(); // Click on the body element (might not work if it has pointer-events: none)
+
+            cy.get('button').contains('Pick a date').click();
+
+            cy.get('button[name="next-month"]').click({ multiple: true, force: true }); // Click the button
+
+            cy.get('button[name="day"]').contains(thirtyDaysLater.toString()).click();
+
+        }
+        // Interact with the <select> element
+        cy.get('button[role="combobox"]').click();
+
+        // Wait for the dropdown content to be visible (optional, for stability)
+        cy.get('[role="listbox"]').should('be.visible');
+
+         // Click on the "PM" option
+        cy.contains('[role="option"]', 'PM').click(); // Ensure this matches your SelectItem structure
+      
+
+        cy.get('textarea') // Use the appropriate selector for your textarea
+        .click() // Click on the textarea to focus it
+        .type('Testing WFH E2E Test Case 5.2'); // Type the desired text
+
+        // Submit
+        cy.get('button[type="submit"]').click();
+
+    });
+});
+
+
   
  // Test Case 5.3: WFH Request with Overlapping Dates
  describe('Unable to apply for WFH Arrangement With Overlapping Dates ', () => {
@@ -1086,7 +1219,7 @@ describe('Staff Able to View Application History', () => {
             cy.get('nav').contains('Arrangement').click();
             cy.get('nav').contains('My requests').click();
            
-            // Step 4: Navigate to the Create new arrangement page
+            // Step 4: Navigate to the my arrangement request page
             cy.get('button').contains('Processed').click();
 
             const formatDate = (date) => {
@@ -1240,5 +1373,470 @@ describe('Staff do not have WFH Arrangement History', () => {
     });  
 
 
+//Test Case 13.1: Withdraw Entire Approved Recurring WFH Arrangement
+describe('Withdraw Entire Approved Recurring WFH Arrangement ', () => {
+    // Use before to run setup code before the tests
+    before(() => {
+        // Step 1: Visit the homepage and log in once
+        cy.visit('https://wfh-tracking-system.vercel.app/'); // Adjust the URL if needed
+
+        // Ensure the page has loaded
+        cy.get('body').should('be.visible');
+
+        // Verify the 'Nav Bar' is visible
+        cy.get('nav').should('contain', 'All-In-One');
+
+        // Navigate to the login page
+        cy.get('a').click();
+
+        // Step 2: Log in as Manni Devi using cy.origin for third-party login
+        cy.origin('https://wfhtrackingsystem.kinde.com', () => {
+            cy.get('input[name="p_username"]').type('210018');
+            cy.get('button[type="submit"]').click();
+
+            cy.get('input[name="p_password"]', { timeout: 10000 }).should('be.visible');
+
+            cy.get('input[name="p_password"]').type('password');
+            cy.get('button[type="submit"]').click({ multiple: true });
+        });
+    });
+
+    it('should be able to withdraw approved arrangements', () => {
+        // Step 3: Navigate to the "My arrangement requests" page
+        cy.get('nav').should('contain', 'All-In-One');
+        cy.get('nav').contains('Arrangement').click();
+        cy.get('nav').contains('My requests').click();
+        
+        cy.get('button').contains('Processed').click();
+        cy.wait(2000);
+
+        cy.get('button[id="arrangement-sheet-trigger"]').eq(2).click({ force: true });
+
+        // Interact with the <select> element
+        cy.get('button[role="combobox"]').first().click(); // Click the first matching button
+    
   
+        // Wait for the dropdown content to be visible (optional, for stability)
+        cy.get('[role="listbox"]').should('be.visible');
+ 
+         // Click on the "AM" option
+         cy.get('[role="option"]').contains('Withdraw entire arrangement').click();
+
+        cy.get('textarea') // Use the appropriate selector for your textarea
+        .click() // Click on the textarea to focus it
+        .type('Testing WFH E2E Test Case 13.1'); // Type the desired text
+
+        // Submit
+        cy.get('button[type="submit"]').click();
+        
+        cy.contains('Arrangement(s) updated successfully').should('exist');
+        
+    });
+});  
+
+//Test Case 13.2: Withdraw a Specific Day from an Approved Recurring WFH Arrangement
+describe('Withdraw Sepcific Approved Recurring WFH Arrangement ', () => {
+    // Use before to run setup code before the tests
+    before(() => {
+        // Step 1: Visit the homepage and log in once
+        cy.visit('https://wfh-tracking-system.vercel.app/'); // Adjust the URL if needed
+
+        // Ensure the page has loaded
+        cy.get('body').should('be.visible');
+
+        // Verify the 'Nav Bar' is visible
+        cy.get('nav').should('contain', 'All-In-One');
+
+        // Navigate to the login page
+        cy.get('a').click();
+
+        // Step 2: Log in as Manni Devi using cy.origin for third-party login
+        cy.origin('https://wfhtrackingsystem.kinde.com', () => {
+            cy.get('input[name="p_username"]').type('210018');
+            cy.get('button[type="submit"]').click();
+
+            cy.get('input[name="p_password"]', { timeout: 10000 }).should('be.visible');
+
+            cy.get('input[name="p_password"]').type('password');
+            cy.get('button[type="submit"]').click({ multiple: true });
+        });
+    });
+
+    it('should be able to withdraw one approved recurring arrangements', () => {
+        // Step 3: Navigate to the "My arrangement requests" page
+        cy.get('nav').should('contain', 'All-In-One');
+        cy.get('nav').contains('Arrangement').click();
+        cy.get('nav').contains('My requests').click();
+        
+        cy.get('button').contains('Processed').click();
+        cy.wait(2000);
+
+        // Step 4: Navigate to the my arrangement request page
+        cy.get('button[id="arrangement-sheet-trigger"]').eq(3).click({ force: true });
+
+        // Interact with the <select> element
+        cy.get('button[role="combobox"]').first().click(); // Click the first matching button
+    
   
+        // Wait for the dropdown content to be visible (optional, for stability)
+        cy.get('[role="listbox"]').should('be.visible');
+ 
+         // Click on the "AM" option
+         cy.get('[role="option"]').contains('Withdraw this specific arrangement').click();
+
+        cy.get('textarea') // Use the appropriate selector for your textarea
+        .click() // Click on the textarea to focus it
+        .type('Testing WFH E2E Test Case 13.2'); // Type the desired text
+
+        // Submit
+        cy.get('button[type="submit"]').click();
+        
+        cy.contains('Arrangement(s) updated successfully').should('exist');
+        
+    });
+});
+
+// Test Case 13.3: Withdraw an Approved Ad-Hoc WFH Arrangement & Test Case 13.4: Edge Case - Withdrawal Less Than 24 Hours Before WFH Day
+describe('Withdraw an Approved Ad-Hoc WFH Arrangement ', () => {
+    // Use before to run setup code before the tests
+    before(() => {
+        // Step 1: Visit the homepage and log in once
+        cy.visit('https://wfh-tracking-system.vercel.app/'); // Adjust the URL if needed
+
+        // Ensure the page has loaded
+        cy.get('body').should('be.visible');
+
+        // Verify the 'Nav Bar' is visible
+        cy.get('nav').should('contain', 'All-In-One');
+
+        // Navigate to the login page
+        cy.get('a').click();
+
+        // Step 2: Log in as Manni Devi using cy.origin for third-party login
+        cy.origin('https://wfhtrackingsystem.kinde.com', () => {
+            cy.get('input[name="p_username"]').type('210018');
+            cy.get('button[type="submit"]').click();
+
+            cy.get('input[name="p_password"]', { timeout: 10000 }).should('be.visible');
+
+            cy.get('input[name="p_password"]').type('password');
+            cy.get('button[type="submit"]').click({ multiple: true });
+        });
+    });
+
+    it('should be able to withdraw approved ad-hoc arrangements', () => {
+        // Step 3: Navigate to the "My arrangement requests" page
+        cy.get('nav').should('contain', 'All-In-One');
+        cy.get('nav').contains('Arrangement').click();
+        cy.get('nav').contains('My requests').click();
+        
+        cy.get('button').contains('Processed').click();
+        cy.wait(2000);
+
+        // Step 4: Navigate to the my arrangement request page
+        cy.get('button[id="arrangement-sheet-trigger"]').eq(1).click({ force: true });
+
+        // Interact with the <select> element
+        cy.get('button[role="combobox"]').first().click(); // Click the first matching button
+    
+  
+        // Wait for the dropdown content to be visible (optional, for stability)
+        cy.get('[role="listbox"]').should('be.visible');
+ 
+         // Click on the "AM" option
+         cy.get('[role="option"]').contains('Withdraw').click();
+
+        cy.get('textarea') // Use the appropriate selector for your textarea
+        .click() // Click on the textarea to focus it
+        .type('Testing WFH E2E Test Case 13.3'); // Type the desired text
+
+        // Submit
+        cy.get('button[type="submit"]').click();
+        
+        cy.contains('Arrangement(s) updated successfully').should('exist');
+        
+    });
+});
+ 
+// Test Case 14.1: Cancel Pending Ad-hoc WFH Request & Test Case 14.4: View Details of Pending Ad-hoc WFH Request Before Cancelling
+// Test Case 14.5: View Details of Pending Recurring WFH Request Before Canceling
+
+describe('Cancel pending Ad-hoc WFH Request', () => {
+    // Use before to run setup code before the tests
+    before(() => {
+        // Step 1: Visit the homepage and log in once
+        cy.visit('https://wfh-tracking-system.vercel.app/'); // Adjust the URL if needed
+
+        // Ensure the page has loaded
+        cy.get('body').should('be.visible');
+
+        // Verify the 'Nav Bar' is visible
+        cy.get('nav').should('contain', 'All-In-One');
+
+        // Navigate to the login page
+        cy.get('a').click();
+
+        // Step 2: Log in as Manni Devi using cy.origin for third-party login
+        cy.origin('https://wfhtrackingsystem.kinde.com', () => {
+            cy.get('input[name="p_username"]').type('210018');
+            cy.get('button[type="submit"]').click();
+
+            cy.get('input[name="p_password"]', { timeout: 10000 }).should('be.visible');
+
+            cy.get('input[name="p_password"]').type('password');
+            cy.get('button[type="submit"]').click({ multiple: true });
+        });
+    });
+
+    it('should be able to cancel Ad-hoc pending arrangements', () => {
+        // Step 3: Navigate to the "My arrangement requests" page
+        cy.get('nav').should('contain', 'All-In-One');
+        cy.get('nav').contains('Arrangement').click();
+        cy.get('nav').contains('My requests').click();
+        
+        cy.get('button').contains('Pending').click();
+        cy.wait(2000);
+
+        // Step 4: Navigate to the my arrangement request page
+        cy.get('button[id="arrangement-sheet-trigger"]').eq(0).click({ force: true });
+
+        cy.wait(2000);
+
+        // Interact with the <select> element
+        cy.get('button[role="combobox"]').first().click(); // Click the first matching button
+    
+        cy.wait(2000);
+
+        // Wait for the dropdown content to be visible (optional, for stability)
+        cy.get('[role="listbox"]').should('be.visible');
+ 
+         // Click on the "AM" option
+         cy.get('[role="option"]').contains('Cancel').click();
+
+        // Submit
+        cy.get('button[type="submit"]').click();
+        
+        cy.contains('Arrangement(s) updated successfully').should('exist');
+        
+    });
+});
+
+
+
+// Test Case 14.2: Cancel Pending Recurring WFH Request
+describe('Cancel Pending Reucrring WFH Request', () => {
+    // Use before to run setup code before the tests
+    before(() => {
+        // Step 1: Visit the homepage and log in once
+        cy.visit('https://wfh-tracking-system.vercel.app/'); // Adjust the URL if needed
+
+        // Ensure the page has loaded
+        cy.get('body').should('be.visible');
+
+        // Verify the 'Nav Bar' is visible
+        cy.get('nav').should('contain', 'All-In-One');
+
+        // Navigate to the login page
+        cy.get('a').click();
+
+        // Step 2: Log in as Manni Devi using cy.origin for third-party login
+        cy.origin('https://wfhtrackingsystem.kinde.com', () => {
+            cy.get('input[name="p_username"]').type('210018');
+            cy.get('button[type="submit"]').click();
+
+            cy.get('input[name="p_password"]', { timeout: 10000 }).should('be.visible');
+
+            cy.get('input[name="p_password"]').type('password');
+            cy.get('button[type="submit"]').click({ multiple: true });
+        });
+    });
+
+    it('should be able to cancel Ad-hoc pending arrangements', () => {
+        // Step 3: Navigate to the "My arrangement requests" page
+        cy.get('nav').should('contain', 'All-In-One');
+        cy.get('nav').contains('Arrangement').click();
+        cy.get('nav').contains('My requests').click();
+        
+        cy.get('button').contains('Pending').click();
+        cy.wait(2000);
+
+        // Step 4: Navigate to the my arrangement request page
+        cy.get('button[id="arrangement-sheet-trigger"]').eq(0).click({ force: true });
+
+        cy.wait(2000);
+
+        for (let i = 0; i < 4; i++) {
+            cy.get('button[role="combobox"]').eq(i).click(); // Click the first matching button
+        
+            // Add a delay for stability
+            cy.wait(1000);
+        
+            // Ensure the dropdown is visible
+            cy.get('[role="listbox"]').should('be.visible');
+        
+            // Click on the "Cancel" option
+            cy.get('[role="option"]').contains('Cancel').click();
+        }        
+
+        // Submit
+        cy.get('button[type="submit"]').click();
+        
+        cy.contains('Arrangement(s) updated successfully').should('exist');
+        
+    });
+});
+
+//Test Case 14.3: Attempt to Cancel Approved WFH Request
+describe('Attempt to Cancel Approved WFH Request', () => {
+    // Use before to run setup code before the tests
+    before(() => {
+        // Step 1: Visit the homepage and log in once
+        cy.visit('https://wfh-tracking-system.vercel.app/'); // Adjust the URL if needed
+
+        // Ensure the page has loaded
+        cy.get('body').should('be.visible');
+
+        // Verify the 'Nav Bar' is visible
+        cy.get('nav').should('contain', 'All-In-One');
+
+        // Navigate to the login page
+        cy.get('a').click();
+
+        // Step 2: Log in as Manni Devi using cy.origin for third-party login
+        cy.origin('https://wfhtrackingsystem.kinde.com', () => {
+            cy.get('input[name="p_username"]').type('210018');
+            cy.get('button[type="submit"]').click();
+
+            cy.get('input[name="p_password"]', { timeout: 10000 }).should('be.visible');
+
+            cy.get('input[name="p_password"]').type('password');
+            cy.get('button[type="submit"]').click({ multiple: true });
+        });
+    });
+
+    it('should not see "Cancel" option', () => {
+        // Step 3: Navigate to the "My arrangement requests" page
+        cy.get('nav').should('contain', 'All-In-One');
+        cy.get('nav').contains('Arrangement').click();
+        cy.get('nav').contains('My requests').click();
+        
+        cy.get('button').contains('Processed').click();
+        cy.wait(2000);
+
+        // Step 4: Navigate to the my arrangement request page
+        cy.get('button[id="arrangement-sheet-trigger"]').eq(1).click({ force: true });
+
+        // Interact with the <select> element
+        cy.get('button[role="combobox"]').first().click(); // Click the first matching button
+    
+  
+        // Wait for the dropdown content to be visible (optional, for stability)
+        cy.get('[role="listbox"]').should('be.visible');
+ 
+         // Click on the "AM" option
+         cy.contains('Cancel').should('not.exist');
+        
+    });
+});
+
+
+// Test Case 15.1: View Authorized Navigation Links & Test Case 15.2: Navigate to Authorized Page
+
+describe('View Authorized Navigation Links', () => {
+    // Use before to run setup code before the tests
+    before(() => {
+        // Step 1: Visit the homepage and log in once
+        cy.visit('https://wfh-tracking-system.vercel.app/'); // Adjust the URL if needed
+
+        // Ensure the page has loaded
+        cy.get('body').should('be.visible');
+
+        // Verify the 'Nav Bar' is visible
+        cy.get('nav').should('contain', 'All-In-One');
+
+        // Navigate to the login page
+        cy.get('a').click();
+
+        // Step 2: Log in as Manni Devi using cy.origin for third-party login
+        cy.origin('https://wfhtrackingsystem.kinde.com', () => {
+            cy.get('input[name="p_username"]').type('210018');
+            cy.get('button[type="submit"]').click();
+
+            cy.get('input[name="p_password"]', { timeout: 10000 }).should('be.visible');
+
+            cy.get('input[name="p_password"]').type('password');
+            cy.get('button[type="submit"]').click({ multiple: true });
+        });
+    });
+
+    it('navigate through the pages and authorized pages', () => {
+        // Step 3: Navigate to the "My arrangement requests" page
+        cy.get('nav').should('contain', 'All-In-One');
+        cy.get('nav').contains('Arrangement').click();
+        cy.get('nav').contains('My requests').click();
+          
+        cy.get('nav').should('contain', 'All-In-One');
+        cy.get('nav').contains('Arrangement').click();
+        cy.get('nav').contains('New request').click();
+        
+        cy.get('nav').should('contain', 'All-In-One');
+        cy.get('nav').contains('Schedule').click();
+        cy.get('nav').contains('Team').click();
+
+        cy.get('nav').should('contain', 'All-In-One');
+        cy.get('nav').contains('Schedule').click();
+        cy.get('nav').contains('Personal').click();
+    });
+});
+
+
+
+// Test Case 15.4: Display Staff Name if Already Logged In & Test Case 15.5: Responsive Design on Different Screen Sizes
+describe('Attempt to Cancel Approved WFH Request', () => {
+    // Use before to run setup code before the tests
+    before(() => {
+        // Step 1: Visit the homepage and log in once
+        cy.visit('https://wfh-tracking-system.vercel.app/'); // Adjust the URL if needed
+
+        // Ensure the page has loaded
+        cy.get('body').should('be.visible');
+
+        // Verify the 'Nav Bar' is visible
+        cy.get('nav').should('contain', 'All-In-One');
+
+        // Navigate to the login page
+        cy.get('a').click();
+
+        // Step 2: Log in as Manni Devi using cy.origin for third-party login
+        cy.origin('https://wfhtrackingsystem.kinde.com', () => {
+            cy.get('input[name="p_username"]').type('210018');
+            cy.get('button[type="submit"]').click();
+
+            cy.get('input[name="p_password"]', { timeout: 10000 }).should('be.visible');
+
+            cy.get('input[name="p_password"]').type('password');
+            cy.get('button[type="submit"]').click({ multiple: true });
+        });
+    });
+
+    it('should not see "Cancel" option', () => {
+        // Step 3: Navigate to the "My arrangement requests" page
+        cy.wait(1000);
+        
+        cy.wait(1000);
+
+        cy.viewport(375, 667); // Set viewport to 375px width and 667px height
+
+        cy.wait(1000);
+
+        cy.viewport(768, 1024); // Set viewport to 768px width and 1024px height
+
+        cy.wait(1000);
+
+        cy.viewport(1024, 768); // Set viewport to 1024px width and 768px height
+
+        cy.wait(1000);
+        cy.contains('button', 'Manni Devi').should('exist');
+        
+    });
+});
