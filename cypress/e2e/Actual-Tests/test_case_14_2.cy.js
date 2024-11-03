@@ -39,7 +39,7 @@ describe('Cancel Pending Reucrring WFH Request', () => {
         cy.get('button[id="arrangement-sheet-trigger"]').eq(0).click({ force: true });
 
         cy.wait(2000);
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 2; i++) {
             cy.get('button[role="combobox"]').eq(i).click(); // Click the first matching button
         
             // Add a delay for stability

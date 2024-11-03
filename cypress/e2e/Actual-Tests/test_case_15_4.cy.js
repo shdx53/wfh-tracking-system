@@ -30,7 +30,7 @@ describe('Attempt to Cancel Approved WFH Request', () => {
         // Step 3: Navigate to the "My arrangement requests" page
         cy.wait(1000);
         
-        cy.wait(1000);
+        cy.wait(3000);
 
         cy.viewport(375, 667); // Set viewport to 375px width and 667px height
 

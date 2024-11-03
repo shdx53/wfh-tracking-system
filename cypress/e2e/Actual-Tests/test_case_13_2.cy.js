@@ -36,7 +36,7 @@ describe('Withdraw Sepcific Approved Recurring WFH Arrangement ', () => {
         cy.wait(2000);
 
         // Step 4: Navigate to the my arrangement request page
-        cy.get('button[id="arrangement-sheet-trigger"]').eq(3).click({ force: true });
+        cy.get('button[id="arrangement-sheet-trigger"]').eq(2).click({ force: true });
 
         // Interact with the <select> element
         cy.get('button[role="combobox"]').first().click(); // Click the first matching button
