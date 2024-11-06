@@ -4,7 +4,8 @@
 ## Getting Started
 
 ```bash
-# Step 1: Place .env, .env.local, and .env.production files in the root directory if the code has been cloned from GitHub. These files are available in the root directory of the submitted source code.
+# Step 1: Place .env, .env.local, and .env.production files in the root directory if the code has been cloned from GitHub. 
+# These files are available in the root directory of the submitted source code.
 
 # Step 2: Install dependencies
 npm i
@@ -26,7 +27,7 @@ password
 ```
 
 ## Unit Tests
-Unit tests are performed using Jest and are located in the __tests__ folder within the root directory.
+Unit tests are performed using Jest and are located in the `__tests__` folder within the root directory.
 
 ## End-to-end Tests
 End-to-end tests are performed using Cypress and are located in the cypress folder within the root directory.
