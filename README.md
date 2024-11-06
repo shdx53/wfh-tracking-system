@@ -30,7 +30,7 @@ password
 Unit tests are performed using Jest and are located in the `__tests__` folder within the root directory.
 
 ## End-to-end Tests
-End-to-end tests are performed using Cypress and are located in the cypress folder within the root directory.
+End-to-end tests are performed using Cypress and are located in the `cypress` folder within the root directory.
 
 ## CI/CD Pipeline
-The CI/CD pipeline checks if both unit tests and end-to-end tests pass before deploying to production on Vercel. The CI/CD pipeline script is located in the .github/workflows/combined-CI.yml file.
+The CI/CD pipeline checks if both unit tests and end-to-end tests pass before deploying to production on Vercel. The CI/CD pipeline script is located in the `.github/workflows/combined-CI.yml` file.
