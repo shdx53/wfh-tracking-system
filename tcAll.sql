@@ -188,7 +188,7 @@ VALUES
 INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
 (150143, "approved", CURRENT_DATE + INTERVAL 4 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 11 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 1 SECOND), # future recurring approved arrangement
-(150143, "approved", CURRENT_DATE + INTERVAL 11 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 11 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 2 SECOND); # future recurring approved arrangement
+(150143, "approved", CURRENT_DATE + INTERVAL 11 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 11 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 1 SECOND); # future recurring approved arrangement
 
 
 
@@ -196,8 +196,8 @@ VALUES
 ## Contains approved recurring request of Senior Engineer: John Lim (150143)
 INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
-(150143, "approved", CURRENT_DATE + INTERVAL 3 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 10 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 16 SECOND), # future recurring approved arrangement
-(150143, "approved", CURRENT_DATE + INTERVAL 10 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 10 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 17 SECOND); # future recurring approved arrangement
+(150143, "approved", CURRENT_DATE + INTERVAL 3 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 10 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 2 SECOND), # future recurring approved arrangement
+(150143, "approved", CURRENT_DATE + INTERVAL 10 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 10 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 2 SECOND); # future recurring approved arrangement
 
 
 
@@ -206,7 +206,7 @@ VALUES
 ## Contains approved ad-hoc request of Senior Engineer: John Lim (150143)
 INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Shift_Type, Applied_Datetime)
 VALUES
-(150143, "approved", CURRENT_DATE + INTERVAL 6 DAY, 0, "AM", CURRENT_TIMESTAMP + INTERVAL 18 SECOND);
+(150143, "approved", CURRENT_DATE + INTERVAL 6 DAY, 0, "AM", CURRENT_TIMESTAMP + INTERVAL 3 SECOND);
 
 
 
@@ -224,7 +224,7 @@ VALUES
 ## Contains approved recurring request of IT Team: Manni Devi (210018)
 INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
-(210018, "approved", CURRENT_DATE + INTERVAL 4 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 11 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 3 SECOND),
+(210018, "approved", CURRENT_DATE + INTERVAL 4 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 11 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 4 SECOND),
 (210018, "approved", CURRENT_DATE + INTERVAL 11 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 11 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 4 SECOND);
 
 
@@ -235,7 +235,7 @@ VALUES
 INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
 (210018, "approved", CURRENT_DATE + INTERVAL 5 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 12 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 5 SECOND),
-(210018, "approved", CURRENT_DATE + INTERVAL 12 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 12 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 6 SECOND);
+(210018, "approved", CURRENT_DATE + INTERVAL 12 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 12 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 5 SECOND);
 
 
 
@@ -244,7 +244,7 @@ VALUES
 ## Contains approved ad-hoc request of IT Team: Manni Devi (210018)
 INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
-(210018, "approved", CURRENT_DATE + INTERVAL 3 DAY, 0, NULL, NULL, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 7 SECOND);
+(210018, "approved", CURRENT_DATE + INTERVAL 3 DAY, 0, NULL, NULL, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 6 SECOND);
 
 
 
@@ -253,7 +253,7 @@ VALUES
 ## Contains approved ad-hoc request of IT Team: Manni Devi (210018) for the current date
 INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
-(210018, "approved", CURRENT_DATE, 0, NULL, NULL, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 8 SECOND);
+(210018, "approved", CURRENT_DATE, 0, NULL, NULL, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 7 SECOND);
 
 
 
@@ -262,7 +262,7 @@ VALUES
 ## Contains pending ad-hoc request of IT Team: Manni Devi (210018)
 INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
-(210018, "pending", CURRENT_DATE + INTERVAL 2 DAY, 0, NULL, NULL, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 9 SECOND);
+(210018, "pending", CURRENT_DATE + INTERVAL 2 DAY, 0, NULL, NULL, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 8 SECOND);
 
 
 
@@ -271,8 +271,8 @@ VALUES
 ## Contains pending recurring request of IT Team: Manni Devi (210018)
 INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
-(210018, "pending", CURRENT_DATE + INTERVAL 6 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 13 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 10 SECOND),
-(210018, "pending", CURRENT_DATE + INTERVAL 13 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 13 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 10 SECOND);
+(210018, "pending", CURRENT_DATE + INTERVAL 6 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 13 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 9 SECOND),
+(210018, "pending", CURRENT_DATE + INTERVAL 13 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 13 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 9 SECOND);
 
 
 
@@ -281,7 +281,7 @@ VALUES
 ## Contains approved ad-hoc request of IT Team: Manni Devi (210018)
 INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
-(210018, "approved", CURRENT_DATE + INTERVAL 7 DAY, 0, NULL, NULL, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 12 SECOND);
+(210018, "approved", CURRENT_DATE + INTERVAL 7 DAY, 0, NULL, NULL, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 10 SECOND);
 
 
 
@@ -290,7 +290,7 @@ VALUES
 ## Contains pending ad-hoc request of IT Team: Manni Devi (210018)
 INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
-(210018, "pending", CURRENT_DATE + INTERVAL 8 DAY, 0, NULL, NULL, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 13 SECOND);
+(210018, "pending", CURRENT_DATE + INTERVAL 8 DAY, 0, NULL, NULL, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 11 SECOND);
 
 
 
@@ -299,5 +299,5 @@ VALUES
 ## Contains pending recurring request of IT Team: Manni Devi (210018)
 INSERT INTO Arrangement (Staff_ID, Request_Status, Start_Date, Is_Recurring, Recurring_Interval, End_Date, Apply_Reason, Update_Reason, Shift_Type, Applied_Datetime)
 VALUES
-(210018, "pending", CURRENT_DATE + INTERVAL 9 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 16 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 14 SECOND),
-(210018, "pending", CURRENT_DATE + INTERVAL 16 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 16 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 15 SECOND);
+(210018, "pending", CURRENT_DATE + INTERVAL 9 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 16 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 12 SECOND),
+(210018, "pending", CURRENT_DATE + INTERVAL 16 DAY, 1, "Weekly", CURRENT_DATE + INTERVAL 16 DAY, NULL, NULL, "Full Day", CURRENT_TIMESTAMP + INTERVAL 12 SECOND);
